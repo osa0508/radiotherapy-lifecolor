@@ -1,0 +1,31 @@
+{
+  "name": "放射線治療サポートカレンダー",
+  "short_name": "放射線サポート",
+  "description": "Lifecolor提供 放射線治療サポートカレンダー",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0f4f8",
+  "theme_color": "#1a6b9a",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

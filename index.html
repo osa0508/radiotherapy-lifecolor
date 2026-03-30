@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>放射線治療 サポートカレンダー</title>
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1a6b9a">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="放射線カレンダー">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f0f4f8;color:#333;min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-bottom,0)}
+header{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;padding:12px 20px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header .hdr-left{display:flex;align-items:center;gap:10px}
+header h1{font-size:1.15rem;letter-spacing:.04em}
+header p{font-size:.72rem;opacity:.85;margin-top:1px}
+header .hdr-actions{display:flex;gap:6px}
+.hdr-btn{background:rgba(255,255,255,.15);border:none;color:white;padding:6px 10px;border-radius:8px;font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.hdr-btn:hover{background:rgba(255,255,255,.25)}
+.tabs{display:flex;background:white;border-bottom:2px solid #e0e8f0;position:sticky;top:0;z-index:100;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.tab-btn{flex:1;padding:11px 4px;border:none;background:none;font-size:.78rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.tab-btn.active{color:#1a6b9a;border-bottom-color:#1a6b9a;background:#f7fbff}
+.tab-btn:hover:not(.active){background:#f5f8fc;color:#555}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.container{max-width:960px;margin:0 auto;padding:16px 12px}
+
+/* Important Notice Banner (footer compact) */
+.footer-notice{background:#fff8f8;border:1px solid #ffcdd2;border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#555;line-height:1.7}
+.footer-notice .fn-title{font-weight:700;color:#b71c1c;margin-bottom:6px;font-size:.82rem}
+.footer-notice a{color:#b71c1c;font-weight:600}
+.footer-notice .fn-warn{margin-top:6px;padding-top:6px;border-top:1px solid #ffcdd2}
+
+/* Install banner */
+.install-banner{background:linear-gradient(135deg,#ff7043,#e64a19);color:white;padding:12px 16px;display:none;align-items:center;justify-content:center;gap:10px;font-size:.85rem;cursor:pointer}
+.install-banner .install-close{background:none;border:none;color:white;font-size:1.1rem;cursor:pointer;padding:0 4px}
+.install-banner.show{display:flex}
+
+/* Cancer basics tab */
+.basics-section{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px}
+.basics-section h2{font-size:.95rem;color:#1a6b9a;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8f0f7;display:flex;align-items:center;gap:6px}
+.basics-section h3{font-size:.9rem;color:#0d4d73;margin:14px 0 6px;padding-left:4px;border-left:3px solid #1a6b9a;padding-left:8px}
+.basics-section p{font-size:.84rem;color:#444;line-height:1.8;margin-bottom:8px}
+.basics-section ul{list-style:none;padding:0;margin:0 0 10px}
+.basics-section li{font-size:.84rem;color:#444;line-height:1.8;padding:3px 0 3px 18px;position:relative}
+.basics-section li::before{content:'●';color:#1a6b9a;position:absolute;left:0;font-size:.6rem;top:6px}
+.basics-card{background:#f7fbff;border:1.5px solid #d0e2f0;border-radius:10px;padding:14px;margin-bottom:10px}
+.basics-card.warn{background:#fff8e1;border-color:#ffe082}
+.basics-card.warn .bc-title{color:#e65100}
+.bc-title{font-weight:700;font-size:.88rem;color:#1a6b9a;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.bc-body{font-size:.83rem;color:#555;line-height:1.75}
+.ganjoho-link{display:block;background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;margin:12px 0;transition:opacity .2s}
+.ganjoho-link:hover{opacity:.85}
+
+/* ====== DISEASE INFO TAB ====== */
+.disease-selector-wrap{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px}
+.disease-selector-wrap h2{font-size:.95rem;color:#1a6b9a;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8f0f7}
+.disease-buttons{display:flex;flex-wrap:wrap;gap:7px}
+.dis-btn{padding:7px 12px;border-radius:20px;border:1.5px solid #cdd8e3;background:white;font-size:.78rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+.dis-btn:hover{border-color:#1a6b9a;color:#1a6b9a}
+.dis-btn.selected{background:#1a6b9a;color:white;border-color:#1a6b9a}
+.info-card{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.info-card h3{color:#1a6b9a;margin-bottom:6px;font-size:1rem}
+.info-desc{font-size:.85rem;color:#555;margin-bottom:14px;line-height:1.7}
+.se-list{display:flex;flex-direction:column;gap:8px}
+.se-item{border-left:4px solid;border-radius:0 8px 8px 0;padding:10px 12px;background:#fafafa}
+.se-item .se-label{font-weight:700;font-size:.88rem;margin-bottom:3px}
+.se-item .se-timing{font-size:.75rem;color:#888;margin-bottom:3px}
+.se-item .se-note{font-size:.83rem;color:#555;line-height:1.65}
+.se-item .se-med{margin-top:5px;background:#fff3e0;border-radius:5px;padding:4px 10px;font-size:.75rem;color:#e65100;font-weight:600}
+
+/* ====== CALENDAR TAB ====== */
+.input-card{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px}
+.input-card h2{font-size:.95rem;color:#1a6b9a;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8f0f7}
+.form-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.fg{flex:1;min-width:140px}
+.fg label{display:block;font-size:.78rem;color:#555;margin-bottom:4px;font-weight:600}
+.fg input,.fg select{width:100%;padding:9px 10px;border:1.5px solid #cdd8e3;border-radius:8px;font-size:.9rem;color:#333;transition:border-color .2s;background:white}
+.fg input:focus,.fg select:focus{outline:none;border-color:#1a6b9a}
+.fg .hint{font-size:.7rem;color:#999;margin-top:2px}
+.btn-primary{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;border:none;padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .2s;width:100%}
+.btn-primary:hover{opacity:.88}
+.btn-primary:active{transform:scale(.98)}
+.btn-outline{background:white;color:#1a6b9a;border:2px solid #1a6b9a;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-outline:hover{background:#e8f0f7}
+
+#calendarOutput{display:none}
+.summary-bar{background:white;border-radius:12px;padding:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.sum-item{display:flex;align-items:center;gap:7px}
+.sum-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.sum-icon.blue{background:#e8f0f7}.sum-icon.green{background:#e8f7ee}.sum-icon.orange{background:#fff3e8}
+.sum-text strong{display:block;font-size:.95rem;color:#1a6b9a}
+.sum-text span{font-size:.7rem;color:#888}
+.sum-patient{margin-left:auto;font-size:.88rem;color:#444;font-weight:600}
+
+/* Timeline */
+.se-timeline-card{background:white;border-radius:12px;padding:14px 16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:12px}
+.se-timeline-card h3{font-size:.9rem;color:#1a6b9a;margin-bottom:12px;display:flex;align-items:center;gap:5px}
+.timeline-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.timeline-wrap{min-width:550px;position:relative}
+.tl-axis{display:flex;margin-bottom:6px;padding-left:120px;font-size:.65rem;color:#888}
+.tl-axis-seg{border-left:1px dashed #ccc;padding-left:3px;flex:1}
+.tl-row{display:flex;align-items:center;margin-bottom:5px}
+.tl-label{width:120px;min-width:120px;font-size:.72rem;color:#444;font-weight:600;padding-right:8px;line-height:1.25}
+.tl-bar-wrap{flex:1;height:22px;background:#f5f8fc;border-radius:4px;position:relative}
+.tl-segment{position:absolute;height:100%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:white;font-weight:700;white-space:nowrap;overflow:hidden;padding:0 3px}
+.tl-treatment-bar{background:linear-gradient(90deg,#1a6b9a,#1585bc)}
+
+/* Calendar grid */
+.action-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.action-bar .hint-text{font-size:.73rem;color:#888;display:flex;align-items:center;gap:3px}
+.calendar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.month-card{background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.month-hdr{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;text-align:center;padding:10px;font-size:.9rem;font-weight:700}
+.wk-row{display:grid;grid-template-columns:repeat(7,1fr);background:#f7f9fc;border-bottom:1px solid #e8edf2}
+.wk-row span{text-align:center;padding:5px 2px;font-size:.65rem;font-weight:700;color:#666}
+.wk-row span.sun{color:#d94040}.wk-row span.sat{color:#2266cc}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);padding:3px;gap:2px}
+.day-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-radius:6px;font-size:.78rem;position:relative;cursor:pointer;padding-top:2px;transition:transform .08s;-webkit-user-select:none;user-select:none}
+.day-cell:active:not(.empty){transform:scale(.92)}
+.day-cell.empty{cursor:default}
+.day-cell.normal{color:#333;background:#fafafa}
+.day-cell.wsat{color:#2266cc;background:#f5f8ff}
+.day-cell.wsun{color:#d94040;background:#fff6f6}
+.day-cell.holiday{color:#d94040;background:#fff6f6}
+.day-cell.treatment{background:linear-gradient(135deg,#1a6b9a,#1585bc);color:white;font-weight:700;box-shadow:0 1px 4px rgba(26,107,154,.3)}
+.day-cell.treatment .treat-num{font-size:.5rem;opacity:.9;line-height:1}
+.day-cell.has-note::after{content:'';position:absolute;bottom:1px;right:1px;width:5px;height:5px;border-radius:50%;background:#4caf50}
+.day-cell.treatment.has-note::after{background:#a5d6a7}
+.day-num{font-size:.78rem;line-height:1.2}
+.se-dots{display:flex;gap:1px;flex-wrap:wrap;justify-content:center;padding:0 1px;margin-top:0}
+.se-dot{width:3px;height:3px;border-radius:50%;flex-shrink:0}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px;background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-top:12px}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:.72rem;color:#555}
+.leg-box{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700}
+.leg-box.treatment{background:linear-gradient(135deg,#1a6b9a,#1585bc);color:white}
+.leg-box.has-note{background:#f0f0f0;border:1.5px solid #ccc;color:#333;position:relative}
+.leg-box.has-note::after{content:'';position:absolute;bottom:1px;right:1px;width:5px;height:5px;border-radius:50%;background:#4caf50}
+
+/* ====== MODAL ====== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.open{display:flex}
+.modal{background:white;border-radius:16px 16px 0 0;width:100%;max-width:500px;box-shadow:0 -4px 24px rgba(0,0,0,.2);max-height:85vh;display:flex;flex-direction:column;animation:slideUp .25s ease-out}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-hdr{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;border-radius:16px 16px 0 0}
+.modal-hdr h3{font-size:.95rem}
+.modal-close{background:none;border:none;color:white;font-size:1.3rem;cursor:pointer;padding:0 4px;line-height:1}
+.modal-body{padding:14px 16px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.modal-section{margin-bottom:14px}
+.modal-section label{display:block;font-size:.78rem;font-weight:700;color:#555;margin-bottom:6px}
+.treat-badge{display:inline-block;background:#1a6b9a;color:white;border-radius:20px;padding:3px 11px;font-size:.78rem;margin-bottom:10px}
+.se-active-list{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.se-active-chip{border-radius:12px;padding:3px 9px;font-size:.7rem;color:white;font-weight:600}
+.nrs-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.nrs-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #ddd;background:white;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .1s;color:#555}
+.nrs-btn.selected{background:#1a6b9a;color:white;border-color:#1a6b9a}
+.nrs-btn.nrs-hi{border-color:#ffccbc}.nrs-btn.nrs-hi.selected{background:#ff5722;border-color:#ff5722}
+.nrs-btn.nrs-med{border-color:#ffe0b2}.nrs-btn.nrs-med.selected{background:#ff9800;border-color:#ff9800}
+.nrs-scale{display:flex;justify-content:space-between;font-size:.65rem;color:#999;margin-top:3px;padding:0 2px}
+.note-textarea{width:100%;padding:10px;border:1.5px solid #cdd8e3;border-radius:8px;font-size:.88rem;resize:none;min-height:72px;font-family:inherit;line-height:1.6}
+.note-textarea:focus{outline:none;border-color:#1a6b9a}
+.takeda-textarea{width:100%;padding:10px;border:1.5px solid #a5d6a7;border-radius:8px;font-size:.88rem;resize:none;min-height:60px;font-family:inherit;line-height:1.6;background:#f1f8f1}
+.takeda-textarea:focus{outline:none;border-color:#4caf50}
+.takeda-label{color:#2e7d32!important}
+.modal-footer{padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:flex-end;border-top:1px solid #f0f0f0;flex-shrink:0}
+/* Skip feature */
+.day-cell.skipped{background:repeating-linear-gradient(135deg,#cfd8dc,#cfd8dc 3px,#eceff1 3px,#eceff1 9px)!important;color:#90a4ae!important;opacity:.75}
+.day-cell.skipped .treat-num{opacity:.5}
+.skip-badge{display:inline-block;background:#ff7043;color:white;border-radius:12px;padding:2px 9px;font-size:.7rem;font-weight:700;margin-left:6px}
+.btn-skip{background:white;color:#ff7043;border:2px solid #ff7043;padding:7px 14px;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-skip:hover{background:#fff3e0}
+.btn-skip.active{background:#ff7043;color:white}
+.skip-note{background:#fff3e0;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#bf360c;margin-bottom:12px;display:none}
+.skip-note.show{display:block}
+
+/* ====== SUMMARY TAB ====== */
+.summary-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.empty-summary{text-align:center;padding:36px 20px;color:#aaa;font-size:.88rem;line-height:1.8}
+.entry-card{background:white;border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,.07);margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.entry-date-col{min-width:60px;text-align:center}
+.entry-date-col .e-day{font-size:1.3rem;font-weight:700;color:#1a6b9a;line-height:1}
+.entry-date-col .e-ymd{font-size:.68rem;color:#888}
+.entry-date-col .treat-tag{background:#1a6b9a;color:white;border-radius:10px;padding:2px 7px;font-size:.65rem;margin-top:3px;display:inline-block}
+.entry-body{flex:1}
+.entry-nrs{display:inline-flex;align-items:center;gap:4px;margin-bottom:5px}
+.nrs-badge{padding:2px 9px;border-radius:12px;font-size:.75rem;font-weight:700;color:white}
+.nrs-0{background:#4caf50}.nrs-mild{background:#8bc34a}.nrs-mod{background:#ff9800}.nrs-sev{background:#f44336}
+.entry-note-text{font-size:.83rem;color:#444;line-height:1.7}
+.se-active-sm{font-size:.7rem;color:#888;margin-top:3px}
+
+/* ====== FOOTER LINKS ====== */
+.app-footer{max-width:960px;margin:0 auto;padding:24px 12px 40px}
+.footer-card{border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);margin-bottom:18px;transition:transform .15s}
+.footer-card:active{transform:scale(.98)}
+.footer-card a{text-decoration:none;display:block}
+.footer-card-inner{padding:22px 20px;display:flex;align-items:center;gap:16px}
+.footer-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.footer-text h3{font-size:1rem;margin-bottom:3px;letter-spacing:.03em}
+.footer-text p{font-size:.82rem;line-height:1.6;opacity:.88}
+.footer-arrow{margin-left:auto;font-size:1.2rem;opacity:.6;flex-shrink:0}
+.fc-lifecolor{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
+.fc-lifecolor .footer-icon{background:linear-gradient(135deg,#2e7d32,#43a047);color:white}
+.fc-lifecolor h3{color:#2e7d32}
+.fc-lifecolor p{color:#33691e}
+.fc-lifecolor .footer-arrow{color:#2e7d32}
+
+
+.footer-phone{background:white;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:20px;text-align:center;margin-bottom:18px}
+.footer-phone .phone-label{font-size:.82rem;color:#555;margin-bottom:6px;font-weight:600}
+.footer-phone .phone-dept{font-size:.95rem;color:#0d4d73;font-weight:800;margin-bottom:10px}
+.footer-phone a.phone-number{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#e53935,#c62828);color:white;padding:14px 28px;border-radius:12px;text-decoration:none;font-size:1.3rem;font-weight:900;letter-spacing:.06em;box-shadow:0 3px 12px rgba(229,57,53,.35);transition:opacity .15s}
+.footer-phone a.phone-number:hover{opacity:.88}
+.footer-phone a.phone-number:active{transform:scale(.97)}
+.footer-phone .phone-note{font-size:.72rem;color:#999;margin-top:8px}
+.footer-copy{text-align:center;font-size:.7rem;color:#aaa;padding:8px 0 20px}
+
+/* ====== PRINT ====== */
+@media print{
+  body{background:white}
+  header{background:#1a6b9a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tabs,.input-card,.btn-primary,.btn-outline,.action-bar,.se-timeline-card,#tab-info,#tab-summary,#tab-basics,.install-banner,.hdr-actions,.app-footer{display:none!important}
+  #calendarOutput{display:block!important}
+  #tab-calendar{display:block!important}
+  .month-hdr{background:#1a6b9a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .day-cell.treatment{background:#1a6b9a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .calendar-grid{grid-template-columns:repeat(2,1fr)}
+  .month-card{break-inside:avoid}
+  .container{padding:6px}
+}
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:380px){
+  header h1{font-size:1rem}
+  .tab-btn{font-size:.72rem;padding:10px 2px}
+  .calendar-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <div>
+      <h1>🏥 放射線治療サポート</h1>
+      <p>副作用の見通し・体調記録・診察メモ</p>
+    </div>
+  </div>
+  <div class="hdr-actions">
+    <button class="hdr-btn" onclick="exportData()" title="データを書き出し">📤 保存</button>
+    <button class="hdr-btn" onclick="importData()" title="データを読み込み">📥 復元</button>
+  </div>
+</header>
+
+<div class="install-banner" id="installBanner" onclick="installPWA()">
+  📲 ホーム画面に追加してアプリとして使えます
+  <button class="install-close" onclick="event.stopPropagation();document.getElementById('installBanner').classList.remove('show')">✕</button>
+</div>
+
+<nav class="tabs">
+  <button class="tab-btn active" onclick="showTab('basics')" id="tab-basics-btn">🏥 基本</button>
+  <button class="tab-btn" onclick="showTab('info')" id="tab-info-btn">📖 副作用</button>
+  <button class="tab-btn" onclick="showTab('calendar')" id="tab-calendar-btn">📅 暦</button>
+  <button class="tab-btn" onclick="showTab('summary')" id="tab-summary-btn">📋 記録</button>
+</nav>
+
+<!-- ================= TAB 0: CANCER BASICS ================= -->
+<div class="tab-pane active" id="tab-basics">
+<div class="container">
+
+  <div class="basics-section">
+    <h2>🏥 がん治療の基本</h2>
+    <p>がんの治療法は大きく分けて <strong>手術（外科治療）</strong>、<strong>薬物療法（抗がん剤・分子標的薬・免疫療法など）</strong>、<strong>放射線治療</strong> の3つが柱です。これらを単独、あるいは組み合わせて治療を行います。</p>
+
+    <h3>🔪 手術（外科治療）</h3>
+    <div class="basics-card">
+      <div class="bc-title">がんを直接切除する治療法</div>
+      <div class="bc-body">
+        がんが限られた場所にある場合に有効です。がんそのものと周囲のリンパ節を含めて切除します。近年は体への負担が少ない腹腔鏡手術やロボット手術も広がっています。
+      </div>
+    </div>
+
+    <h3>💊 薬物療法</h3>
+    <div class="basics-card">
+      <div class="bc-title">薬でがん細胞を攻撃する治療法</div>
+      <div class="bc-body">
+        抗がん剤（細胞障害性薬）、分子標的薬、免疫チェックポイント阻害薬、ホルモン療法など様々な種類があります。全身に効果が及ぶため、転移がある場合や再発予防にも使われます。副作用は薬の種類によって異なります。
+      </div>
+    </div>
+
+    <h3>☢️ 放射線治療</h3>
+    <div class="basics-card">
+      <div class="bc-title">放射線でがん細胞を破壊する治療法</div>
+      <div class="bc-body">
+        高エネルギーの放射線をがんに照射して治療します。体にメスを入れずに治療でき、臓器の機能を温存しやすいのが特長です。通院で治療できることが多く、1回の治療は数分〜15分程度です。手術や薬物療法と組み合わせることもあります。このアプリは放射線治療を受ける患者様のための通院サポートカレンダーです。
+      </div>
+    </div>
+
+    <h3>🤝 集学的治療（組み合わせ）</h3>
+    <div class="basics-card">
+      <div class="bc-body">
+        多くのがんでは、手術＋薬物療法、放射線＋薬物療法など複数の治療を組み合わせることで、より高い効果が得られます。担当医チームがあなたに最適な治療計画を立てます。疑問があればいつでもご相談ください。
+      </div>
+    </div>
+  </div>
+
+  <div class="basics-section">
+    <h2>⚠️ 治療中の大切なお願い</h2>
+
+    <div class="basics-card warn">
+      <div class="bc-title">🚫 インターネットの情報に惑わされないで</div>
+      <div class="bc-body">
+        インターネットには科学的根拠のない情報や、不安をあおって高額商品を売りつける悪質なサイトが多数あります。<strong>がんに関する正しい情報は、国立がん研究センター「がん情報サービス」を参照してください。</strong>
+      </div>
+    </div>
+
+    <a href="https://ganjoho.jp/public/index.html" target="_blank" rel="noopener" class="ganjoho-link">
+      📖 国立がん研究センター がん情報サービス を開く
+    </a>
+
+    <div class="basics-card warn">
+      <div class="bc-title">💰 高額な健康食品・サプリメントにご注意</div>
+      <div class="bc-body">
+        <strong>3万円以上の栄養食品や健康に関する商品を購入する場合は、必ず事前に当科の医師もしくは看護師にご相談ください。</strong><br><br>
+        「がんが消える」「免疫力が上がる」などの宣伝文句で販売される高額サプリメントは、効果が科学的に証明されていないものがほとんどです。中には治療薬と相互作用を起こし、治療効果を妨げる成分が含まれることもあります。<br><br>
+        ご不安な場合やお知り合いに勧められた場合は、お気軽に診察時にご相談ください。
+      </div>
+    </div>
+
+    <div class="basics-card">
+      <div class="bc-title">📋 治療中に心がけていただきたいこと</div>
+      <div class="bc-body">
+        <ul>
+          <li>治療スケジュールを守り、予定通り通院しましょう</li>
+          <li>体調の変化（痛み・熱・皮膚の異常など）は我慢せず早めにお伝えください</li>
+          <li>十分な睡眠と栄養バランスの良い食事を心がけてください</li>
+          <li>治療部位を強くこすったり、直射日光に長時間当てないようにしましょう</li>
+          <li>このアプリで毎日の体調を記録しておくと、診察時にスムーズに伝えられます</li>
+          <li>困ったことや不安なことは一人で抱え込まず、医療スタッフに相談してください</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ================= TAB 1: DISEASE INFO ================= -->
+<div class="tab-pane" id="tab-info">
+<div class="container">
+  <div class="disease-selector-wrap">
+    <h2>🔍 疾患を選択して副作用の情報を確認</h2>
+    <div class="disease-buttons" id="diseaseButtons"></div>
+  </div>
+  <div class="info-card" id="infoCard">
+    <p style="color:#aaa;text-align:center;padding:20px;font-size:.85rem">上のボタンから疾患を選択してください</p>
+  </div>
+</div>
+</div>
+
+<!-- ================= TAB 2: CALENDAR ================= -->
+<div class="tab-pane" id="tab-calendar">
+<div class="container">
+  <div class="input-card">
+    <h2>📋 治療情報の入力</h2>
+    <div class="form-row">
+      <div class="fg" style="flex:1.5;min-width:180px">
+        <label>患者様のお名前</label>
+        <input type="text" id="patientName" placeholder="例：山田 太郎" />
+      </div>
+      <div class="fg">
+        <label>疾患・治療の種類</label>
+        <select id="diseaseSelect" onchange="onDiseaseChange()"></select>
+      </div>
+    </div>
+    <div class="form-row" style="margin-top:10px">
+      <div class="fg">
+        <label>治療開始日</label>
+        <input type="date" id="startDate" />
+      </div>
+      <div class="fg" style="min-width:110px">
+        <label>治療回数</label>
+        <input type="number" id="treatDays" min="1" max="39" value="25" />
+        <div class="hint">最大39回</div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn-primary" onclick="generateCalendar()">📅 カレンダーを作成</button>
+    </div>
+  </div>
+
+  <div id="calendarOutput">
+    <div class="summary-bar" id="summaryBar"></div>
+    <div class="se-timeline-card" id="seTimelineCard">
+      <h3>⚠️ 副作用が出やすい時期（目安）</h3>
+      <div class="timeline-scroll"><div class="timeline-wrap" id="timelineWrap"></div></div>
+      <p style="font-size:.7rem;color:#999;margin-top:6px">※個人差があります。気になる症状は医師・看護師にご相談ください。</p>
+    </div>
+    <div class="action-bar">
+      <div class="hint-text">💡 日付タップで体調・痛みを記録</div>
+      <button class="btn-outline" onclick="window.print()">🖨️ 印刷</button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-box treatment">1</div>治療日</div>
+      <div class="leg-item"><div class="leg-box has-note">月</div>記録あり</div>
+      <div class="leg-item"><span style="width:7px;height:7px;border-radius:50%;background:#ff9800;display:inline-block"></span>副作用注意</div>
+      <div class="leg-item"><span style="color:#2266cc;font-weight:700;font-size:.8rem">土</span></div>
+      <div class="leg-item"><span style="color:#d94040;font-weight:700;font-size:.8rem">日祝</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ================= TAB 3: SUMMARY ================= -->
+<div class="tab-pane" id="tab-summary">
+<div class="container">
+  <div class="summary-controls">
+    <button class="btn-primary" onclick="renderSummary()" style="width:auto;padding:10px 18px">🔄 最新データ</button>
+    <button class="btn-outline" onclick="window.print()">🖨️</button>
+    <span id="summaryPatientLabel" style="font-size:.85rem;color:#555;font-weight:600"></span>
+  </div>
+  <div id="summaryContent"><div class="empty-summary">カレンダーを作成し体調を記録すると<br>ここに一覧が表示されます</div></div>
+</div>
+</div>
+
+<!-- ================= DAY MODAL ================= -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <h3 id="modalTitle">体調を記録</h3>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalTreatBadge"></div>
+      <div id="modalSkipNote" class="skip-note">⚠️ この日はスキップ（欠席）扱いです。終了予定日が1日後ろにずれています。</div>
+      <div id="modalSeChips"></div>
+      <div class="modal-section">
+        <label>🩺 今の痛みの強さ（NRS）</label>
+        <div class="nrs-wrap" id="nrsWrap"></div>
+        <div class="nrs-scale"><span>0 全く痛くない</span><span style="text-align:center">5</span><span style="text-align:right">10 非常に痛い</span></div>
+      </div>
+      <div class="modal-section">
+        <label>📝 体調メモ（患者さん・診察で伝えたいこと）</label>
+        <textarea class="note-textarea" id="noteText" placeholder="症状・気になること・質問したいことなど自由に"></textarea>
+      </div>
+      <div class="modal-section">
+        <label class="takeda-label">🌿 武田メモ（看護師 武田）</label>
+        <textarea class="takeda-textarea" id="takedaMemoText" placeholder="看護師記録・指導内容・申し送りなど"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-skip" id="skipBtn" onclick="toggleSkip()" style="display:none">⏭ スキップ</button>
+      <button class="btn-outline" onclick="deleteEntry()" id="deleteBtn" style="color:#e53935;border-color:#e53935;display:none">削除</button>
+      <button class="btn-primary" onclick="saveEntry()" style="width:auto;padding:10px 24px">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="app-footer">
+  <div class="footer-card fc-lifecolor">
+    <a href="https://lifecolor-health.com/" target="_blank" rel="noopener">
+      <div class="footer-card-inner">
+        <div class="footer-icon">💚</div>
+        <div class="footer-text">
+          <h3>Lifecolor</h3>
+          <p>本アプリはLifecolorが患者さんの療養生活を支援するために無償提供しています。詳しくはLifecolorのウェブサイトをご覧ください。</p>
+        </div>
+        <div class="footer-arrow">›</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="footer-notice">
+    <div class="fn-title">🚨 インターネットの情報にご注意ください</div>
+    がんに関する正しい情報は <a href="https://ganjoho.jp/public/index.html" target="_blank" rel="noopener">国立がん研究センター がん情報サービス</a> をご参照ください。<br>
+    <div class="fn-warn">⚠️ 3万円以上の栄養食品・サプリメントを購入される際は、事前に当科の医師または看護師にご相談ください。</div>
+  </div>
+  <div class="footer-copy">放射線治療サポートカレンダー | Provided by <a href="https://lifecolor-health.com/" target="_blank" rel="noopener" style="color:#2e7d32;font-weight:600">Lifecolor</a></div>
+</footer>
+
+<!-- Hidden file input for import -->
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+// ===============================================================
+// DISEASE DATA
+// ===============================================================
+const DISEASES={
+  brain_sbrt:{name:"脳腫瘍（ピンポイント照射）",icon:"🧠",defaultFx:3,
+    description:"定位放射線治療（SRS/SBRT）で腫瘍に集中して照射します。治療回数は通常1〜5回です。",
+    treatmentInfo:"多方向から放射線をピンポイントに集中させ、周囲の正常な脳組織への影響を最小限に抑えます。1回の治療は15〜30分程度で、通常1〜5回で完了します。転移性脳腫瘍や小さな原発性脳腫瘍に対して高い治療効果が期待できます。入院不要で通院治療が可能です。",
+    sideEffects:[
+    {label:"頭痛・吐き気",startDay:0,endDay:21,color:"#ff9800",note:"治療中から2〜3週間にかけて頭痛・吐き気が出ることがあります。",reassure:"これは照射による一時的な脳のむくみで、多くの方に起こりうる正常な反応です。通常は自然に治まります。"},
+    {label:"放射線壊死（まれ）",startDay:90,endDay:270,color:"#f44336",note:"治療後3〜9か月でごくまれに放射線壊死が起こることがあります。症状が出た場合は速やかにご連絡ください。",reassure:"頻度は低いですが、万が一症状が出ても治療法がありますのでご安心ください。"}
+  ]},
+  brain_wbrt:{name:"脳腫瘍（全脳照射）",icon:"🧠",defaultFx:10,
+    description:"脳全体に放射線を照射する治療法です。転移性脳腫瘍などに行います。",
+    treatmentInfo:"脳全体に1日1回、週5回、計10〜15回照射します。1回の線量は2.5〜3Gy、総線量30〜40Gy程度です。複数の転移がある場合や、術後の再発予防に用います。1回の治療は10〜15分程度で外来通院で行えます。",
+    sideEffects:[
+    {label:"倦怠感・頭重感",startDay:0,endDay:42,color:"#ff9800",note:"治療中は倦怠感や頭重感が出やすいです。十分な休養をとってください。",reassure:"ほとんどの方に出る正常な反応です。無理をせず休んでいただければ、治療終了後に改善していきます。"},
+    {label:"脱毛",startDay:14,endDay:120,color:"#9c27b0",note:"2〜3週目ごろから脱毛が始まります。治療終了後3〜6か月で毛は生え始め、6か月〜1年程度でほぼ回復します。",reassure:"一時的なものです。治療終了後3〜6か月で再び生え始めるのが一般的です。"},
+    {label:"認知機能の変化",startDay:90,endDay:365,color:"#f44336",note:"治療後3〜6か月で記憶力・集中力の低下が出ることがあります。気になる場合は医師にご相談ください。",reassure:"すべての方に出るわけではありません。気になる変化があれば対応策を一緒に考えます。"}
+  ]},
+  head_neck:{name:"頭頚部癌",icon:"🗣️",defaultFx:33,
+    description:"咽頭・喉頭・口腔・甲状腺などへの照射です。化学療法と同時に行うこともあります。",
+    treatmentInfo:"根治目的では総線量66〜70Gyを1日1回2Gy、週5回、約6〜7週間かけて照射します。IMRT（強度変調放射線治療）により唾液腺などの正常組織への線量を減らせるようになりました。化学療法と同時に行うことで治療効果が高まります。1回の治療は10〜15分程度です。",
+    sideEffects:[
+    {label:"皮膚炎（日焼け）",startDay:10,endDay:60,color:"#ff7043",note:"2週目ごろから日焼けのような皮膚炎が出始めます。治療終了後4週間程度で落ち着きます。",medication:"ヒルドイド＋リンデロン使用を考慮",reassure:"放射線が効いている正常な反応です。治療終了後4週間ほどで収まります。保湿剤でケアしましょう。"},
+    {label:"口腔粘膜炎・嚥下困難",startDay:14,endDay:70,color:"#e91e63",note:"2〜3週目ごろから口内炎・飲み込みにくさが出ます。治療終了後4〜6週間で収まることが多いです。",reassure:"多くの方に起こる一時的な反応です。痛みが強い場合は鎮痛薬で対応できますのでご相談ください。"},
+    {label:"口腔乾燥（長期）",startDay:42,endDay:365,color:"#795548",note:"唾液腺への照射による口腔乾燥が続くことがあります。改善には年単位の時間がかかることもあります。",reassure:"IMRTの普及により以前より軽減されています。保湿剤やうがい薬で対応可能です。"}
+  ]},
+  breast:{name:"乳がん",icon:"🎀",defaultFx:25,
+    description:"乳房温存術後・乳房切除術後の放射線治療です。再発予防が主な目的です。",
+    treatmentInfo:"温存術後は乳房全体に総線量50Gy（25回）または寡分割照射で42.56Gy（16回）を照射します。週5回通院で3〜5週間です。手術の傷が治った術後2週間〜2か月で開始します。1回の治療は数分〜15分程度で、痛みはありません。再発率を約半分に減らす効果があります。",
+    sideEffects:[
+    {label:"皮膚炎（日焼け）",startDay:10,endDay:60,color:"#ff7043",note:"2〜4週目ごろから日焼けのような皮膚炎が出ます。ほぼ全員に起こりますが、治療後1〜2か月で治まります。",medication:"ヒルドイド＋リンデロン使用を考慮",reassure:"ほぼ全員に出る正常な反応で、放射線がしっかり届いている証拠です。保湿ケアで対応でき、必ず治まります。"},
+    {label:"放射線肺炎（咳）",startDay:180,endDay:365,color:"#2196f3",note:"治療半年〜1年後に咳が出ることがあります。10人に1人未満のため心配しすぎなくて大丈夫です。数か月で落ち着きます。",reassure:"発生率は1%程度と非常に低く、出たとしても軽症で自然に治まることがほとんどです。"}
+  ]},
+  lung_chemo:{name:"肺癌（60Gy同時化学療法）",icon:"🫁",defaultFx:30,
+    description:"抗がん剤と放射線治療を同時に行う根治的治療です。",
+    treatmentInfo:"総線量60Gyを30回に分けて照射し、1日1回、週5回、計6週間かけて治療します。同時に抗がん剤（シスプラチン等）を投与することで治療効果を高めます。局所進行の非小細胞肺がんに対する標準治療です。1回の放射線治療は10〜15分程度です。",
+    sideEffects:[
+    {label:"放射線食道炎",startDay:14,endDay:56,color:"#ff5722",note:"2〜3週目ごろから食道炎による飲み込み時の痛み・胸やけが出ることがあります。治療終了後2週間程度で改善します。",reassure:"治療中の方に多くみられる一時的な反応です。鎮痛剤や栄養補給で対応でき、治療後2〜4週で改善します。"},
+    {label:"皮膚炎",startDay:14,endDay:56,color:"#ff7043",note:"照射部位の皮膚炎が出ることがあります。",reassure:"照射範囲の皮膚が赤くなる正常な反応で、治療後に自然に治まります。"},
+    {label:"放射線肺炎（要注意）",startDay:30,endDay:120,color:"#f44336",note:"治療後1〜3か月で咳・発熱・息切れが出た場合は放射線肺炎の可能性があります。早めにご連絡ください。",reassure:"症状が出た場合はステロイド治療で対応できます。早めのご連絡が大切です。当科 058-214-6995 までお電話ください。"}
+  ]},
+  lung_sbrt:{name:"肺癌（ピンポイント照射4日間）",icon:"🫁",defaultFx:4,
+    description:"早期肺癌などへの定位放射線治療（SBRT）です。通常4〜5回の照射を行います。",
+    treatmentInfo:"1回12Gy×4回＝総線量48Gy程度を照射するのが一般的です。多方向からピンポイントに集中して高い線量を当てます。手術が困難な早期肺がんに対して手術と同等の高い治療効果が期待できます。通院4〜5日で完了する体に負担の少ない治療です。",
+    sideEffects:[
+    {label:"疲労感",startDay:0,endDay:21,color:"#ff9800",note:"治療中から1〜2週間は疲労感が出ることがあります。",reassure:"短期間の治療ですので体への負担は小さく、疲労感も軽度で自然に回復します。"},
+    {label:"放射線肺炎",startDay:30,endDay:90,color:"#2196f3",note:"治療後1〜3か月で軽い咳が出ることがあります。治療が必要な肺炎は約7%、重症は1%未満です。",reassure:"多くの場合軽度で、経過観察のみで改善します。症状が強い場合はステロイドで治療可能です。"}
+  ]},
+  liver_sbrt:{name:"肝臓がん（ピンポイント照射4日間）",icon:"🫀",defaultFx:4,
+    description:"肝細胞がん・転移性肝がんへの定位放射線治療（SBRT）です。",
+    treatmentInfo:"1回8〜12Gy×4〜5回＝総線量40〜48Gy程度をピンポイントに照射します。呼吸による肝臓の動きに合わせた照射技術を使い、周囲への影響を最小限に抑えます。手術やラジオ波が難しい場合の有効な治療選択肢です。通院4〜5日で完了します。",
+    sideEffects:[
+    {label:"疲労感・気分不良",startDay:0,endDay:42,color:"#ff9800",note:"治療中から数週間は疲労感や気分不良（宿酔様症状）が出ることがあります。",reassure:"一時的な反応で、無理をせず休養をとれば自然に回復します。"},
+    {label:"肝機能変化",startDay:14,endDay:60,color:"#f44336",note:"治療後1〜2か月で肝機能の変化がみられることがあります。定期的な採血で確認します。",reassure:"ピンポイント照射により肝臓への影響は限定的です。採血で経過を見守りますのでご安心ください。"}
+  ]},
+  bladder:{name:"膀胱がん",icon:"🫘",defaultFx:25,
+    description:"膀胱がんへの根治的放射線治療です。化学療法と組み合わせることもあります。",
+    treatmentInfo:"総線量60〜66Gyを30〜33回に分けて照射します。1日1回、週5回で約6〜7週間です。手術（膀胱全摘）をせずに膀胱を温存できる治療法で、TURBTと化学療法を組み合わせた三者併用療法が行われます。1回の治療は数分〜10分程度です。",
+    sideEffects:[
+    {label:"頻尿・排尿痛",startDay:14,endDay:90,color:"#2196f3",note:"3〜4週目ごろから頻尿や排尿時の痛みが出てきます。治療終了後に回復します。",reassure:"膀胱粘膜の一時的な炎症で、治療を受ける方の多くに起こる正常な反応です。治療終了後に改善していきます。"},
+    {label:"下痢・腸炎",startDay:21,endDay:70,color:"#ff9800",note:"治療3週目ごろから下痢や腹部不快感が出ることがあります。",reassure:"腸管への放射線の影響で起こる一時的な症状です。整腸剤等で対応でき、治療後に改善します。"}
+  ]},
+  prostate:{name:"前立腺癌",icon:"👨",defaultFx:39,
+    description:"前立腺癌への根治的放射線治療です。最大39回の照射を行います。",
+    treatmentInfo:"IMRT（強度変調放射線治療）で総線量74〜78Gyを37〜39回に分けて照射します。1日1回、週5回で約8週間です。IMRT技術により直腸や膀胱への線量を減らしつつ前立腺に集中して照射できます。手術と同等の治療成績が報告されています。1回の治療は15分程度です。",
+    sideEffects:[
+    {label:"頻尿（始まり）",startDay:14,endDay:42,color:"#90caf9",note:"3週目ごろから頻尿が出始めます。",reassure:"膀胱粘膜の一時的な反応で、治療を受ける方の多くに出る想定内の症状です。"},
+    {label:"頻尿（強い時期）",startDay:35,endDay:90,color:"#1565c0",note:"6週目ごろから頻尿がかなり強くなります。治療終了後1〜2か月で落ち着いてきます。",reassure:"治療の後半で強まるのは正常な経過です。治療終了後は必ず改善していきますので、もう少しの辛抱です。"},
+    {label:"便通異常（長期）",startDay:300,endDay:480,color:"#795548",note:"治療後約1年後に便の調子が悪くなる場合がありますが、数か月で落ち着きます。",reassure:"IMRTの普及により発生率は大きく低下しています（2〜3%程度）。出ても多くの場合軽症です。"}
+  ]},
+  bone_met:{name:"骨転移",icon:"🦴",defaultFx:5,
+    description:"骨転移による疼痛緩和・骨折予防を目的とした放射線治療です。",
+    treatmentInfo:"痛みの緩和を目的に3Gy×10回（総線量30Gy）や8Gy×1回などの照射を行います。約70%の患者さんで治療後1か月以内に疼痛緩和効果が得られます。骨折予防にも有効で、日常生活の質（QOL）の改善が期待できます。",
+    sideEffects:[
+    {label:"一時的な疼痛増悪（フレア）",startDay:1,endDay:10,color:"#ff5722",note:"治療後数日は一時的に痛みが強くなることがあります（フレア反応）。その後緩和されます。",reassure:"治療が効いている反応の一つです。約10〜40%の方に起こりますが数日で治まり、その後痛みが楽になります。鎮痛薬で対応できます。"},
+    {label:"疼痛緩和効果",startDay:14,endDay:56,color:"#4caf50",note:"治療後2〜4週で疼痛緩和効果が出てきます。",reassure:"約70%の方で痛みの改善が得られます。効果が出るまで少し時間がかかりますが、しっかり効いてきます。"}
+  ]},
+  oligo:{name:"オリゴメタ転移（30Gy/3回）",icon:"🎯",defaultFx:3,
+    description:"少数転移（オリゴメタスタシス）に対するSBRT（30Gy/3回）です。",
+    treatmentInfo:"1回10Gy×3回＝総線量30Gyをピンポイントに照射します。転移巣が少数（5個以下）の場合、局所治療により長期の病勢コントロールが期待できることが複数の臨床試験で示されています。通院3日で完了する体に負担の少ない治療です。",
+    sideEffects:[
+    {label:"疲労感・局所違和感",startDay:0,endDay:30,color:"#ff9800",note:"治療中から1か月程度は照射部位の違和感・疲労感が出ることがあります。",reassure:"短期間の治療で体への負担は小さく、軽度の疲労感は自然に回復します。"},
+    {label:"局所反応（部位により様々）",startDay:14,endDay:90,color:"#9c27b0",note:"治療後1〜3か月で局所の反応が出ることがあります。部位によって症状が異なります。",reassure:"照射部位を限定したピンポイント治療のため、副作用は局所的で全身への影響は少ないです。"}
+  ]},
+  reirradiation:{name:"再照射",icon:"⚠️",defaultFx:10,
+    description:"過去に放射線治療を受けた部位への再照射です。前回の照射との兼ね合いで副作用が異なります。",
+    treatmentInfo:"以前の照射部位・線量・経過期間を慎重に評価した上で、最新の照射技術（IMRT・SBRTなど）を用いて安全に照射を行います。線量や回数は個々の状況に合わせて計画します。近年の技術の進歩により、以前は難しかった再照射も安全に行えるケースが増えています。",
+    sideEffects:[
+    {label:"副作用は個人差が大きい",startDay:0,endDay:365,color:"#607d8b",note:"過去の照射歴・部位・線量によって副作用の現れ方が大きく異なります。気になる症状があれば速やかにご連絡ください。",reassure:"担当医が過去の照射情報を踏まえた上で安全な治療計画を立てています。気になることはいつでもご相談ください。"}
+  ]}
+};
+
+// ===============================================================
+// STATE
+// ===============================================================
+let currentDisease=null,treatMap={},seDotMap={},currentStartDate=null,currentEndDate=null,currentPatientKey='',modalDate=null,selectedNrs=null,allHolidaysCache={},currentTreatDaysVal=0;
+let deferredPrompt=null;
+
+// ===============================================================
+// PWA: SERVICE WORKER & INSTALL
+// ===============================================================
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('installBanner').classList.add('show');
+});
+function installPWA(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{
+    deferredPrompt=null;
+    document.getElementById('installBanner').classList.remove('show');
+  });
+}
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+// ===============================================================
+// DATA EXPORT / IMPORT
+// ===============================================================
+function exportData(){
+  const allKeys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k.startsWith('rt_'))allKeys.push(k);
+  }
+  if(!allKeys.length){alert('保存されたデータがありません。');return}
+  const data={};
+  allKeys.forEach(k=>data[k]=JSON.parse(localStorage.getItem(k)));
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='radiation_data_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();URL.revokeObjectURL(a.href);
+}
+function importData(){document.getElementById('importFile').click()}
+function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      Object.keys(data).forEach(k=>{if(k.startsWith('rt_'))localStorage.setItem(k,JSON.stringify(data[k]))});
+      alert('データを復元しました。カレンダーを再作成してください。');
+    }catch(err){alert('ファイルの読み込みに失敗しました。')}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+// ===============================================================
+// JAPANESE HOLIDAYS
+// ===============================================================
+function toDS(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function getHolidays(year){
+  if(allHolidaysCache[year])return allHolidaysCache[year];
+  const h=new Set();
+  const add=(m,d)=>h.add(`${year}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+  const nthMon=(m,n)=>{let d=new Date(year,m-1,1),c=0;while(1){if(d.getDay()===1){c++;if(c===n)return d.getDate()}d.setDate(d.getDate()+1)}};
+  add(1,1);add(2,11);add(2,23);add(4,29);add(5,3);add(5,4);add(5,5);add(8,11);add(11,3);add(11,23);
+  add(1,nthMon(1,2));add(7,nthMon(7,3));add(9,nthMon(9,3));add(10,nthMon(10,2));
+  const sh=Math.floor(20.8431+0.242194*(year-1980)-Math.floor((year-1980)/4));
+  const au=Math.floor(23.2488+0.242194*(year-1980)-Math.floor((year-1980)/4));
+  add(3,sh);add(9,au);
+  const sub=new Set();
+  Array.from(h).sort().forEach(ds=>{
+    const d=new Date(ds+'T00:00:00');
+    if(d.getDay()===0){let nx=new Date(d);nx.setDate(nx.getDate()+1);while(h.has(toDS(nx))||sub.has(toDS(nx)))nx.setDate(nx.getDate()+1);sub.add(toDS(nx))}
+  });
+  sub.forEach(d=>h.add(d));
+  allHolidaysCache[year]=h;return h;
+}
+function isHoliday(ds){return getHolidays(parseInt(ds.substr(0,4))).has(ds)}
+
+// ===============================================================
+// DISEASE INFO TAB
+// ===============================================================
+function initDiseaseButtons(){
+  const wrap=document.getElementById('diseaseButtons'),sel=document.getElementById('diseaseSelect');
+  Object.keys(DISEASES).forEach(key=>{
+    const dis=DISEASES[key];
+    const btn=document.createElement('button');btn.className='dis-btn';btn.dataset.key=key;
+    btn.innerHTML=`${dis.icon} ${dis.name}`;btn.onclick=()=>showDiseaseInfo(key);
+    wrap.appendChild(btn);
+    const opt=document.createElement('option');opt.value=key;opt.textContent=`${dis.icon} ${dis.name}`;
+    sel.appendChild(opt);
+  });
+}
+function showDiseaseInfo(key){
+  currentDisease=key;
+  document.querySelectorAll('.dis-btn').forEach(b=>b.classList.toggle('selected',b.dataset.key===key));
+  const dis=DISEASES[key],card=document.getElementById('infoCard');
+  let html=`<h3>${dis.icon} ${dis.name}</h3><p class="info-desc">${dis.description}</p><div class="se-list">`;
+  dis.sideEffects.forEach(se=>{
+    const timing=formatTiming(se.startDay,se.endDay);
+    html+=`<div class="se-item" style="border-color:${se.color}"><div class="se-label" style="color:${se.color}">${se.label}</div><div class="se-timing">📅 ${timing}</div><div class="se-note">${se.note}</div>${se.medication?`<div class="se-med">💊 ${se.medication}</div>`:''}</div>`;
+  });
+  card.innerHTML=html+'</div>';
+}
+function formatTiming(s,e){
+  const fmt=d=>{if(d===0)return'治療開始日〜';if(d<7)return`治療${d}日目`;if(d<30)return`治療${Math.round(d/7)}週目`;return`治療${Math.round(d/30)}か月後`};
+  const fmtE=d=>{if(d<7)return`${d}日間`;if(d<30)return`約${Math.round(d/7)}週間`;return`約${Math.round(d/30)}か月間`};
+  return`${fmt(s)}ごろ〜（${fmtE(e-s)}程度）`;
+}
+
+// ===============================================================
+// CALENDAR
+// ===============================================================
+function rebuildTreatMap(){
+  if(!currentStartDate||!currentTreatDaysVal)return;
+  const data=getPatientData();
+  treatMap={};seDotMap={};
+  let cur=new Date(currentStartDate),count=0,safety=0;
+  while(count<currentTreatDaysVal&&safety<200){
+    const dow=cur.getDay(),ds=toDS(cur);
+    if(dow!==0&&dow!==6&&!isHoliday(ds)){
+      if(data[ds]&&data[ds].skipped){/* skipped: counts as a missed day, not treatment */}
+      else treatMap[ds]=++count;
+    }
+    cur.setDate(cur.getDate()+1);safety++;
+  }
+  const sortedDays=Object.keys(treatMap).sort();
+  currentEndDate=sortedDays.length?new Date(sortedDays.pop()+'T00:00:00'):new Date(currentStartDate);
+  if(currentDisease&&DISEASES[currentDisease]){
+    DISEASES[currentDisease].sideEffects.forEach(se=>{
+      let d=new Date(currentStartDate);d.setDate(d.getDate()+se.startDay);
+      const end=new Date(currentStartDate);end.setDate(end.getDate()+se.endDay);
+      while(d<=end){const ds=toDS(d);if(!seDotMap[ds])seDotMap[ds]=[];seDotMap[ds].push(se.color);d.setDate(d.getDate()+1)}
+    });
+  }
+  // Update summary bar end date
+  const endEl=document.querySelector('#summaryBar .sum-icon.green');
+  if(endEl&&endEl.parentElement){endEl.parentElement.querySelector('strong').textContent=fmtDate(currentEndDate)}
+}
+
+function onDiseaseChange(){const k=document.getElementById('diseaseSelect').value;if(DISEASES[k])document.getElementById('treatDays').value=DISEASES[k].defaultFx}
+
+function generateCalendar(){
+  const patientName=document.getElementById('patientName').value.trim();
+  const startDateVal=document.getElementById('startDate').value;
+  const treatDaysVal=parseInt(document.getElementById('treatDays').value);
+  const diseaseKey=document.getElementById('diseaseSelect').value;
+  if(!startDateVal){alert('治療開始日を入力してください');return}
+  if(!treatDaysVal||treatDaysVal<1||treatDaysVal>39){alert('治療回数は1〜39の範囲で入力してください');return}
+  const startDate=new Date(startDateVal+'T00:00:00');
+  if(startDate.getDay()===0||startDate.getDay()===6||getHolidays(startDate.getFullYear()).has(startDateVal)){alert('開始日は平日を選択してください');return}
+
+  currentDisease=diseaseKey;currentPatientKey=(patientName||'患者')+'-'+startDateVal;currentStartDate=startDate;currentTreatDaysVal=treatDaysVal;
+  const maxD=new Date(startDate);maxD.setDate(maxD.getDate()+100);
+  for(let y=startDate.getFullYear();y<=maxD.getFullYear();y++)getHolidays(y);
+
+  rebuildTreatMap();
+
+  // Save settings for session restore
+  try{localStorage.setItem('rt_lastSettings',JSON.stringify({patientName,diseaseKey,startDateVal,treatDaysVal}))}catch(e){}
+
+  const dis=DISEASES[diseaseKey];
+  document.getElementById('summaryBar').innerHTML=`
+    <div class="sum-item"><div class="sum-icon blue">📅</div><div class="sum-text"><strong>${fmtDate(startDate)}</strong><span>開始日</span></div></div>
+    <div class="sum-item"><div class="sum-icon green">🏁</div><div class="sum-text"><strong>${fmtDate(currentEndDate)}</strong><span>終了予定</span></div></div>
+    <div class="sum-item"><div class="sum-icon orange">💊</div><div class="sum-text"><strong>${treatDaysVal}回</strong><span>${dis?dis.name:''}</span></div></div>
+    ${patientName?`<div class="sum-patient">${patientName} 様</div>`:''}`;
+
+  buildTimeline(diseaseKey,startDate,currentEndDate,treatDaysVal);
+  buildCalendar(startDate,currentEndDate);
+  document.getElementById('calendarOutput').style.display='block';
+  document.getElementById('calendarOutput').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function buildTimeline(diseaseKey,startDate,endDate,totalFx){
+  const dis=DISEASES[diseaseKey];if(!dis){document.getElementById('timelineWrap').innerHTML='';return}
+  const treatDays=(endDate-startDate)/(864e5)+1;
+  let maxDay=treatDays+14;dis.sideEffects.forEach(se=>{if(se.endDay>maxDay)maxDay=se.endDay});maxDay=Math.min(maxDay,400);
+  let html='<div class="tl-axis">';
+  for(let d=0;d<=maxDay;d+=30){
+    html+=`<div class="tl-axis-seg" style="flex:${30/maxDay*100}">${d===0?'治療中':d/30+'か月後'}</div>`;
+  }
+  html+='</div>';
+  const txPct=(treatDays/maxDay*100).toFixed(1);
+  html+=`<div class="tl-row"><div class="tl-label">🔵 治療期間</div><div class="tl-bar-wrap"><div class="tl-segment tl-treatment-bar" style="left:0;width:${txPct}%">${totalFx}回</div></div></div>`;
+  dis.sideEffects.forEach(se=>{
+    const l=(se.startDay/maxDay*100).toFixed(1),w=((se.endDay-se.startDay)/maxDay*100).toFixed(1);
+    html+=`<div class="tl-row"><div class="tl-label">${se.label}</div><div class="tl-bar-wrap"><div class="tl-segment" style="left:${l}%;width:${Math.max(parseFloat(w),2)}%;background:${se.color}">${se.label}</div></div></div>`;
+    if(se.medication)html+=`<div class="tl-row" style="margin-top:-3px;margin-bottom:1px"><div class="tl-label" style="font-size:.68rem;color:#e65100">　└ 💊 ${se.medication}</div><div class="tl-bar-wrap"></div></div>`;
+  });
+  document.getElementById('timelineWrap').innerHTML=html;
+}
+
+function buildCalendar(startDate,endDate){
+  const months=[];let m=new Date(startDate.getFullYear(),startDate.getMonth(),1);const em=new Date(endDate.getFullYear(),endDate.getMonth(),1);
+  while(m<=em){months.push(new Date(m));m.setMonth(m.getMonth()+1)}
+  const grid=document.getElementById('calendarGrid');grid.innerHTML='';
+  const wks=['日','月','火','水','木','金','土'],mns=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const data=getPatientData();
+
+  months.forEach(ms=>{
+    const yr=ms.getFullYear(),mo=ms.getMonth();
+    const card=document.createElement('div');card.className='month-card';
+    card.innerHTML=`<div class="month-hdr">${yr}年 ${mns[mo]}</div>`;
+    const wr=document.createElement('div');wr.className='wk-row';
+    wks.forEach((w,i)=>{const s=document.createElement('span');s.textContent=w;if(i===0)s.className='sun';if(i===6)s.className='sat';wr.appendChild(s)});
+    card.appendChild(wr);
+    const dg=document.createElement('div');dg.className='days-grid';
+    for(let i=0;i<new Date(yr,mo,1).getDay();i++){const e=document.createElement('div');e.className='day-cell empty';dg.appendChild(e)}
+    for(let d=1;d<=new Date(yr,mo+1,0).getDate();d++){
+      const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dow=new Date(yr,mo,d).getDay(),treatNum=treatMap[ds],hol=isHoliday(ds);
+      const entry=data[ds],hasNote=entry&&(entry.note||entry.nrs!=null||entry.takedaMemo);
+      const isSkipped=entry&&entry.skipped;
+      const cell=document.createElement('div');cell.className='day-cell';cell.onclick=()=>openModal(ds);
+      if(isSkipped){cell.classList.add('treatment','skipped');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">欠席</span>`}
+      else if(treatNum){cell.classList.add('treatment');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">${treatNum}回</span>`}
+      else{if(hol||dow===0)cell.classList.add(hol?'holiday':'wsun');else if(dow===6)cell.classList.add('wsat');else cell.classList.add('normal');cell.innerHTML=`<span class="day-num">${d}</span>`}
+      const dots=seDotMap[ds];
+      if(dots&&dots.length){const dc=document.createElement('div');dc.className='se-dots';[...new Set(dots)].slice(0,4).forEach(c=>{const dot=document.createElement('span');dot.className='se-dot';dot.style.background=c;dc.appendChild(dot)});cell.appendChild(dc)}
+      if(hasNote)cell.classList.add('has-note');
+      dg.appendChild(cell);
+    }
+    card.appendChild(dg);grid.appendChild(card);
+  });
+}
+
+// ===============================================================
+// MODAL
+// ===============================================================
+function openModal(ds){
+  modalDate=ds;selectedNrs=null;
+  const data=getPatientData();
+  const dis=currentDisease&&DISEASES[currentDisease],entry=data[ds]||{};
+  // Determine if this date is (or was) a treatment day slot (incl. skipped)
+  const treatNum=treatMap[ds];
+  const isSkipped=!!entry.skipped;
+  // A "skippable" day = either current treatment day OR already a skipped weekday
+  const d=new Date(ds+'T00:00:00'),dow=d.getDay();
+  const isWeekday=dow!==0&&dow!==6&&!isHoliday(ds);
+  const isInTreatmentPeriod=currentStartDate&&d>=currentStartDate&&d<=new Date(currentEndDate.getTime()+7*864e5);
+  const showSkipBtn=isWeekday&&isInTreatmentPeriod&&(treatNum||isSkipped);
+
+  selectedNrs=entry.nrs!=null?entry.nrs:null;
+  const wks=['日','月','火','水','木','金','土'];
+  document.getElementById('modalTitle').textContent=`${d.getMonth()+1}/${d.getDate()}（${wks[d.getDay()]}）`;
+  if(isSkipped){
+    document.getElementById('modalTreatBadge').innerHTML=`<span class="treat-badge" style="background:#ff7043">⏭ 欠席日（スキップ）</span><br><br>`;
+  } else {
+    document.getElementById('modalTreatBadge').innerHTML=treatNum?`<span class="treat-badge">💊 第${treatNum}回 治療日</span><br><br>`:'';
+  }
+  // Skip note banner
+  const skipNote=document.getElementById('modalSkipNote');
+  skipNote.classList.toggle('show',isSkipped);
+  // Skip button
+  const skipBtn=document.getElementById('skipBtn');
+  if(showSkipBtn){skipBtn.style.display='';skipBtn.textContent=isSkipped?'↩ スキップ解除':'⏭ 欠席にする';skipBtn.classList.toggle('active',isSkipped)}
+  else skipBtn.style.display='none';
+
+  const chips=document.getElementById('modalSeChips');
+  if(seDotMap[ds]&&seDotMap[ds].length&&dis){
+    const activeNames=dis.sideEffects.filter(se=>seDotMap[ds]&&seDotMap[ds].includes(se.color)).map(se=>({label:se.label,color:se.color}));
+    if(activeNames.length)chips.innerHTML='<div style="margin-bottom:10px"><div style="font-size:.75rem;color:#888;margin-bottom:4px">⚠️ 出やすい副作用：</div><div class="se-active-list">'+activeNames.map(a=>`<span class="se-active-chip" style="background:${a.color}">${a.label}</span>`).join('')+'</div></div>';
+    else chips.innerHTML='';
+  }else chips.innerHTML='';
+  const nrsWrap=document.getElementById('nrsWrap');nrsWrap.innerHTML='';
+  for(let i=0;i<=10;i++){
+    const btn=document.createElement('button');btn.className='nrs-btn';
+    if(i>=7)btn.classList.add('nrs-hi');else if(i>=4)btn.classList.add('nrs-med');
+    btn.textContent=i;if(selectedNrs===i)btn.classList.add('selected');
+    btn.onclick=()=>{selectedNrs=i;document.querySelectorAll('.nrs-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')};
+    nrsWrap.appendChild(btn);
+  }
+  document.getElementById('noteText').value=entry.note||'';
+  document.getElementById('takedaMemoText').value=entry.takedaMemo||'';
+  document.getElementById('deleteBtn').style.display=(entry.note||entry.nrs!=null||entry.takedaMemo)?'':'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function toggleSkip(){
+  const data=getPatientData();
+  if(!data[modalDate])data[modalDate]={};
+  data[modalDate].skipped=!data[modalDate].skipped;
+  if(!data[modalDate].skipped)delete data[modalDate].skipped;
+  savePatientData(data);
+  rebuildTreatMap();
+  buildCalendar(currentStartDate,currentEndDate);
+  closeModalDirect();
+}
+function closeModal(e){if(e.target===document.getElementById('modalOverlay'))closeModalDirect()}
+function closeModalDirect(){document.getElementById('modalOverlay').classList.remove('open')}
+function saveEntry(){
+  const note=document.getElementById('noteText').value.trim();
+  const takedaMemo=document.getElementById('takedaMemoText').value.trim();
+  if(selectedNrs===null&&!note&&!takedaMemo){closeModalDirect();return}
+  const data=getPatientData();if(!data[modalDate])data[modalDate]={};
+  if(selectedNrs!==null)data[modalDate].nrs=selectedNrs;else delete data[modalDate].nrs;
+  if(note)data[modalDate].note=note;else delete data[modalDate].note;
+  if(takedaMemo)data[modalDate].takedaMemo=takedaMemo;else delete data[modalDate].takedaMemo;
+  savePatientData(data);closeModalDirect();buildCalendar(currentStartDate,currentEndDate);
+}
+function deleteEntry(){
+  const data=getPatientData();
+  const skipped=data[modalDate]&&data[modalDate].skipped;
+  delete data[modalDate];
+  if(skipped){data[modalDate]={skipped:true};savePatientData(data);rebuildTreatMap();}
+  else savePatientData(data);
+  closeModalDirect();buildCalendar(currentStartDate,currentEndDate);
+}
+
+// ===============================================================
+// STORAGE
+// ===============================================================
+function getPatientData(){try{return JSON.parse(localStorage.getItem('rt_'+currentPatientKey)||'{}')}catch(e){return{}}}
+function savePatientData(d){try{localStorage.setItem('rt_'+currentPatientKey,JSON.stringify(d))}catch(e){}}
+
+// ===============================================================
+// SUMMARY
+// ===============================================================
+function renderSummary(){
+  const label=document.getElementById('summaryPatientLabel');
+  if(!currentPatientKey){document.getElementById('summaryContent').innerHTML='<div class="empty-summary">まずカレンダーを作成してください</div>';return}
+  label.textContent=currentPatientKey.split('-')[0]+' 様';
+  const data=getPatientData(),entries=Object.keys(data).filter(ds=>data[ds]&&(data[ds].note||data[ds].nrs!=null||data[ds].takedaMemo||data[ds].skipped)).sort();
+  if(!entries.length){document.getElementById('summaryContent').innerHTML='<div class="empty-summary">記録がまだありません。<br>カレンダーの日付タップで記録できます。</div>';return}
+  const wks=['日','月','火','水','木','金','土'];
+  let html='';
+  entries.forEach(ds=>{
+    const e=data[ds],d=new Date(ds+'T00:00:00'),treatNum=treatMap[ds],nrs=e.nrs;
+    let nrsCls='nrs-0',nrsLabel='なし';
+    if(nrs!=null){if(nrs===0){nrsCls='nrs-0';nrsLabel='0 - なし'}else if(nrs<=3){nrsCls='nrs-mild';nrsLabel=`${nrs} - 軽度`}else if(nrs<=6){nrsCls='nrs-mod';nrsLabel=`${nrs} - 中等度`}else{nrsCls='nrs-sev';nrsLabel=`${nrs} - 強い`}}
+    const seNames=currentDisease&&DISEASES[currentDisease]&&seDotMap[ds]?DISEASES[currentDisease].sideEffects.filter(se=>seDotMap[ds]&&seDotMap[ds].includes(se.color)).map(se=>se.label).join('、'):'';
+    html+=`<div class="entry-card"><div class="entry-date-col"><div class="e-day">${d.getDate()}</div><div class="e-ymd">${d.getFullYear()}/${d.getMonth()+1}<br>${wks[d.getDay()]}</div>${treatNum?`<div class="treat-tag">${treatNum}回</div>`:''}${e.skipped?`<div class="treat-tag" style="background:#ff7043">欠席</div>`:''}</div><div class="entry-body">${nrs!=null?`<div class="entry-nrs"><span>NRS：</span><span class="nrs-badge ${nrsCls}">${nrsLabel}</span></div>`:''}${e.note?`<div class="entry-note-text">📝 ${e.note}</div>`:''}${e.takedaMemo?`<div class="entry-note-text" style="color:#2e7d32;background:#f1f8f1;border-radius:6px;padding:4px 8px;margin-top:4px">🌿 武田メモ：${e.takedaMemo}</div>`:''}${seNames?`<div class="se-active-sm">⚠️ ${seNames}</div>`:''}</div></div>`;
+  });
+  document.getElementById('summaryContent').innerHTML=html;
+}
+
+// ===============================================================
+// TAB NAV
+// ===============================================================
+function showTab(t){
+  ['basics','info','calendar','summary'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
+  if(t==='summary')renderSummary();
+}
+function fmtDate(d){return`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`}
+
+// ===============================================================
+// INIT
+// ===============================================================
+(function(){
+  initDiseaseButtons();
+  let d=new Date();while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()+1);
+  document.getElementById('startDate').value=toDS(d);
+  const sel=document.getElementById('diseaseSelect');if(sel.options.length)onDiseaseChange();
+  // Restore last settings
+  try{
+    const last=JSON.parse(localStorage.getItem('rt_lastSettings'));
+    if(last){
+      if(last.patientName)document.getElementById('patientName').value=last.patientName;
+      if(last.diseaseKey){sel.value=last.diseaseKey;onDiseaseChange()}
+      if(last.startDateVal)document.getElementById('startDate').value=last.startDateVal;
+      if(last.treatDaysVal)document.getElementById('treatDays').value=last.treatDaysVal;
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
