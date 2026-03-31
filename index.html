@@ -179,6 +179,14 @@ header .hdr-actions{display:flex;gap:6px}
 .btn-skip.active{background:#ff7043;color:white}
 .skip-note{background:#fff3e0;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#bf360c;margin-bottom:12px;display:none}
 .skip-note.show{display:block}
+/* Adhoc treatment (weekend/holiday extra) */
+.day-cell.adhoc-treat{background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%)!important;border:2px solid #43a047!important}
+.day-cell.adhoc-treat .treat-num{color:#2e7d32;font-weight:800}
+.btn-adhoc{background:white;color:#2e7d32;border:2px solid #43a047;padding:7px 14px;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-adhoc:hover{background:#e8f5e9}
+.btn-adhoc.active{background:#43a047;color:white}
+.adhoc-note{background:#e8f5e9;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#1b5e20;margin-bottom:12px;display:none}
+.adhoc-note.show{display:block}
 
 /* ====== SUMMARY TAB ====== */
 .summary-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -440,6 +448,7 @@ header .hdr-actions{display:flex;gap:6px}
     <div class="modal-body">
       <div id="modalTreatBadge"></div>
       <div id="modalSkipNote" class="skip-note">⚠️ この日はスキップ（欠席）扱いです。終了予定日が1日後ろにずれています。</div>
+      <div id="modalAdhocNote" class="adhoc-note">✅ この日は臨時照射日です。終了予定日が1日前倒しになります。</div>
       <div id="modalSeChips"></div>
       <div class="modal-section">
         <label>🩺 今の痛みの強さ（NRS）</label>
@@ -456,6 +465,7 @@ header .hdr-actions{display:flex;gap:6px}
       </div>
     </div>
     <div class="modal-footer">
+      <button class="btn-adhoc" id="adhocBtn" onclick="toggleAdhocTreat()" style="display:none">💉 臨時照射</button>
       <button class="btn-skip" id="skipBtn" onclick="toggleSkip()" style="display:none">⏭ スキップ</button>
       <button class="btn-outline" onclick="deleteEntry()" id="deleteBtn" style="color:#e53935;border-color:#e53935;display:none">削除</button>
       <button class="btn-primary" onclick="saveEntry()" style="width:auto;padding:10px 24px">保存</button>
@@ -707,12 +717,19 @@ function rebuildTreatMap(){
   if(!currentStartDate||!currentTreatDaysVal)return;
   const data=getPatientData();
   treatMap={};seDotMap={};
+  // First pass: collect all adhoc treatment dates (weekend/holiday extras)
+  const adhocDates=new Set();
+  Object.keys(data).forEach(ds=>{if(data[ds]&&data[ds].adhocTreat)adhocDates.add(ds)});
   let cur=new Date(currentStartDate),count=0,safety=0;
-  while(count<currentTreatDaysVal&&safety<200){
+  // We iterate day by day; weekdays count normally, adhoc weekend/holiday days also count
+  while(count<currentTreatDaysVal&&safety<400){
     const dow=cur.getDay(),ds=toDS(cur);
-    if(dow!==0&&dow!==6&&!isHoliday(ds)){
-      if(data[ds]&&data[ds].skipped){/* skipped: counts as a missed day, not treatment */}
+    const isWeekend=dow===0||dow===6||isHoliday(ds);
+    if(!isWeekend){
+      if(data[ds]&&data[ds].skipped){/* skipped */}
       else treatMap[ds]=++count;
+    } else if(adhocDates.has(ds)){
+      treatMap[ds]=++count;
     }
     cur.setDate(cur.getDate()+1);safety++;
   }
@@ -804,8 +821,10 @@ function buildCalendar(startDate,endDate){
       const dow=new Date(yr,mo,d).getDay(),treatNum=treatMap[ds],hol=isHoliday(ds);
       const entry=data[ds],hasNote=entry&&(entry.note||entry.nrs!=null||entry.takedaMemo);
       const isSkipped=entry&&entry.skipped;
+      const isAdhoc=entry&&entry.adhocTreat;
       const cell=document.createElement('div');cell.className='day-cell';cell.onclick=()=>openModal(ds);
       if(isSkipped){cell.classList.add('treatment','skipped');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">欠席</span>`}
+      else if(treatNum&&isAdhoc){cell.classList.add('treatment','adhoc-treat');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">${treatNum}回</span>`}
       else if(treatNum){cell.classList.add('treatment');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">${treatNum}回</span>`}
       else{if(hol||dow===0)cell.classList.add(hol?'holiday':'wsun');else if(dow===6)cell.classList.add('wsat');else cell.classList.add('normal');cell.innerHTML=`<span class="day-num">${d}</span>`}
       const dots=seDotMap[ds];
@@ -830,24 +849,36 @@ function openModal(ds){
   // A "skippable" day = either current treatment day OR already a skipped weekday
   const d=new Date(ds+'T00:00:00'),dow=d.getDay();
   const isWeekday=dow!==0&&dow!==6&&!isHoliday(ds);
-  const isInTreatmentPeriod=currentStartDate&&d>=currentStartDate&&d<=new Date(currentEndDate.getTime()+7*864e5);
+  const isWeekendOrHoliday=!isWeekday;
+  const isInTreatmentPeriod=currentStartDate&&d>=currentStartDate&&d<=new Date(currentEndDate.getTime()+14*864e5);
   const showSkipBtn=isWeekday&&isInTreatmentPeriod&&(treatNum||isSkipped);
+  const isAdhoc=!!entry.adhocTreat;
+  const showAdhocBtn=isWeekendOrHoliday&&isInTreatmentPeriod;
 
   selectedNrs=entry.nrs!=null?entry.nrs:null;
   const wks=['日','月','火','水','木','金','土'];
   document.getElementById('modalTitle').textContent=`${d.getMonth()+1}/${d.getDate()}（${wks[d.getDay()]}）`;
   if(isSkipped){
     document.getElementById('modalTreatBadge').innerHTML=`<span class="treat-badge" style="background:#ff7043">⏭ 欠席日（スキップ）</span><br><br>`;
+  } else if(isAdhoc&&treatNum){
+    document.getElementById('modalTreatBadge').innerHTML=`<span class="treat-badge" style="background:#43a047">💉 第${treatNum}回 臨時照射</span><br><br>`;
   } else {
     document.getElementById('modalTreatBadge').innerHTML=treatNum?`<span class="treat-badge">💊 第${treatNum}回 治療日</span><br><br>`:'';
   }
   // Skip note banner
   const skipNote=document.getElementById('modalSkipNote');
   skipNote.classList.toggle('show',isSkipped);
+  // Adhoc note banner
+  const adhocNote=document.getElementById('modalAdhocNote');
+  adhocNote.classList.toggle('show',isAdhoc);
   // Skip button
   const skipBtn=document.getElementById('skipBtn');
   if(showSkipBtn){skipBtn.style.display='';skipBtn.textContent=isSkipped?'↩ スキップ解除':'⏭ 欠席にする';skipBtn.classList.toggle('active',isSkipped)}
   else skipBtn.style.display='none';
+  // Adhoc button
+  const adhocBtn=document.getElementById('adhocBtn');
+  if(showAdhocBtn){adhocBtn.style.display='';adhocBtn.textContent=isAdhoc?'↩ 臨時照射を解除':'💉 臨時照射';adhocBtn.classList.toggle('active',isAdhoc)}
+  else adhocBtn.style.display='none';
 
   const chips=document.getElementById('modalSeChips');
   if(seDotMap[ds]&&seDotMap[ds].length&&dis){
@@ -879,6 +910,16 @@ function toggleSkip(){
   buildCalendar(currentStartDate,currentEndDate);
   closeModalDirect();
 }
+function toggleAdhocTreat(){
+  const data=getPatientData();
+  if(!data[modalDate])data[modalDate]={};
+  data[modalDate].adhocTreat=!data[modalDate].adhocTreat;
+  if(!data[modalDate].adhocTreat)delete data[modalDate].adhocTreat;
+  savePatientData(data);
+  rebuildTreatMap();
+  buildCalendar(currentStartDate,currentEndDate);
+  closeModalDirect();
+}
 function closeModal(e){if(e.target===document.getElementById('modalOverlay'))closeModalDirect()}
 function closeModalDirect(){document.getElementById('modalOverlay').classList.remove('open')}
 function saveEntry(){
@@ -894,8 +935,14 @@ function saveEntry(){
 function deleteEntry(){
   const data=getPatientData();
   const skipped=data[modalDate]&&data[modalDate].skipped;
+  const adhoc=data[modalDate]&&data[modalDate].adhocTreat;
   delete data[modalDate];
-  if(skipped){data[modalDate]={skipped:true};savePatientData(data);rebuildTreatMap();}
+  if(skipped||adhoc){
+    data[modalDate]={};
+    if(skipped)data[modalDate].skipped=true;
+    if(adhoc)data[modalDate].adhocTreat=true;
+    savePatientData(data);rebuildTreatMap();
+  }
   else savePatientData(data);
   closeModalDirect();buildCalendar(currentStartDate,currentEndDate);
 }
