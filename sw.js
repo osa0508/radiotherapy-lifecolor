@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rt-calendar-v2';
+const CACHE_NAME = 'rt-calendar-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -25,24 +25,22 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: Cache-first strategy (perfect for offline-capable app)
+// Fetch: Network-first strategy (ensures latest content)
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        // Cache new requests dynamically
-        if (response.ok && event.request.method === 'GET') {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    }).catch(() => {
-      // Offline fallback
-      if (event.request.destination === 'document') {
-        return caches.match('./index.html');
+    fetch(event.request).then(response => {
+      if (response.ok && event.request.method === 'GET') {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
       }
+      return response;
+    }).catch(() => {
+      return caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        if (event.request.destination === 'document') {
+          return caches.match('./index.html');
+        }
+      });
     })
   );
 });
