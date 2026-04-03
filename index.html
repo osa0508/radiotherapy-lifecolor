@@ -375,6 +375,9 @@ header .hdr-actions{display:flex;gap:6px}
 <!-- ================= TAB 2: CALENDAR ================= -->
 <div class="tab-pane" id="tab-calendar">
 <div class="container">
+  <div style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.78rem;color:#e65100;line-height:1.6">
+    ⚠️ このアプリに記載されている副作用の時期・症状は一般的な目安です。患者様個々において副作用の出方や程度には個人差があります。自己責任においてご使用ください。気になる症状がある場合は必ず主治医にご相談ください。
+  </div>
   <div class="input-card">
     <h2>📋 治療情報の入力</h2>
     <div class="form-row">
@@ -590,6 +593,12 @@ const DISEASES={
     treatmentInfo:"以前の照射部位・線量・経過期間を慎重に評価した上で、最新の照射技術（IMRT・SBRTなど）を用いて安全に照射を行います。線量や回数は個々の状況に合わせて計画します。近年の技術の進歩により、以前は難しかった再照射も安全に行えるケースが増えています。",
     sideEffects:[
     {label:"副作用は個人差が大きい",startDay:0,endDay:365,color:"#607d8b",note:"過去の照射歴・部位・線量によって副作用の現れ方が大きく異なります。気になる症状があれば速やかにご連絡ください。",reassure:"担当医が過去の照射情報を踏まえた上で安全な治療計画を立てています。気になることはいつでもご相談ください。"}
+  ]},
+  other:{name:"その他",icon:"📋",defaultFx:25,
+    description:"上記に該当しない放射線治療全般です。1回線量・回数は主治医の指示に従ってください。",
+    treatmentInfo:"放射線治療の内容（1回線量・総線量・回数）は疾患や部位によって異なります。詳しくは主治医にお尋ねください。治療回数は上の入力欄で自由に設定できます。",
+    sideEffects:[
+    {label:"副作用については主治医にお尋ねください",startDay:0,endDay:90,color:"#78909c",note:"副作用の種類・時期・程度は治療部位や線量によって大きく異なります。詳しくは主治医・看護師にご相談ください。",reassure:"主治医が患者様の状態に合わせた治療計画を立てています。気になることがあればいつでもお声がけください。"}
   ]}
 };
 
