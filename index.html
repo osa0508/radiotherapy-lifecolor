@@ -210,6 +210,17 @@ header .hdr-actions{display:flex;gap:6px}
 .faq-a{margin-top:8px;padding-left:28px;font-size:.85rem;color:#444;line-height:1.7;display:none}
 .faq-card.open .faq-a{display:block}
 .faq-card.open .faq-q{color:#0d47a1}
+/* BED Calc */
+.calc-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.calc-card{background:#f7fbff;border-radius:10px;padding:14px;text-align:center;border:1px solid #e3edf5}
+.calc-card.highlight{background:#e8f5e9;border-color:#a5d6a7}
+.calc-label{font-size:.72rem;color:#888;font-weight:600;margin-bottom:4px}
+.calc-value{font-size:1.4rem;font-weight:800;color:#1a6b9a}
+.calc-card.highlight .calc-value{color:#2e7d32}
+.calc-unit{font-size:.75rem;color:#999;font-weight:400}
+.calc-total-row{background:#fff8e1;border-radius:10px;padding:12px;text-align:center;border:1px solid #ffe082;margin-bottom:10px}
+.calc-total-label{font-size:.8rem;color:#f57f17;font-weight:700}
+.calc-total-value{font-size:1.6rem;font-weight:800;color:#e65100}
 
 /* ====== SUMMARY TAB ====== */
 .summary-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -297,6 +308,7 @@ header .hdr-actions{display:flex;gap:6px}
 <nav class="tabs">
   <button class="tab-btn active" onclick="showTab('basics')" id="tab-basics-btn">🏥 基本</button>
   <button class="tab-btn" onclick="showTab('info')" id="tab-info-btn">📖 副作用</button>
+  <button class="tab-btn" onclick="showTab('calc')" id="tab-calc-btn">🧮 計算</button>
   <button class="tab-btn" onclick="showTab('calendar')" id="tab-calendar-btn">📅 暦</button>
   <button class="tab-btn" onclick="showTab('summary')" id="tab-summary-btn">📋 記録</button>
   <button class="tab-btn" onclick="showTab('faq')" id="tab-faq-btn">❓ FAQ</button>
@@ -392,6 +404,39 @@ header .hdr-actions{display:flex;gap:6px}
   </div>
   <div class="info-card" id="infoCard">
     <p style="color:#aaa;text-align:center;padding:20px;font-size:.85rem">上のボタンから疾患を選択してください</p>
+  </div>
+</div>
+</div>
+
+<!-- ================= TAB: BED/EQD2 CALC ================= -->
+<div class="tab-pane" id="tab-calc">
+<div class="container">
+  <div class="input-card">
+    <h2>🧮 生物学的線量計算</h2>
+    <p style="font-size:.8rem;color:#666;margin-bottom:12px">1回線量と回数を入力すると BED・EQD2 を自動計算します。</p>
+    <div class="form-row">
+      <div class="fg">
+        <label>1回線量 (Gy)</label>
+        <input type="number" id="calcDose" step="0.1" min="0.1" max="30" value="2" oninput="calcBED()" />
+      </div>
+      <div class="fg">
+        <label>回数 (fx)</label>
+        <input type="number" id="calcFx" min="1" max="50" value="25" oninput="calcBED()" />
+      </div>
+    </div>
+    <div id="calcResult" style="margin-top:16px"></div>
+  </div>
+  <div class="input-card" style="margin-top:14px">
+    <h3 style="font-size:.95rem;margin-bottom:10px">📖 用語解説</h3>
+    <div style="font-size:.82rem;color:#444;line-height:1.8">
+      <p><strong>BED（生物学的等価線量）</strong><br>
+      BED = n × d × (1 + d/[α/β]) で計算されます。異なる分割照射スケジュール間の生物学的効果を比較するための指標です。</p>
+      <p style="margin-top:8px"><strong>α/β比</strong><br>
+      α/β = 2 Gy：晩期反応組織（脊髄・脳など）の耐容線量評価に使用<br>
+      α/β = 10 Gy：腫瘍や急性反応組織の評価に使用</p>
+      <p style="margin-top:8px"><strong>EQD2（2Gy換算等価線量）</strong><br>
+      EQD2 = BED / (1 + 2/[α/β]) で計算されます。1回2Gyの通常分割照射に換算した場合の等価線量です。臨床で最も広く使われる比較指標です。</p>
+    </div>
   </div>
 </div>
 </div>
@@ -1127,8 +1172,47 @@ function renderSummary(){
 // TAB NAV
 // ===============================================================
 function showTab(t){
-  ['basics','info','calendar','summary','faq'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
+  ['basics','info','calc','calendar','summary','faq'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
   if(t==='summary')renderSummary();
+  if(t==='calc')calcBED();
+}
+
+function calcBED(){
+  const d=parseFloat(document.getElementById('calcDose').value);
+  const n=parseInt(document.getElementById('calcFx').value);
+  if(!d||!n||d<=0||n<=0){document.getElementById('calcResult').innerHTML='<p style="color:#999;text-align:center">値を入力してください</p>';return}
+  const totalDose=n*d;
+  const bed10=totalDose*(1+d/10);
+  const bed2=totalDose*(1+d/2);
+  const eqd2_10=bed10/(1+2/10);
+  const eqd2_2=bed2/(1+2/2);
+  document.getElementById('calcResult').innerHTML=`
+    <div class="calc-total-row">
+      <div class="calc-total-label">総線量</div>
+      <div class="calc-total-value">${totalDose.toFixed(1)} <span class="calc-unit">Gy</span></div>
+      <div style="font-size:.75rem;color:#888">${d} Gy × ${n} 回</div>
+    </div>
+    <div class="calc-result-grid">
+      <div class="calc-card">
+        <div class="calc-label">BED<sub>10</sub>（α/β=10）</div>
+        <div class="calc-value">${bed10.toFixed(1)} <span class="calc-unit">Gy</span></div>
+      </div>
+      <div class="calc-card highlight">
+        <div class="calc-label">EQD2（α/β=10）</div>
+        <div class="calc-value">${eqd2_10.toFixed(1)} <span class="calc-unit">Gy</span></div>
+      </div>
+      <div class="calc-card">
+        <div class="calc-label">BED<sub>2</sub>（α/β=2）</div>
+        <div class="calc-value">${bed2.toFixed(1)} <span class="calc-unit">Gy</span></div>
+      </div>
+      <div class="calc-card highlight">
+        <div class="calc-label">EQD2（α/β=2）</div>
+        <div class="calc-value">${eqd2_2.toFixed(1)} <span class="calc-unit">Gy</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.72rem;color:#999;text-align:center">
+      BED = n×d×(1+d/[α/β])　|　EQD2 = BED/(1+2/[α/β])
+    </div>`;
 }
 function fmtDate(d){return`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`}
 
