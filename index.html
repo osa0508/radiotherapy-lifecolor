@@ -233,6 +233,27 @@ header .hdr-actions{display:flex;gap:6px}
 .oar-scroll{max-height:60vh;overflow-y:auto;border-radius:8px;border:1px solid #e0e0e0}
 .oar-category{background:#e8edf2!important;font-weight:700;color:#37474f;font-size:.8rem}
 .oar-category td{padding:8px 6px;border-bottom:2px solid #cfd8dc}
+/* Evidence search */
+.ev-search-row{display:flex;gap:8px;margin-bottom:14px}
+.ev-search-input{flex:1;padding:10px 14px;border:1.5px solid #cdd8e3;border-radius:10px;font-size:.9rem;font-family:inherit}
+.ev-search-input:focus{outline:none;border-color:#1a6b9a}
+.ev-search-btn{background:#1a6b9a;color:white;border:none;border-radius:10px;padding:10px 18px;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.ev-search-btn:disabled{background:#b0bec5;cursor:default}
+.ev-chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.ev-chip{background:#e3edf5;color:#1a6b9a;border:none;border-radius:20px;padding:6px 14px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s}
+.ev-chip:hover{background:#1a6b9a;color:white}
+.ev-result{background:white;border-radius:10px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #1a6b9a}
+.ev-result-title{font-weight:700;color:#1a6b9a;font-size:.88rem;line-height:1.5;cursor:pointer;text-decoration:none;display:block}
+.ev-result-title:hover{text-decoration:underline}
+.ev-result-meta{font-size:.72rem;color:#888;margin-top:4px;line-height:1.5}
+.ev-result-journal{font-weight:600;color:#555}
+.ev-result-abstract{font-size:.78rem;color:#444;margin-top:8px;line-height:1.7;display:none;border-top:1px solid #f0f0f0;padding-top:8px}
+.ev-result.open .ev-result-abstract{display:block}
+.ev-toggle{font-size:.72rem;color:#1a6b9a;cursor:pointer;margin-top:4px;display:inline-block}
+.ev-loading{text-align:center;padding:30px;color:#999}
+.ev-loading .spinner{display:inline-block;width:24px;height:24px;border:3px solid #e0e0e0;border-top-color:#1a6b9a;border-radius:50%;animation:evspin .8s linear infinite}
+@keyframes evspin{to{transform:rotate(360deg)}}
+.ev-count{font-size:.78rem;color:#888;margin-bottom:10px}
 
 /* ====== SUMMARY TAB ====== */
 .summary-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -324,6 +345,7 @@ header .hdr-actions{display:flex;gap:6px}
   <button class="tab-btn" onclick="showTab('calendar')" id="tab-calendar-btn">📅 暦</button>
   <button class="tab-btn" onclick="showTab('summary')" id="tab-summary-btn">📋 記録</button>
   <button class="tab-btn" onclick="showTab('faq')" id="tab-faq-btn">❓ FAQ</button>
+  <button class="tab-btn" onclick="showTab('evidence')" id="tab-evidence-btn">🔬 文献</button>
 </nav>
 
 <!-- ================= TAB 0: CANCER BASICS ================= -->
@@ -613,6 +635,32 @@ header .hdr-actions{display:flex;gap:6px}
   <div class="faq-card" onclick="this.classList.toggle('open')">
     <div class="faq-q">治療の途中で休んでも大丈夫ですか？</div>
     <div class="faq-a">放射線治療は決められた期間で決められた回数を照射することが大切です。治療の中断は効果に影響する可能性があります。体調不良などで休む必要がある場合は、必ず主治医にご相談ください。</div>
+  </div>
+</div>
+</div>
+
+<!-- ================= TAB: EVIDENCE SEARCH ================= -->
+<div class="tab-pane" id="tab-evidence">
+<div class="container">
+  <div class="input-card">
+    <h2>🔬 エビデンス検索</h2>
+    <p style="font-size:.8rem;color:#666;margin-bottom:12px">PubMed（国際医学文献データベース）から放射線治療の最新エビデンスを検索します。</p>
+    <div class="ev-search-row">
+      <input type="text" class="ev-search-input" id="evSearchInput" placeholder="例: prostate cancer IMRT, lung SBRT, breast hypofractionation" onkeydown="if(event.key==='Enter')searchEvidence()" />
+      <button class="ev-search-btn" id="evSearchBtn" onclick="searchEvidence()">🔍 検索</button>
+    </div>
+    <div class="ev-chip-row">
+      <button class="ev-chip" onclick="setEvSearch('radiation therapy toxicity')">副作用</button>
+      <button class="ev-chip" onclick="setEvSearch('prostate cancer radiotherapy')">前立腺がん</button>
+      <button class="ev-chip" onclick="setEvSearch('breast cancer hypofractionation')">乳がん寡分割</button>
+      <button class="ev-chip" onclick="setEvSearch('lung cancer SBRT')">肺SBRT</button>
+      <button class="ev-chip" onclick="setEvSearch('head neck cancer IMRT')">頭頸部IMRT</button>
+      <button class="ev-chip" onclick="setEvSearch('cervical cancer brachytherapy')">子宮頸がん</button>
+      <button class="ev-chip" onclick="setEvSearch('rectal cancer preoperative radiation')">直腸がん</button>
+      <button class="ev-chip" onclick="setEvSearch('brain metastasis SRS')">脳転移SRS</button>
+      <button class="ev-chip" onclick="setEvSearch('QUANTEC dose constraints')">OAR線量制約</button>
+    </div>
+    <div id="evResults"></div>
   </div>
 </div>
 </div>
@@ -1232,9 +1280,103 @@ function renderSummary(){
 // TAB NAV
 // ===============================================================
 function showTab(t){
-  ['basics','info','calc','calendar','summary','faq'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
+  ['basics','info','calc','calendar','summary','faq','evidence'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
   if(t==='summary')renderSummary();
   if(t==='calc')calcBED();
+}
+
+// ===============================================================
+// EVIDENCE SEARCH (PubMed API)
+// ===============================================================
+function setEvSearch(q){
+  document.getElementById('evSearchInput').value=q;
+  searchEvidence();
+}
+
+async function searchEvidence(){
+  const q=document.getElementById('evSearchInput').value.trim();
+  if(!q)return;
+  const btn=document.getElementById('evSearchBtn');
+  const res=document.getElementById('evResults');
+  btn.disabled=true;
+  res.innerHTML='<div class="ev-loading"><div class="spinner"></div><p style="margin-top:10px">PubMedを検索中...</p></div>';
+
+  try{
+    const searchUrl=`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(q)}&retmax=10&sort=relevance&retmode=json`;
+    const searchResp=await fetch(searchUrl);
+    const searchData=await searchResp.json();
+    const ids=searchData.esearchresult.idlist;
+    const total=searchData.esearchresult.count;
+
+    if(!ids||!ids.length){
+      res.innerHTML='<p style="color:#999;text-align:center;padding:20px">該当する文献が見つかりませんでした。キーワードを変えて試してください。</p>';
+      btn.disabled=false;return;
+    }
+
+    const summaryUrl=`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(',')}&retmode=json`;
+    const summaryResp=await fetch(summaryUrl);
+    const summaryData=await summaryResp.json();
+    const articles=summaryData.result;
+
+    let html=`<div class="ev-count">🔎 「${q}」の検索結果：${parseInt(total).toLocaleString()}件中 上位${ids.length}件を表示</div>`;
+
+    ids.forEach(id=>{
+      const a=articles[id];
+      if(!a||a.error)return;
+      const title=a.title||'タイトルなし';
+      const authors=(a.authors||[]).slice(0,3).map(au=>au.name).join(', ')+(a.authors&&a.authors.length>3?' et al.':'');
+      const journal=a.fulljournalname||a.source||'';
+      const year=a.pubdate?a.pubdate.substring(0,4):'';
+      const pmid=a.uid||id;
+      const doi=a.elocationid||'';
+      const pubtype=(a.pubtype||[]).includes('Randomized Controlled Trial')?'<span style="background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700;margin-left:4px">RCT</span>':
+                    (a.pubtype||[]).includes('Meta-Analysis')?'<span style="background:#fff3e0;color:#e65100;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700;margin-left:4px">Meta</span>':
+                    (a.pubtype||[]).includes('Review')?'<span style="background:#f3e5f5;color:#6a1b9a;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700;margin-left:4px">Review</span>':'';
+
+      html+=`<div class="ev-result" id="ev-${pmid}">
+        <a class="ev-result-title" href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" rel="noopener">${title}${pubtype}</a>
+        <div class="ev-result-meta">
+          <span class="ev-result-journal">${journal}</span>${year?' · '+year:''}${authors?' · '+authors:''}
+          <br>PMID: ${pmid}${doi?' · '+doi:''}
+        </div>
+        <span class="ev-toggle" onclick="document.getElementById('ev-${pmid}').classList.toggle('open');this.textContent=document.getElementById('ev-${pmid}').classList.contains('open')?'▲ 閉じる':'▼ 抄録を見る'">▼ 抄録を見る</span>
+        <div class="ev-result-abstract" id="evabs-${pmid}">
+          <div style="color:#bbb;font-size:.78rem;text-align:center;padding:8px" id="evabs-loading-${pmid}">読み込み中...</div>
+        </div>
+      </div>`;
+    });
+
+    res.innerHTML=html;
+
+    res.querySelectorAll('.ev-toggle').forEach(toggle=>{
+      toggle.addEventListener('click',async function(){
+        const card=this.closest('.ev-result');
+        const pmid=card.id.replace('ev-','');
+        const absDiv=document.getElementById('evabs-'+pmid);
+        const loadingDiv=document.getElementById('evabs-loading-'+pmid);
+        if(loadingDiv){
+          try{
+            const r=await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmid}&rettype=abstract&retmode=text`);
+            const text=await r.text();
+            const lines=text.split('\n').filter(l=>l.trim());
+            const abstractIdx=lines.findIndex(l=>l.startsWith('AB  -'));
+            let abstract='抄録データがありません。';
+            if(abstractIdx>=0){
+              abstract=lines.slice(abstractIdx).join(' ')
+                .replace(/^AB\s+-\s*/,'').replace(/\s+[A-Z]{2}\s+-\s+.*/g,'').trim();
+            }
+            absDiv.innerHTML=`<p>${abstract}</p><a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" rel="noopener" style="font-size:.75rem;color:#1a6b9a">→ PubMedで全文を見る</a>`;
+          }catch(e){
+            absDiv.innerHTML='<p style="color:#f44">抄録の取得に失敗しました。</p>';
+          }
+        }
+      },{once:true});
+    });
+
+  }catch(e){
+    res.innerHTML='<p style="color:#f44336;text-align:center;padding:20px">検索中にエラーが発生しました。ネットワーク接続を確認してください。</p>';
+  }
+  btn.disabled=false;
 }
 
 function calcBED(){
