@@ -221,6 +221,18 @@ header .hdr-actions{display:flex;gap:6px}
 .calc-total-row{background:#fff8e1;border-radius:10px;padding:12px;text-align:center;border:1px solid #ffe082;margin-bottom:10px}
 .calc-total-label{font-size:.8rem;color:#f57f17;font-weight:700}
 .calc-total-value{font-size:1.6rem;font-weight:800;color:#e65100}
+/* OAR table */
+.oar-table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:10px}
+.oar-table th{background:#1a6b9a;color:white;padding:8px 6px;text-align:left;font-weight:600;font-size:.72rem;position:sticky;top:0}
+.oar-table td{padding:7px 6px;border-bottom:1px solid #e8edf2}
+.oar-table tr:nth-child(even){background:#f7fbff}
+.oar-table tr:hover{background:#e3f2fd}
+.oar-organ{font-weight:700;color:#1a6b9a;white-space:nowrap}
+.oar-endpoint{color:#666;font-size:.72rem}
+.oar-dose{font-weight:700;color:#c62828;text-align:center}
+.oar-scroll{max-height:60vh;overflow-y:auto;border-radius:8px;border:1px solid #e0e0e0}
+.oar-category{background:#e8edf2!important;font-weight:700;color:#37474f;font-size:.8rem}
+.oar-category td{padding:8px 6px;border-bottom:2px solid #cfd8dc}
 
 /* ====== SUMMARY TAB ====== */
 .summary-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -437,6 +449,54 @@ header .hdr-actions{display:flex;gap:6px}
       <p style="margin-top:8px"><strong>EQD2（2Gy換算等価線量）</strong><br>
       EQD2 = BED / (1 + 2/[α/β]) で計算されます。1回2Gyの通常分割照射に換算した場合の等価線量です。臨床で最も広く使われる比較指標です。</p>
     </div>
+  </div>
+  <div class="input-card" style="margin-top:14px">
+    <h3 style="font-size:.95rem;margin-bottom:6px">🛡️ OAR 耐容線量一覧（通常分割 EQD2）</h3>
+    <p style="font-size:.72rem;color:#999;margin-bottom:8px">※ QUANTEC / RTOG ガイドラインに基づく一般的な目安です。個々の症例では主治医の判断が優先されます。</p>
+    <div class="oar-scroll">
+      <table class="oar-table">
+        <thead><tr><th>臓器</th><th>指標</th><th>耐容線量</th><th>エンドポイント</th></tr></thead>
+        <tbody>
+          <tr class="oar-category"><td colspan="4">中枢神経系</td></tr>
+          <tr><td class="oar-organ">脊髄</td><td>Dmax</td><td class="oar-dose">45-50 Gy</td><td class="oar-endpoint">脊髄症</td></tr>
+          <tr><td class="oar-organ">脳幹</td><td>Dmax</td><td class="oar-dose">54 Gy</td><td class="oar-endpoint">永続的な神経障害・壊死</td></tr>
+          <tr><td class="oar-organ">視神経/視交叉</td><td>Dmax</td><td class="oar-dose">54-55 Gy</td><td class="oar-endpoint">視神経障害</td></tr>
+          <tr><td class="oar-organ">蝸牛（内耳）</td><td>Dmean</td><td class="oar-dose">45 Gy</td><td class="oar-endpoint">感音性難聴</td></tr>
+          <tr class="oar-category"><td colspan="4">頭頸部</td></tr>
+          <tr><td class="oar-organ">耳下腺</td><td>Dmean</td><td class="oar-dose">25-26 Gy</td><td class="oar-endpoint">長期唾液分泌障害</td></tr>
+          <tr><td class="oar-organ">下顎骨</td><td>Dmax</td><td class="oar-dose">70 Gy</td><td class="oar-endpoint">骨壊死</td></tr>
+          <tr><td class="oar-organ">喉頭</td><td>Dmean</td><td class="oar-dose">44 Gy</td><td class="oar-endpoint">喉頭浮腫</td></tr>
+          <tr><td class="oar-organ">咽頭収縮筋</td><td>Dmean</td><td class="oar-dose">50 Gy</td><td class="oar-endpoint">嚥下障害</td></tr>
+          <tr class="oar-category"><td colspan="4">胸部</td></tr>
+          <tr><td class="oar-organ">肺（両側）</td><td>Dmean</td><td class="oar-dose">20 Gy</td><td class="oar-endpoint">放射線肺臓炎</td></tr>
+          <tr><td class="oar-organ">肺（両側）</td><td>V20</td><td class="oar-dose">≤30-35%</td><td class="oar-endpoint">放射線肺臓炎</td></tr>
+          <tr><td class="oar-organ">肺（両側）</td><td>V5</td><td class="oar-dose">≤60%</td><td class="oar-endpoint">放射線肺臓炎</td></tr>
+          <tr><td class="oar-organ">心臓</td><td>Dmean</td><td class="oar-dose">26 Gy</td><td class="oar-endpoint">心膜炎</td></tr>
+          <tr><td class="oar-organ">心臓</td><td>V25</td><td class="oar-dose">≤10%</td><td class="oar-endpoint">長期心毒性</td></tr>
+          <tr><td class="oar-organ">食道</td><td>Dmean</td><td class="oar-dose">34 Gy</td><td class="oar-endpoint">Grade3+食道炎</td></tr>
+          <tr><td class="oar-organ">腕神経叢</td><td>Dmax</td><td class="oar-dose">66 Gy</td><td class="oar-endpoint">神経障害</td></tr>
+          <tr class="oar-category"><td colspan="4">腹部・骨盤</td></tr>
+          <tr><td class="oar-organ">肝臓</td><td>Dmean</td><td class="oar-dose">30-32 Gy</td><td class="oar-endpoint">放射線性肝障害(RILD)</td></tr>
+          <tr><td class="oar-organ">腎臓（両側）</td><td>Dmean</td><td class="oar-dose">18 Gy</td><td class="oar-endpoint">腎機能障害</td></tr>
+          <tr><td class="oar-organ">腎臓（両側）</td><td>V20</td><td class="oar-dose">≤32%</td><td class="oar-endpoint">腎機能障害</td></tr>
+          <tr><td class="oar-organ">小腸</td><td>Dmax</td><td class="oar-dose">50 Gy</td><td class="oar-endpoint">穿孔・瘻孔・狭窄</td></tr>
+          <tr><td class="oar-organ">小腸</td><td>V15</td><td class="oar-dose">≤120 cc</td><td class="oar-endpoint">Grade3+毒性</td></tr>
+          <tr><td class="oar-organ">直腸</td><td>V50</td><td class="oar-dose">≤50%</td><td class="oar-endpoint">Grade2+直腸炎</td></tr>
+          <tr><td class="oar-organ">直腸</td><td>V60</td><td class="oar-dose">≤35%</td><td class="oar-endpoint">Grade2+直腸炎</td></tr>
+          <tr><td class="oar-organ">直腸</td><td>V70</td><td class="oar-dose">≤20%</td><td class="oar-endpoint">Grade2+直腸炎</td></tr>
+          <tr><td class="oar-organ">膀胱</td><td>V65</td><td class="oar-dose">≤50%</td><td class="oar-endpoint">Grade3+膀胱炎</td></tr>
+          <tr><td class="oar-organ">膀胱</td><td>V70</td><td class="oar-dose">≤35%</td><td class="oar-endpoint">Grade3+膀胱炎</td></tr>
+          <tr><td class="oar-organ">大腿骨頭</td><td>V50</td><td class="oar-dose">≤5%</td><td class="oar-endpoint">骨壊死</td></tr>
+          <tr><td class="oar-organ">陰茎球</td><td>Dmean</td><td class="oar-dose">52 Gy</td><td class="oar-endpoint">勃起機能障害</td></tr>
+          <tr class="oar-category"><td colspan="4">その他</td></tr>
+          <tr><td class="oar-organ">水晶体</td><td>Dmax</td><td class="oar-dose">10 Gy</td><td class="oar-endpoint">白内障</td></tr>
+          <tr><td class="oar-organ">網膜</td><td>Dmax</td><td class="oar-dose">45 Gy</td><td class="oar-endpoint">網膜症</td></tr>
+          <tr><td class="oar-organ">涙腺</td><td>Dmean</td><td class="oar-dose">25 Gy</td><td class="oar-endpoint">ドライアイ</td></tr>
+          <tr><td class="oar-organ">甲状腺</td><td>Dmean</td><td class="oar-dose">45 Gy</td><td class="oar-endpoint">甲状腺機能低下</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.68rem;color:#aaa;margin-top:6px">Dmax=最大線量 Dmean=平均線量 Vxx=xx Gy以上が照射される体積割合　出典: QUANTEC (2010), RTOG protocols</p>
   </div>
 </div>
 </div>
