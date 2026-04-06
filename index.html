@@ -339,95 +339,14 @@ header .hdr-actions{display:flex;gap:6px}
 </div>
 
 <nav class="tabs">
-  <button class="tab-btn active" onclick="showTab('basics')" id="tab-basics-btn">🏥 基本</button>
-  <button class="tab-btn" onclick="showTab('info')" id="tab-info-btn">📖 副作用</button>
-  <button class="tab-btn" onclick="showTab('calc')" id="tab-calc-btn">🧮 計算</button>
-  <button class="tab-btn" onclick="showTab('calendar')" id="tab-calendar-btn">📅 暦</button>
+  <button class="tab-btn active" onclick="showTab('calendar')" id="tab-calendar-btn">📅 暦</button>
   <button class="tab-btn" onclick="showTab('summary')" id="tab-summary-btn">📋 記録</button>
   <button class="tab-btn" onclick="showTab('faq')" id="tab-faq-btn">❓ FAQ</button>
+  <button class="tab-btn" onclick="showTab('info')" id="tab-info-btn">📖 副作用</button>
+  <button class="tab-btn" onclick="showTab('calc')" id="tab-calc-btn">🧮 計算</button>
+  <button class="tab-btn" onclick="showTab('oar')" id="tab-oar-btn">🛡️ OAR</button>
   <button class="tab-btn" onclick="showTab('evidence')" id="tab-evidence-btn">🔬 文献</button>
 </nav>
-
-<!-- ================= TAB 0: CANCER BASICS ================= -->
-<div class="tab-pane active" id="tab-basics">
-<div class="container">
-
-  <div class="basics-section">
-    <h2>🏥 がん治療の基本</h2>
-    <p>がんの治療法は大きく分けて <strong>手術（外科治療）</strong>、<strong>薬物療法（抗がん剤・分子標的薬・免疫療法など）</strong>、<strong>放射線治療</strong> の3つが柱です。これらを単独、あるいは組み合わせて治療を行います。</p>
-
-    <h3>🔪 手術（外科治療）</h3>
-    <div class="basics-card">
-      <div class="bc-title">がんを直接切除する治療法</div>
-      <div class="bc-body">
-        がんが限られた場所にある場合に有効です。がんそのものと周囲のリンパ節を含めて切除します。近年は体への負担が少ない腹腔鏡手術やロボット手術も広がっています。
-      </div>
-    </div>
-
-    <h3>💊 薬物療法</h3>
-    <div class="basics-card">
-      <div class="bc-title">薬でがん細胞を攻撃する治療法</div>
-      <div class="bc-body">
-        抗がん剤（細胞障害性薬）、分子標的薬、免疫チェックポイント阻害薬、ホルモン療法など様々な種類があります。全身に効果が及ぶため、転移がある場合や再発予防にも使われます。副作用は薬の種類によって異なります。
-      </div>
-    </div>
-
-    <h3>☢️ 放射線治療</h3>
-    <div class="basics-card">
-      <div class="bc-title">放射線でがん細胞を破壊する治療法</div>
-      <div class="bc-body">
-        高エネルギーの放射線をがんに照射して治療します。体にメスを入れずに治療でき、臓器の機能を温存しやすいのが特長です。通院で治療できることが多く、1回の治療は数分〜15分程度です。手術や薬物療法と組み合わせることもあります。このアプリは放射線治療を受ける患者様のための通院サポートカレンダーです。
-      </div>
-    </div>
-
-    <h3>🤝 集学的治療（組み合わせ）</h3>
-    <div class="basics-card">
-      <div class="bc-body">
-        多くのがんでは、手術＋薬物療法、放射線＋薬物療法など複数の治療を組み合わせることで、より高い効果が得られます。担当医チームがあなたに最適な治療計画を立てます。疑問があればいつでもご相談ください。
-      </div>
-    </div>
-  </div>
-
-  <div class="basics-section">
-    <h2>⚠️ 治療中の大切なお願い</h2>
-
-    <div class="basics-card warn">
-      <div class="bc-title">🚫 インターネットの情報に惑わされないで</div>
-      <div class="bc-body">
-        インターネットには科学的根拠のない情報や、不安をあおって高額商品を売りつける悪質なサイトが多数あります。<strong>がんに関する正しい情報は、国立がん研究センター「がん情報サービス」を参照してください。</strong>
-      </div>
-    </div>
-
-    <a href="https://ganjoho.jp/public/index.html" target="_blank" rel="noopener" class="ganjoho-link">
-      📖 国立がん研究センター がん情報サービス を開く
-    </a>
-
-    <div class="basics-card warn">
-      <div class="bc-title">💰 高額な健康食品・サプリメントにご注意</div>
-      <div class="bc-body">
-        <strong>3万円以上の栄養食品や健康に関する商品を購入する場合は、必ず事前に当科の医師もしくは看護師にご相談ください。</strong><br><br>
-        「がんが消える」「免疫力が上がる」などの宣伝文句で販売される高額サプリメントは、効果が科学的に証明されていないものがほとんどです。中には治療薬と相互作用を起こし、治療効果を妨げる成分が含まれることもあります。<br><br>
-        ご不安な場合やお知り合いに勧められた場合は、お気軽に診察時にご相談ください。
-      </div>
-    </div>
-
-    <div class="basics-card">
-      <div class="bc-title">📋 治療中に心がけていただきたいこと</div>
-      <div class="bc-body">
-        <ul>
-          <li>治療スケジュールを守り、予定通り通院しましょう</li>
-          <li>体調の変化（痛み・熱・皮膚の異常など）は我慢せず早めにお伝えください</li>
-          <li>十分な睡眠と栄養バランスの良い食事を心がけてください</li>
-          <li>治療部位を強くこすったり、直射日光に長時間当てないようにしましょう</li>
-          <li>このアプリで毎日の体調を記録しておくと、診察時にスムーズに伝えられます</li>
-          <li>困ったことや不安なことは一人で抱え込まず、医療スタッフに相談してください</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-</div>
-</div>
 
 <!-- ================= TAB 1: DISEASE INFO ================= -->
 <div class="tab-pane" id="tab-info">
@@ -472,9 +391,15 @@ header .hdr-actions{display:flex;gap:6px}
       EQD2 = BED / (1 + 2/[α/β]) で計算されます。1回2Gyの通常分割照射に換算した場合の等価線量です。臨床で最も広く使われる比較指標です。</p>
     </div>
   </div>
-  <div class="input-card" style="margin-top:14px">
-    <h3 style="font-size:.95rem;margin-bottom:6px">🛡️ OAR 耐容線量一覧（通常分割 EQD2）</h3>
-    <p style="font-size:.72rem;color:#999;margin-bottom:8px">※ QUANTEC / RTOG ガイドラインに基づく一般的な目安です。個々の症例では主治医の判断が優先されます。</p>
+</div>
+</div>
+
+<!-- ================= TAB: OAR ================= -->
+<div class="tab-pane" id="tab-oar">
+<div class="container">
+  <div class="input-card">
+    <h2>🛡️ OAR 耐容線量一覧</h2>
+    <p style="font-size:.72rem;color:#999;margin-bottom:8px">QUANTEC / RTOG ガイドラインに基づく通常分割（EQD2）での一般的な目安です。個々の症例では主治医の判断が優先されます。</p>
     <div class="oar-scroll">
       <table class="oar-table">
         <thead><tr><th>臓器</th><th>指標</th><th>耐容線量</th><th>エンドポイント</th></tr></thead>
@@ -524,7 +449,7 @@ header .hdr-actions{display:flex;gap:6px}
 </div>
 
 <!-- ================= TAB 2: CALENDAR ================= -->
-<div class="tab-pane" id="tab-calendar">
+<div class="tab-pane active" id="tab-calendar">
 <div class="container">
   <div style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.78rem;color:#e65100;line-height:1.6">
     ⚠️ このアプリに記載されている副作用の時期・症状は一般的な目安です。患者様個々において副作用の出方や程度には個人差があります。自己責任においてご使用ください。気になる症状がある場合は必ず主治医にご相談ください。
@@ -1280,7 +1205,7 @@ function renderSummary(){
 // TAB NAV
 // ===============================================================
 function showTab(t){
-  ['basics','info','calc','calendar','summary','faq','evidence'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
+  ['calendar','summary','faq','info','calc','oar','evidence'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
   if(t==='summary')renderSummary();
   if(t==='calc')calcBED();
 }
