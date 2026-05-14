@@ -2,1381 +2,1057 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>放射線治療 サポートカレンダー</title>
-<!-- PWA -->
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#1a6b9a">
-<meta name="mobile-web-app-capable" content="yes">
-<!-- iOS PWA -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="放射線カレンダー">
-<link rel="apple-touch-icon" href="icon-192.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>放射線治療サポート | Lifecolor</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:#f0f4f8;color:#333;min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-bottom,0)}
-header{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;padding:12px 20px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-header .hdr-left{display:flex;align-items:center;gap:10px}
-header h1{font-size:1.15rem;letter-spacing:.04em}
-header p{font-size:.72rem;opacity:.85;margin-top:1px}
-header .hdr-actions{display:flex;gap:6px}
-.hdr-btn{background:rgba(255,255,255,.15);border:none;color:white;padding:6px 10px;border-radius:8px;font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.hdr-btn:hover{background:rgba(255,255,255,.25)}
-.tabs{display:flex;background:white;border-bottom:2px solid #e0e8f0;position:sticky;top:0;z-index:100;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-.tab-btn{flex:1;padding:11px 4px;border:none;background:none;font-size:.78rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
-.tab-btn.active{color:#1a6b9a;border-bottom-color:#1a6b9a;background:#f7fbff}
-.tab-btn:hover:not(.active){background:#f5f8fc;color:#555}
-.tab-pane{display:none}.tab-pane.active{display:block}
-.container{max-width:960px;margin:0 auto;padding:16px 12px}
+:root {
+  --pt-primary: #2a7a5a;
+  --pt-accent: #48b88a;
+  --pt-bg: #f0faf5;
+  --pt-card: #ffffff;
+  --pt-text: #1a3d2d;
+  --pt-muted: #6a9e8a;
+  --pt-warn: #e8a020;
+  --pt-border: #c8e6d8;
 
-/* Important Notice Banner (footer compact) */
-.footer-notice{background:#fff8f8;border:1px solid #ffcdd2;border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:.78rem;color:#555;line-height:1.7}
-.footer-notice .fn-title{font-weight:700;color:#b71c1c;margin-bottom:6px;font-size:.82rem}
-.footer-notice a{color:#b71c1c;font-weight:600}
-.footer-notice .fn-warn{margin-top:6px;padding-top:6px;border-top:1px solid #ffcdd2}
+  --md-primary: #1a3560;
+  --md-accent: #2d6fb5;
+  --md-bg: #f2f5fa;
+  --md-card: #ffffff;
+  --md-text: #101828;
+  --md-muted: #5a7090;
+  --md-border: #c8d8ee;
+  --md-highlight: #e8f0fb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif; }
 
-/* Install banner */
-.install-banner{background:linear-gradient(135deg,#ff7043,#e64a19);color:white;padding:12px 16px;display:none;align-items:center;justify-content:center;gap:10px;font-size:.85rem;cursor:pointer}
-.install-banner .install-close{background:none;border:none;color:white;font-size:1.1rem;cursor:pointer;padding:0 4px}
-.install-banner.show{display:flex}
+/* ─── LANDING ─────────────────────────────────────── */
+#landing {
+  display: flex; flex-direction: column; min-height: 100vh;
+  background: linear-gradient(135deg, #1a3560 0%, #2a7a5a 100%);
+}
+.land-header {
+  text-align: center; padding: 48px 24px 24px; color: #fff;
+}
+.land-header .logo-badge {
+  display: inline-block; background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3); border-radius: 999px;
+  padding: 4px 16px; font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(255,255,255,.8); margin-bottom: 14px;
+}
+.land-header h1 { font-size: clamp(22px,5vw,34px); font-weight: 700; margin-bottom: 8px; }
+.land-header p { font-size: 14px; color: rgba(255,255,255,.75); }
+.land-cards {
+  display: flex; flex-wrap: wrap; gap: 20px;
+  justify-content: center; padding: 32px 20px 48px;
+}
+.land-card {
+  background: rgba(255,255,255,.97); border-radius: 20px;
+  padding: 36px 28px; width: min(360px, 100%);
+  cursor: pointer; transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 24px rgba(0,0,0,.18); text-align: center;
+}
+.land-card:hover { transform: translateY(-4px); box-shadow: 0 10px 36px rgba(0,0,0,.25); }
+.land-card .lc-icon { font-size: 52px; margin-bottom: 16px; }
+.land-card.pt .lc-icon { background: var(--pt-bg); border-radius: 50%; width: 90px; height: 90px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.land-card.md .lc-icon { background: var(--md-highlight); border-radius: 50%; width: 90px; height: 90px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.land-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.land-card.pt h2 { color: var(--pt-text); }
+.land-card.md h2 { color: var(--md-text); }
+.land-card p { font-size: 13px; color: #607080; line-height: 1.7; margin-bottom: 20px; }
+.land-card ul { text-align: left; font-size: 12px; color: #607080; padding-left: 16px; line-height: 2; margin-bottom: 24px; }
+.land-btn {
+  display: block; width: 100%; padding: 13px; border-radius: 12px;
+  border: none; cursor: pointer; font-size: 14px; font-weight: 700;
+  letter-spacing: .04em; transition: background .15s;
+}
+.land-card.pt .land-btn { background: var(--pt-primary); color: #fff; }
+.land-card.pt .land-btn:hover { background: var(--pt-accent); }
+.land-card.md .land-btn { background: var(--md-primary); color: #fff; }
+.land-card.md .land-btn:hover { background: var(--md-accent); }
+.land-footer { text-align: center; color: rgba(255,255,255,.5); font-size: 11px; padding: 0 0 24px; }
 
-/* Cancer basics tab */
-.basics-section{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px}
-.basics-section h2{font-size:.95rem;color:#1a6b9a;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8f0f7;display:flex;align-items:center;gap:6px}
-.basics-section h3{font-size:.9rem;color:#0d4d73;margin:14px 0 6px;padding-left:4px;border-left:3px solid #1a6b9a;padding-left:8px}
-.basics-section p{font-size:.84rem;color:#444;line-height:1.8;margin-bottom:8px}
-.basics-section ul{list-style:none;padding:0;margin:0 0 10px}
-.basics-section li{font-size:.84rem;color:#444;line-height:1.8;padding:3px 0 3px 18px;position:relative}
-.basics-section li::before{content:'●';color:#1a6b9a;position:absolute;left:0;font-size:.6rem;top:6px}
-.basics-card{background:#f7fbff;border:1.5px solid #d0e2f0;border-radius:10px;padding:14px;margin-bottom:10px}
-.basics-card.warn{background:#fff8e1;border-color:#ffe082}
-.basics-card.warn .bc-title{color:#e65100}
-.bc-title{font-weight:700;font-size:.88rem;color:#1a6b9a;margin-bottom:4px;display:flex;align-items:center;gap:5px}
-.bc-body{font-size:.83rem;color:#555;line-height:1.75}
-.ganjoho-link{display:block;background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem;margin:12px 0;transition:opacity .2s}
-.ganjoho-link:hover{opacity:.85}
+/* ─── SHARED APP CHROME ───────────────────────────── */
+.app { display: none; flex-direction: column; min-height: 100vh; }
+.app.active { display: flex; }
 
-/* ====== DISEASE INFO TAB ====== */
-.disease-selector-wrap{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px}
-.disease-selector-wrap h2{font-size:.95rem;color:#1a6b9a;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8f0f7}
-.disease-buttons{display:flex;flex-wrap:wrap;gap:7px}
-.dis-btn{padding:7px 12px;border-radius:20px;border:1.5px solid #cdd8e3;background:white;font-size:.78rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
-.dis-btn:hover{border-color:#1a6b9a;color:#1a6b9a}
-.dis-btn.selected{background:#1a6b9a;color:white;border-color:#1a6b9a}
-.info-card{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
-.info-card h3{color:#1a6b9a;margin-bottom:6px;font-size:1rem}
-.info-desc{font-size:.85rem;color:#555;margin-bottom:14px;line-height:1.7}
-.se-list{display:flex;flex-direction:column;gap:8px}
-.se-item{border-left:4px solid;border-radius:0 8px 8px 0;padding:10px 12px;background:#fafafa}
-.se-item .se-label{font-weight:700;font-size:.88rem;margin-bottom:3px}
-.se-item .se-timing{font-size:.75rem;color:#888;margin-bottom:3px}
-.se-item .se-note{font-size:.83rem;color:#555;line-height:1.65}
-.se-item .se-med{margin-top:5px;background:#fff3e0;border-radius:5px;padding:4px 10px;font-size:.75rem;color:#e65100;font-weight:600}
+.app-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,.1);
+}
+.app-bar .back-btn {
+  background: rgba(255,255,255,.2); border: none; border-radius: 8px;
+  color: #fff; padding: 5px 10px; cursor: pointer; font-size: 13px;
+}
+.app-bar h1 { flex: 1; font-size: 15px; font-weight: 700; color: #fff; }
+.app-bar .mode-badge {
+  font-size: 10px; padding: 3px 9px; border-radius: 99px;
+  background: rgba(255,255,255,.2); color: rgba(255,255,255,.9);
+  letter-spacing: .06em;
+}
 
-/* ====== CALENDAR TAB ====== */
-.input-card{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:14px}
-.input-card h2{font-size:.95rem;color:#1a6b9a;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8f0f7}
-.form-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
-.fg{flex:1;min-width:140px}
-.fg label{display:block;font-size:.78rem;color:#555;margin-bottom:4px;font-weight:600}
-.fg input,.fg select{width:100%;padding:9px 10px;border:1.5px solid #cdd8e3;border-radius:8px;font-size:.9rem;color:#333;transition:border-color .2s;background:white}
-.fg input:focus,.fg select:focus{outline:none;border-color:#1a6b9a}
-.fg .hint{font-size:.7rem;color:#999;margin-top:2px}
-.btn-primary{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;border:none;padding:10px 20px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .2s;width:100%}
-.btn-primary:hover{opacity:.88}
-.btn-primary:active{transform:scale(.98)}
-.btn-outline{background:white;color:#1a6b9a;border:2px solid #1a6b9a;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-outline:hover{background:#e8f0f7}
+.tab-bar {
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  position: sticky; top: 53px; z-index: 99; border-bottom: 2px solid;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 0 0 auto; padding: 10px 14px; background: none; border: none;
+  cursor: pointer; font-size: 12px; white-space: nowrap; font-weight: 600;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: color .15s, border-color .15s;
+}
 
-#calendarOutput{display:none}
-.summary-bar{background:white;border-radius:12px;padding:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.sum-item{display:flex;align-items:center;gap:7px}
-.sum-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
-.sum-icon.blue{background:#e8f0f7}.sum-icon.green{background:#e8f7ee}.sum-icon.orange{background:#fff3e8}
-.sum-text strong{display:block;font-size:.95rem;color:#1a6b9a}
-.sum-text span{font-size:.7rem;color:#888}
-.sum-patient{margin-left:auto;font-size:.88rem;color:#444;font-weight:600}
+.tab-content { flex: 1; overflow-y: auto; }
+.tab-pane { display: none; padding: 20px 16px; }
+.tab-pane.active { display: block; }
 
-/* Timeline */
-.se-timeline-card{background:white;border-radius:12px;padding:14px 16px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:12px}
-.se-timeline-card h3{font-size:.9rem;color:#1a6b9a;margin-bottom:12px;display:flex;align-items:center;gap:5px}
-.timeline-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-.timeline-wrap{min-width:550px;position:relative}
-.tl-axis{display:flex;margin-bottom:6px;padding-left:120px;font-size:.65rem;color:#888}
-.tl-axis-seg{border-left:1px dashed #ccc;padding-left:3px;flex:1}
-.tl-row{display:flex;align-items:center;margin-bottom:5px}
-.tl-label{width:120px;min-width:120px;font-size:.72rem;color:#444;font-weight:600;padding-right:8px;line-height:1.25}
-.tl-bar-wrap{flex:1;height:22px;background:#f5f8fc;border-radius:4px;position:relative}
-.tl-segment{position:absolute;height:100%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:white;font-weight:700;white-space:nowrap;overflow:hidden;padding:0 3px}
-.tl-treatment-bar{background:linear-gradient(90deg,#1a6b9a,#1585bc)}
+.section-title {
+  font-size: 15px; font-weight: 700; margin-bottom: 14px;
+  padding-bottom: 8px; border-bottom: 2px solid;
+}
 
-/* Calendar grid */
-.action-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.action-bar .hint-text{font-size:.73rem;color:#888;display:flex;align-items:center;gap:3px}
-.calendar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.month-card{background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07)}
-.month-hdr{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;text-align:center;padding:10px;font-size:.9rem;font-weight:700}
-.wk-row{display:grid;grid-template-columns:repeat(7,1fr);background:#f7f9fc;border-bottom:1px solid #e8edf2}
-.wk-row span{text-align:center;padding:5px 2px;font-size:.65rem;font-weight:700;color:#666}
-.wk-row span.sun{color:#d94040}.wk-row span.sat{color:#2266cc}
-.days-grid{display:grid;grid-template-columns:repeat(7,1fr);padding:3px;gap:2px}
-.day-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-radius:6px;font-size:.78rem;position:relative;cursor:pointer;padding-top:2px;transition:transform .08s;-webkit-user-select:none;user-select:none}
-.day-cell:active:not(.empty){transform:scale(.92)}
-.day-cell.empty{cursor:default}
-.day-cell.normal{color:#333;background:#fafafa}
-.day-cell.wsat{color:#2266cc;background:#f5f8ff}
-.day-cell.wsun{color:#d94040;background:#fff6f6}
-.day-cell.holiday{color:#d94040;background:#fff6f6}
-.day-cell.treatment{background:linear-gradient(135deg,#1a6b9a,#1585bc);color:white;font-weight:700;box-shadow:0 1px 4px rgba(26,107,154,.3)}
-.day-cell.treatment .treat-num{font-size:.5rem;opacity:.9;line-height:1}
-.day-cell.has-note::after{content:'';position:absolute;bottom:1px;right:1px;width:5px;height:5px;border-radius:50%;background:#4caf50}
-.day-cell.treatment.has-note::after{background:#a5d6a7}
-.day-num{font-size:.78rem;line-height:1.2}
-.se-dots{display:flex;gap:1px;flex-wrap:wrap;justify-content:center;padding:0 1px;margin-top:0}
-.se-dot{width:3px;height:3px;border-radius:50%;flex-shrink:0}
+/* ─── PATIENT THEME ──────────────────────────────── */
+.app.pt .app-bar { background: var(--pt-primary); }
+.app.pt .tab-bar { background: var(--pt-card); border-color: var(--pt-border); }
+.app.pt .tab-btn { color: var(--pt-muted); }
+.app.pt .tab-btn.active { color: var(--pt-primary); border-color: var(--pt-primary); }
+.app.pt .tab-content { background: var(--pt-bg); }
+.app.pt .section-title { color: var(--pt-primary); border-color: var(--pt-border); }
+.app.pt .card { background: var(--pt-card); border: 1px solid var(--pt-border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.app.pt .input-group label { display: block; font-size: 12px; color: var(--pt-muted); margin-bottom: 4px; font-weight: 600; }
+.app.pt .input-group input, .app.pt .input-group select {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--pt-border);
+  border-radius: 10px; font-size: 14px; color: var(--pt-text); background: var(--pt-bg);
+}
+.app.pt .btn-primary { background: var(--pt-primary); color: #fff; border: none;
+  padding: 12px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 700; cursor: pointer; }
+.app.pt .btn-primary:hover { background: var(--pt-accent); }
+.app.pt .warn-box { background: #fffbec; border: 1px solid var(--pt-warn); border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #7a5010; margin-bottom: 14px; }
 
-/* Legend */
-.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px;background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-top:12px}
-.leg-item{display:flex;align-items:center;gap:4px;font-size:.72rem;color:#555}
-.leg-box{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700}
-.leg-box.treatment{background:linear-gradient(135deg,#1a6b9a,#1585bc);color:white}
-.leg-box.has-note{background:#f0f0f0;border:1.5px solid #ccc;color:#333;position:relative}
-.leg-box.has-note::after{content:'';position:absolute;bottom:1px;right:1px;width:5px;height:5px;border-radius:50%;background:#4caf50}
+/* ─── MEDICAL THEME ──────────────────────────────── */
+.app.md .app-bar { background: var(--md-primary); }
+.app.md .tab-bar { background: var(--md-card); border-color: var(--md-border); }
+.app.md .tab-btn { color: var(--md-muted); }
+.app.md .tab-btn.active { color: var(--md-accent); border-color: var(--md-accent); }
+.app.md .tab-content { background: var(--md-bg); }
+.app.md .section-title { color: var(--md-primary); border-color: var(--md-border); }
+.app.md .card { background: var(--md-card); border: 1px solid var(--md-border); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+.app.md .input-group { margin-bottom: 12px; }
+.app.md .input-group label { display: block; font-size: 11px; color: var(--md-muted); margin-bottom: 4px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.app.md .input-group input, .app.md .input-group select {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--md-border);
+  border-radius: 8px; font-size: 14px; color: var(--md-text); background: #fff;
+}
+.app.md .btn-primary { background: var(--md-accent); color: #fff; border: none;
+  padding: 11px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.app.md .btn-primary:hover { background: var(--md-primary); }
+.app.md .result-box { background: var(--md-highlight); border: 1px solid var(--md-border); border-radius: 10px; padding: 16px; margin-top: 14px; }
+.app.md .result-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--md-border); font-size: 13px; }
+.app.md .result-row:last-child { border: none; }
+.app.md .result-val { font-size: 20px; font-weight: 700; color: var(--md-accent); }
 
-/* ====== MODAL ====== */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:flex-end;justify-content:center;padding:0}
-.modal-overlay.open{display:flex}
-.modal{background:white;border-radius:16px 16px 0 0;width:100%;max-width:500px;box-shadow:0 -4px 24px rgba(0,0,0,.2);max-height:85vh;display:flex;flex-direction:column;animation:slideUp .25s ease-out}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-hdr{background:linear-gradient(135deg,#1a6b9a,#0d4d73);color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;border-radius:16px 16px 0 0}
-.modal-hdr h3{font-size:.95rem}
-.modal-close{background:none;border:none;color:white;font-size:1.3rem;cursor:pointer;padding:0 4px;line-height:1}
-.modal-body{padding:14px 16px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
-.modal-section{margin-bottom:14px}
-.modal-section label{display:block;font-size:.78rem;font-weight:700;color:#555;margin-bottom:6px}
-.treat-badge{display:inline-block;background:#1a6b9a;color:white;border-radius:20px;padding:3px 11px;font-size:.78rem;margin-bottom:10px}
-.se-active-list{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
-.se-active-chip{border-radius:12px;padding:3px 9px;font-size:.7rem;color:white;font-weight:600}
-.nrs-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
-.nrs-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #ddd;background:white;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .1s;color:#555}
-.nrs-btn.selected{background:#1a6b9a;color:white;border-color:#1a6b9a}
-.nrs-btn.nrs-hi{border-color:#ffccbc}.nrs-btn.nrs-hi.selected{background:#ff5722;border-color:#ff5722}
-.nrs-btn.nrs-med{border-color:#ffe0b2}.nrs-btn.nrs-med.selected{background:#ff9800;border-color:#ff9800}
-.nrs-scale{display:flex;justify-content:space-between;font-size:.65rem;color:#999;margin-top:3px;padding:0 2px}
-.note-textarea{width:100%;padding:10px;border:1.5px solid #cdd8e3;border-radius:8px;font-size:.88rem;resize:none;min-height:72px;font-family:inherit;line-height:1.6}
-.note-textarea:focus{outline:none;border-color:#1a6b9a}
-.takeda-textarea{width:100%;padding:10px;border:1.5px solid #a5d6a7;border-radius:8px;font-size:.88rem;resize:none;min-height:60px;font-family:inherit;line-height:1.6;background:#f1f8f1}
-.takeda-textarea:focus{outline:none;border-color:#4caf50}
-.takeda-label{color:#2e7d32!important}
-.modal-footer{padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:flex-end;border-top:1px solid #f0f0f0;flex-shrink:0}
-/* Skip feature */
-.day-cell.skipped{background:repeating-linear-gradient(135deg,#cfd8dc,#cfd8dc 3px,#eceff1 3px,#eceff1 9px)!important;color:#90a4ae!important;opacity:.75}
-.day-cell.skipped .treat-num{opacity:.5}
-.skip-badge{display:inline-block;background:#ff7043;color:white;border-radius:12px;padding:2px 9px;font-size:.7rem;font-weight:700;margin-left:6px}
-.btn-skip{background:white;color:#ff7043;border:2px solid #ff7043;padding:7px 14px;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-skip:hover{background:#fff3e0}
-.btn-skip.active{background:#ff7043;color:white}
-.skip-note{background:#fff3e0;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#bf360c;margin-bottom:12px;display:none}
-.skip-note.show{display:block}
-/* Adhoc treatment (weekend/holiday extra) */
-.day-cell.adhoc-treat{background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%)!important;border:2px solid #43a047!important}
-.day-cell.adhoc-treat .treat-num{color:#2e7d32;font-weight:800}
-.btn-adhoc{background:white;color:#2e7d32;border:2px solid #43a047;padding:7px 14px;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-adhoc:hover{background:#e8f5e9}
-.btn-adhoc.active{background:#43a047;color:white}
-.adhoc-note{background:#e8f5e9;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#1b5e20;margin-bottom:12px;display:none}
-.adhoc-note.show{display:block}
-/* Weight input */
-.weight-input-row{display:flex;align-items:center;gap:8px}
-.weight-input{width:90px;padding:8px 10px;border:1.5px solid #cdd8e3;border-radius:8px;font-size:1rem;text-align:center;font-family:inherit}
-.weight-input:focus{outline:none;border-color:#1a6b9a}
-.weight-unit{color:#888;font-size:.85rem}
-.weight-badge{display:inline-block;background:#e3f2fd;color:#1565c0;border-radius:12px;padding:2px 9px;font-size:.75rem;font-weight:600}
-/* Photo capture */
-.photo-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.photo-thumb{width:70px;height:70px;border-radius:8px;object-fit:cover;border:1px solid #e0e0e0;cursor:pointer}
-.photo-add-btn{width:70px;height:70px;border-radius:8px;border:2px dashed #bdbdbd;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#999;cursor:pointer;background:white;transition:all .2s}
-.photo-add-btn:hover{border-color:#1a6b9a;color:#1a6b9a}
-.photo-preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
-.photo-preview-overlay img{max-width:100%;max-height:90vh;border-radius:8px}
-.photo-preview-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:40px;height:40px;font-size:1.2rem;cursor:pointer}
-.photo-del-btn{position:absolute;top:-6px;right:-6px;background:#e53935;color:white;border:none;border-radius:50%;width:22px;height:22px;font-size:.7rem;cursor:pointer;line-height:22px;text-align:center}
-.photo-thumb-wrap{position:relative;display:inline-block}
+/* OAR TABLE */
+.oar-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.oar-table th { background: var(--md-primary); color: #fff; padding: 8px 6px; text-align: left; font-size: 11px; }
+.oar-table td { padding: 7px 6px; border-bottom: 1px solid var(--md-border); }
+.oar-table tr:nth-child(even) td { background: var(--md-highlight); }
+.oar-table .organ-header td { background: #e0e8f5; font-weight: 700; font-size: 11px; color: var(--md-primary); }
+
 /* FAQ */
-.faq-card{background:white;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.faq-q{font-weight:700;color:#1a6b9a;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:6px}
-.faq-q::before{content:'Q';background:#1a6b9a;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
-.faq-a{margin-top:8px;padding-left:28px;font-size:.85rem;color:#444;line-height:1.7;display:none}
-.faq-card.open .faq-a{display:block}
-.faq-card.open .faq-q{color:#0d47a1}
-/* BED Calc */
-.calc-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.calc-card{background:#f7fbff;border-radius:10px;padding:14px;text-align:center;border:1px solid #e3edf5}
-.calc-card.highlight{background:#e8f5e9;border-color:#a5d6a7}
-.calc-label{font-size:.72rem;color:#888;font-weight:600;margin-bottom:4px}
-.calc-value{font-size:1.4rem;font-weight:800;color:#1a6b9a}
-.calc-card.highlight .calc-value{color:#2e7d32}
-.calc-unit{font-size:.75rem;color:#999;font-weight:400}
-.calc-total-row{background:#fff8e1;border-radius:10px;padding:12px;text-align:center;border:1px solid #ffe082;margin-bottom:10px}
-.calc-total-label{font-size:.8rem;color:#f57f17;font-weight:700}
-.calc-total-value{font-size:1.6rem;font-weight:800;color:#e65100}
-/* OAR table */
-.oar-table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:10px}
-.oar-table th{background:#1a6b9a;color:white;padding:8px 6px;text-align:left;font-weight:600;font-size:.72rem;position:sticky;top:0}
-.oar-table td{padding:7px 6px;border-bottom:1px solid #e8edf2}
-.oar-table tr:nth-child(even){background:#f7fbff}
-.oar-table tr:hover{background:#e3f2fd}
-.oar-organ{font-weight:700;color:#1a6b9a;white-space:nowrap}
-.oar-endpoint{color:#666;font-size:.72rem}
-.oar-dose{font-weight:700;color:#c62828;text-align:center}
-.oar-scroll{max-height:60vh;overflow-y:auto;border-radius:8px;border:1px solid #e0e0e0}
-.oar-category{background:#e8edf2!important;font-weight:700;color:#37474f;font-size:.8rem}
-.oar-category td{padding:8px 6px;border-bottom:2px solid #cfd8dc}
-/* Evidence search */
-.ev-search-row{display:flex;gap:8px;margin-bottom:14px}
-.ev-search-input{flex:1;padding:10px 14px;border:1.5px solid #cdd8e3;border-radius:10px;font-size:.9rem;font-family:inherit}
-.ev-search-input:focus{outline:none;border-color:#1a6b9a}
-.ev-search-btn{background:#1a6b9a;color:white;border:none;border-radius:10px;padding:10px 18px;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap}
-.ev-search-btn:disabled{background:#b0bec5;cursor:default}
-.ev-chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.ev-chip{background:#e3edf5;color:#1a6b9a;border:none;border-radius:20px;padding:6px 14px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s}
-.ev-chip:hover{background:#1a6b9a;color:white}
-.ev-result{background:white;border-radius:10px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #1a6b9a}
-.ev-result-title{font-weight:700;color:#1a6b9a;font-size:.88rem;line-height:1.5;cursor:pointer;text-decoration:none;display:block}
-.ev-result-title:hover{text-decoration:underline}
-.ev-result-meta{font-size:.72rem;color:#888;margin-top:4px;line-height:1.5}
-.ev-result-journal{font-weight:600;color:#555}
-.ev-result-abstract{font-size:.78rem;color:#444;margin-top:8px;line-height:1.7;display:none;border-top:1px solid #f0f0f0;padding-top:8px}
-.ev-result.open .ev-result-abstract{display:block}
-.ev-toggle{font-size:.72rem;color:#1a6b9a;cursor:pointer;margin-top:4px;display:inline-block}
-.ev-loading{text-align:center;padding:30px;color:#999}
-.ev-loading .spinner{display:inline-block;width:24px;height:24px;border:3px solid #e0e0e0;border-top-color:#1a6b9a;border-radius:50%;animation:evspin .8s linear infinite}
-@keyframes evspin{to{transform:rotate(360deg)}}
-.ev-count{font-size:.78rem;color:#888;margin-bottom:10px}
+.faq-item { margin-bottom: 10px; }
+.faq-q { width: 100%; text-align: left; background: var(--pt-card);
+  border: 1.5px solid var(--pt-border); border-radius: 10px; padding: 12px 14px;
+  font-size: 13px; font-weight: 700; color: var(--pt-text); cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; }
+.faq-q .arrow { transition: transform .2s; font-size: 11px; }
+.faq-a { display: none; background: var(--pt-bg); border: 1.5px solid var(--pt-border);
+  border-top: none; border-radius: 0 0 10px 10px; padding: 12px 14px;
+  font-size: 13px; color: var(--pt-text); line-height: 1.75; }
+.faq-item.open .faq-q { border-radius: 10px 10px 0 0; }
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .arrow { transform: rotate(180deg); }
 
-/* ====== SUMMARY TAB ====== */
-.summary-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.empty-summary{text-align:center;padding:36px 20px;color:#aaa;font-size:.88rem;line-height:1.8}
-.entry-card{background:white;border-radius:10px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,.07);margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
-.entry-date-col{min-width:60px;text-align:center}
-.entry-date-col .e-day{font-size:1.3rem;font-weight:700;color:#1a6b9a;line-height:1}
-.entry-date-col .e-ymd{font-size:.68rem;color:#888}
-.entry-date-col .treat-tag{background:#1a6b9a;color:white;border-radius:10px;padding:2px 7px;font-size:.65rem;margin-top:3px;display:inline-block}
-.entry-body{flex:1}
-.entry-nrs{display:inline-flex;align-items:center;gap:4px;margin-bottom:5px}
-.nrs-badge{padding:2px 9px;border-radius:12px;font-size:.75rem;font-weight:700;color:white}
-.nrs-0{background:#4caf50}.nrs-mild{background:#8bc34a}.nrs-mod{background:#ff9800}.nrs-sev{background:#f44336}
-.entry-note-text{font-size:.83rem;color:#444;line-height:1.7}
-.se-active-sm{font-size:.7rem;color:#888;margin-top:3px}
+/* CALENDAR */
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-top: 12px; }
+.cal-day-label { text-align: center; font-size: 10px; font-weight: 700; color: var(--pt-muted); padding: 4px 0; }
+.cal-day { border-radius: 8px; padding: 6px 2px; min-height: 44px; text-align: center;
+  font-size: 11px; cursor: pointer; border: 1.5px solid transparent; transition: all .15s; }
+.cal-day .day-num { font-size: 13px; font-weight: 700; }
+.cal-day.treat { background: #d4f0e4; border-color: var(--pt-accent); }
+.cal-day.treat .day-num { color: var(--pt-primary); }
+.cal-day.se-risk { background: #fff3e0; border-color: #f0a020; }
+.cal-day.holiday { background: #f5f5f5; }
+.cal-day.holiday .day-num { color: #bbb; }
+.cal-day.sun .day-num { color: #e06060; }
+.cal-day.sat .day-num { color: #5080c0; }
+.cal-day.today { box-shadow: inset 0 0 0 2px var(--pt-primary); }
+.cal-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+.cal-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--pt-muted); }
+.cal-legend-dot { width: 12px; height: 12px; border-radius: 3px; }
 
-/* ====== FOOTER LINKS ====== */
-.app-footer{max-width:960px;margin:0 auto;padding:24px 12px 40px}
-.footer-card{border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);margin-bottom:18px;transition:transform .15s}
-.footer-card:active{transform:scale(.98)}
-.footer-card a{text-decoration:none;display:block}
-.footer-card-inner{padding:22px 20px;display:flex;align-items:center;gap:16px}
-.footer-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
-.footer-text h3{font-size:1rem;margin-bottom:3px;letter-spacing:.03em}
-.footer-text p{font-size:.82rem;line-height:1.6;opacity:.88}
-.footer-arrow{margin-left:auto;font-size:1.2rem;opacity:.6;flex-shrink:0}
-.fc-lifecolor{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
-.fc-lifecolor .footer-icon{background:linear-gradient(135deg,#2e7d32,#43a047);color:white}
-.fc-lifecolor h3{color:#2e7d32}
-.fc-lifecolor p{color:#33691e}
-.fc-lifecolor .footer-arrow{color:#2e7d32}
+/* SIDE EFFECT TIMELINE */
+.se-timeline { position: relative; padding-left: 20px; }
+.se-timeline::before { content:''; position:absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: var(--pt-border); }
+.se-period { position: relative; margin-bottom: 16px; }
+.se-period::before { content:''; position:absolute; left: -17px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--pt-accent); border: 2px solid var(--pt-card); }
+.se-period h4 { font-size: 12px; font-weight: 700; color: var(--pt-primary); margin-bottom: 6px; }
+.se-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.se-tag { background: var(--pt-bg); border: 1px solid var(--pt-border); border-radius: 99px; padding: 3px 10px; font-size: 11px; color: var(--pt-text); }
 
+/* DISEASE SELECTOR */
+.disease-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.disease-btn { background: var(--pt-card); border: 1.5px solid var(--pt-border); border-radius: 10px;
+  padding: 10px 6px; font-size: 12px; font-weight: 600; color: var(--pt-text); cursor: pointer; text-align: center; }
+.disease-btn.active { background: var(--pt-primary); color: #fff; border-color: var(--pt-primary); }
 
-.footer-phone{background:white;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:20px;text-align:center;margin-bottom:18px}
-.footer-phone .phone-label{font-size:.82rem;color:#555;margin-bottom:6px;font-weight:600}
-.footer-phone .phone-dept{font-size:.95rem;color:#0d4d73;font-weight:800;margin-bottom:10px}
-.footer-phone a.phone-number{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#e53935,#c62828);color:white;padding:14px 28px;border-radius:12px;text-decoration:none;font-size:1.3rem;font-weight:900;letter-spacing:.06em;box-shadow:0 3px 12px rgba(229,57,53,.35);transition:opacity .15s}
-.footer-phone a.phone-number:hover{opacity:.88}
-.footer-phone a.phone-number:active{transform:scale(.97)}
-.footer-phone .phone-note{font-size:.72rem;color:#999;margin-top:8px}
-.footer-copy{text-align:center;font-size:.7rem;color:#aaa;padding:8px 0 20px}
+/* RECORDS */
+.record-item { background: var(--pt-card); border: 1px solid var(--pt-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.record-date { font-size: 11px; color: var(--pt-muted); margin-bottom: 4px; }
+.record-nrs { font-size: 13px; font-weight: 700; color: var(--pt-primary); }
+.record-memo { font-size: 12px; color: var(--pt-text); margin-top: 4px; line-height: 1.6; }
+.nrs-row { display: flex; gap: 6px; margin: 8px 0; }
+.nrs-btn { flex: 1; padding: 8px 0; border: 1.5px solid var(--pt-border); border-radius: 8px;
+  font-size: 12px; font-weight: 700; cursor: pointer; background: var(--pt-card);
+  color: var(--pt-text); transition: all .1s; }
+.nrs-btn.sel { background: var(--pt-primary); color: #fff; border-color: var(--pt-primary); }
 
-/* ====== PRINT ====== */
-@media print{
-  body{background:white}
-  header{background:#1a6b9a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .tabs,.input-card,.btn-primary,.btn-outline,.action-bar,.se-timeline-card,#tab-info,#tab-summary,#tab-basics,.install-banner,.hdr-actions,.app-footer{display:none!important}
-  #calendarOutput{display:block!important}
-  #tab-calendar{display:block!important}
-  .month-hdr{background:#1a6b9a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .day-cell.treatment{background:#1a6b9a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .calendar-grid{grid-template-columns:repeat(2,1fr)}
-  .month-card{break-inside:avoid}
-  .container{padding:6px}
+/* PUBMED */
+.pub-item { background: var(--md-card); border: 1px solid var(--md-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.pub-title { font-size: 13px; font-weight: 600; color: var(--md-text); line-height: 1.5; margin-bottom: 4px; }
+.pub-meta { font-size: 11px; color: var(--md-muted); }
+.pub-link { font-size: 11px; color: var(--md-accent); text-decoration: none; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; align-items: flex-end; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; border-radius: 20px 20px 0 0; padding: 24px 20px; width: 100%; max-height: 85vh; overflow-y: auto; }
+.modal-box h3 { font-size: 15px; font-weight: 700; color: var(--pt-text); margin-bottom: 16px; }
+.modal-textarea { width: 100%; border: 1.5px solid var(--pt-border); border-radius: 10px; padding: 10px 12px; font-size: 13px; resize: vertical; min-height: 80px; }
+.modal-row { display: flex; gap: 8px; margin-top: 12px; }
+.modal-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; }
+.modal-btn.save { background: var(--pt-primary); color: #fff; }
+.modal-btn.cancel { background: #f0f0f0; color: #606060; }
+
+/* UTIL */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mt8 { margin-top: 8px; }
+.mt14 { margin-top: 14px; }
+.tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 700; letter-spacing: .04em; }
+.tag.green { background: #e0f5ec; color: #1a7040; }
+.tag.blue { background: #e0eeff; color: #1a40a0; }
+
+.lifecolor-footer {
+  text-align: center; padding: 20px 16px; font-size: 11px; color: #999; border-top: 1px solid #eee;
 }
+.lifecolor-footer a { color: var(--pt-primary); text-decoration: none; }
 
-/* ====== RESPONSIVE ====== */
-@media(max-width:380px){
-  header h1{font-size:1rem}
-  .tab-btn{font-size:.72rem;padding:10px 2px}
-  .calendar-grid{grid-template-columns:1fr}
-}
+.search-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.search-chip { background: var(--md-highlight); border: 1px solid var(--md-border); border-radius: 99px;
+  padding: 4px 12px; font-size: 11px; color: var(--md-primary); cursor: pointer; }
+.search-chip:hover { background: var(--md-border); }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="hdr-left">
-    <div>
-      <h1>🏥 放射線治療サポート</h1>
-      <p>副作用の見通し・体調記録・診察メモ</p>
+<!-- ═══ LANDING ═══ -->
+<div id="landing">
+  <div class="land-header">
+    <div class="logo-badge">Lifecolor</div>
+    <h1>🏥 放射線治療サポート</h1>
+    <p>ご利用の方を選択してください</p>
+  </div>
+  <div class="land-cards">
+    <div class="land-card pt" onclick="openApp('pt')">
+      <div class="lc-icon">🧡</div>
+      <h2>患者様・ご家族の方</h2>
+      <p>治療中の体調管理・副作用の見通し・診察メモをサポートします。</p>
+      <ul>
+        <li>📅 治療カレンダー</li>
+        <li>📋 体調・痛みの記録</li>
+        <li>📖 副作用の見通し</li>
+        <li>❓ よくある質問</li>
+      </ul>
+      <button class="land-btn">患者向けアプリを開く →</button>
+    </div>
+    <div class="land-card md" onclick="openApp('md')">
+      <div class="lc-icon">🩺</div>
+      <h2>医療従事者の方</h2>
+      <p>線量計算・臓器耐容線量・エビデンス検索など臨床ツールを提供します。</p>
+      <ul>
+        <li>🧮 BED・EQD2 計算</li>
+        <li>🛡️ OAR 耐容線量一覧</li>
+        <li>🔬 PubMed文献検索</li>
+        <li>📖 副作用（臨床詳細）</li>
+      </ul>
+      <button class="land-btn">医療者向けツールを開く →</button>
     </div>
   </div>
-  <div class="hdr-actions">
-    <button class="hdr-btn" onclick="exportData()" title="データを書き出し">📤 保存</button>
-    <button class="hdr-btn" onclick="importData()" title="データを読み込み">📥 復元</button>
-  </div>
-</header>
-
-<div class="install-banner" id="installBanner" onclick="installPWA()">
-  📲 ホーム画面に追加してアプリとして使えます
-  <button class="install-close" onclick="event.stopPropagation();document.getElementById('installBanner').classList.remove('show')">✕</button>
+  <div class="land-footer">Provided by <a href="https://lifecolor-health.com/" style="color:rgba(255,255,255,.6)">Lifecolor</a> — 無償提供</div>
 </div>
 
-<nav class="tabs">
-  <button class="tab-btn active" onclick="showTab('calendar')" id="tab-calendar-btn">📅 暦</button>
-  <button class="tab-btn" onclick="showTab('summary')" id="tab-summary-btn">📋 記録</button>
-  <button class="tab-btn" onclick="showTab('faq')" id="tab-faq-btn">❓ FAQ</button>
-  <button class="tab-btn" onclick="showTab('info')" id="tab-info-btn">📖 副作用</button>
-  <button class="tab-btn" onclick="showTab('calc')" id="tab-calc-btn">🧮 計算</button>
-  <button class="tab-btn" onclick="showTab('oar')" id="tab-oar-btn">🛡️ OAR</button>
-  <button class="tab-btn" onclick="showTab('evidence')" id="tab-evidence-btn">🔬 文献</button>
-</nav>
-
-<!-- ================= TAB 1: DISEASE INFO ================= -->
-<div class="tab-pane" id="tab-info">
-<div class="container">
-  <div class="disease-selector-wrap">
-    <h2>🔍 疾患を選択して副作用の情報を確認</h2>
-    <div class="disease-buttons" id="diseaseButtons"></div>
+<!-- ═══ PATIENT APP ═══ -->
+<div id="app-pt" class="app pt">
+  <div class="app-bar">
+    <button class="back-btn" onclick="goBack()">← 戻る</button>
+    <h1>🏥 放射線治療サポート</h1>
+    <span class="mode-badge">患者向け</span>
   </div>
-  <div class="info-card" id="infoCard">
-    <p style="color:#aaa;text-align:center;padding:20px;font-size:.85rem">上のボタンから疾患を選択してください</p>
+  <div class="tab-bar" id="pt-tabs">
+    <button class="tab-btn active" onclick="switchTab('pt','cal')">📅 カレンダー</button>
+    <button class="tab-btn" onclick="switchTab('pt','record')">📋 記録</button>
+    <button class="tab-btn" onclick="switchTab('pt','se')">📖 副作用</button>
+    <button class="tab-btn" onclick="switchTab('pt','faq')">❓ FAQ</button>
   </div>
-</div>
-</div>
+  <div class="tab-content">
 
-<!-- ================= TAB: BED/EQD2 CALC ================= -->
-<div class="tab-pane" id="tab-calc">
-<div class="container">
-  <div class="input-card">
-    <h2>🧮 生物学的線量計算</h2>
-    <p style="font-size:.8rem;color:#666;margin-bottom:12px">1回線量と回数を入力すると BED・EQD2 を自動計算します。</p>
-    <div class="form-row">
-      <div class="fg">
-        <label>1回線量 (Gy)</label>
-        <input type="number" id="calcDose" step="0.1" min="0.1" max="30" value="2" oninput="calcBED()" />
+    <!-- Calendar -->
+    <div id="pt-cal" class="tab-pane active">
+      <div class="section-title">治療スケジュール</div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="input-group">
+            <label>お名前（任意）</label>
+            <input type="text" id="pt-name" placeholder="例：田中さん">
+          </div>
+          <div class="input-group">
+            <label>治療の種類</label>
+            <select id="pt-disease">
+              <option value="">選択してください</option>
+              <option value="lung">肺がん</option>
+              <option value="breast">乳がん</option>
+              <option value="prostate">前立腺がん</option>
+              <option value="hnc">頭頸部がん</option>
+              <option value="brain">脳腫瘍</option>
+              <option value="liver">肝臓</option>
+              <option value="bone">骨転移</option>
+              <option value="esophagus">食道がん</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2 mt8">
+          <div class="input-group">
+            <label>治療開始日</label>
+            <input type="date" id="pt-start">
+          </div>
+          <div class="input-group">
+            <label>総照射回数</label>
+            <input type="number" id="pt-fx" placeholder="例：30" min="1" max="45">
+          </div>
+        </div>
+        <button class="btn-primary mt8" onclick="buildCalendar()">📅 カレンダーを作成</button>
       </div>
-      <div class="fg">
-        <label>回数 (fx)</label>
-        <input type="number" id="calcFx" min="1" max="50" value="25" oninput="calcBED()" />
+      <div id="cal-output"></div>
+      <div id="cal-legend" style="display:none" class="card">
+        <div class="cal-legend">
+          <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#d4f0e4;border:1.5px solid #48b88a"></div>照射日</div>
+          <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#fff3e0;border:1.5px solid #f0a020"></div>副作用注意</div>
+          <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#f5f5f5;border:1px solid #ddd"></div>休日（照射なし）</div>
+        </div>
+        <p style="font-size:11px;color:#999;margin-top:8px">日付をタップして体調を記録できます</p>
       </div>
-    </div>
-    <div id="calcResult" style="margin-top:16px"></div>
-  </div>
-  <div class="input-card" style="margin-top:14px">
-    <h3 style="font-size:.95rem;margin-bottom:10px">📖 用語解説</h3>
-    <div style="font-size:.82rem;color:#444;line-height:1.8">
-      <p><strong>BED（生物学的等価線量）</strong><br>
-      BED = n × d × (1 + d/[α/β]) で計算されます。異なる分割照射スケジュール間の生物学的効果を比較するための指標です。</p>
-      <p style="margin-top:8px"><strong>α/β比</strong><br>
-      α/β = 2 Gy：晩期反応組織（脊髄・脳など）の耐容線量評価に使用<br>
-      α/β = 10 Gy：腫瘍や急性反応組織の評価に使用</p>
-      <p style="margin-top:8px"><strong>EQD2（2Gy換算等価線量）</strong><br>
-      EQD2 = BED / (1 + 2/[α/β]) で計算されます。1回2Gyの通常分割照射に換算した場合の等価線量です。臨床で最も広く使われる比較指標です。</p>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ================= TAB: OAR ================= -->
-<div class="tab-pane" id="tab-oar">
-<div class="container">
-  <div class="input-card">
-    <h2>🛡️ OAR 耐容線量一覧</h2>
-    <p style="font-size:.72rem;color:#999;margin-bottom:8px">QUANTEC / RTOG ガイドラインに基づく通常分割（EQD2）での一般的な目安です。個々の症例では主治医の判断が優先されます。</p>
-    <div class="oar-scroll">
-      <table class="oar-table">
-        <thead><tr><th>臓器</th><th>指標</th><th>耐容線量</th><th>エンドポイント</th></tr></thead>
-        <tbody>
-          <tr class="oar-category"><td colspan="4">中枢神経系</td></tr>
-          <tr><td class="oar-organ">脊髄</td><td>Dmax</td><td class="oar-dose">45-50 Gy</td><td class="oar-endpoint">脊髄症</td></tr>
-          <tr><td class="oar-organ">脳幹</td><td>Dmax</td><td class="oar-dose">54 Gy</td><td class="oar-endpoint">永続的な神経障害・壊死</td></tr>
-          <tr><td class="oar-organ">視神経/視交叉</td><td>Dmax</td><td class="oar-dose">54-55 Gy</td><td class="oar-endpoint">視神経障害</td></tr>
-          <tr><td class="oar-organ">蝸牛（内耳）</td><td>Dmean</td><td class="oar-dose">45 Gy</td><td class="oar-endpoint">感音性難聴</td></tr>
-          <tr class="oar-category"><td colspan="4">頭頸部</td></tr>
-          <tr><td class="oar-organ">耳下腺</td><td>Dmean</td><td class="oar-dose">25-26 Gy</td><td class="oar-endpoint">長期唾液分泌障害</td></tr>
-          <tr><td class="oar-organ">下顎骨</td><td>Dmax</td><td class="oar-dose">70 Gy</td><td class="oar-endpoint">骨壊死</td></tr>
-          <tr><td class="oar-organ">喉頭</td><td>Dmean</td><td class="oar-dose">44 Gy</td><td class="oar-endpoint">喉頭浮腫</td></tr>
-          <tr><td class="oar-organ">咽頭収縮筋</td><td>Dmean</td><td class="oar-dose">50 Gy</td><td class="oar-endpoint">嚥下障害</td></tr>
-          <tr class="oar-category"><td colspan="4">胸部</td></tr>
-          <tr><td class="oar-organ">肺（両側）</td><td>Dmean</td><td class="oar-dose">20 Gy</td><td class="oar-endpoint">放射線肺臓炎</td></tr>
-          <tr><td class="oar-organ">肺（両側）</td><td>V20</td><td class="oar-dose">≤30-35%</td><td class="oar-endpoint">放射線肺臓炎</td></tr>
-          <tr><td class="oar-organ">肺（両側）</td><td>V5</td><td class="oar-dose">≤60%</td><td class="oar-endpoint">放射線肺臓炎</td></tr>
-          <tr><td class="oar-organ">心臓</td><td>Dmean</td><td class="oar-dose">26 Gy</td><td class="oar-endpoint">心膜炎</td></tr>
-          <tr><td class="oar-organ">心臓</td><td>V25</td><td class="oar-dose">≤10%</td><td class="oar-endpoint">長期心毒性</td></tr>
-          <tr><td class="oar-organ">食道</td><td>Dmean</td><td class="oar-dose">34 Gy</td><td class="oar-endpoint">Grade3+食道炎</td></tr>
-          <tr><td class="oar-organ">腕神経叢</td><td>Dmax</td><td class="oar-dose">66 Gy</td><td class="oar-endpoint">神経障害</td></tr>
-          <tr class="oar-category"><td colspan="4">腹部・骨盤</td></tr>
-          <tr><td class="oar-organ">肝臓</td><td>Dmean</td><td class="oar-dose">30-32 Gy</td><td class="oar-endpoint">放射線性肝障害(RILD)</td></tr>
-          <tr><td class="oar-organ">腎臓（両側）</td><td>Dmean</td><td class="oar-dose">18 Gy</td><td class="oar-endpoint">腎機能障害</td></tr>
-          <tr><td class="oar-organ">腎臓（両側）</td><td>V20</td><td class="oar-dose">≤32%</td><td class="oar-endpoint">腎機能障害</td></tr>
-          <tr><td class="oar-organ">小腸</td><td>Dmax</td><td class="oar-dose">50 Gy</td><td class="oar-endpoint">穿孔・瘻孔・狭窄</td></tr>
-          <tr><td class="oar-organ">小腸</td><td>V15</td><td class="oar-dose">≤120 cc</td><td class="oar-endpoint">Grade3+毒性</td></tr>
-          <tr><td class="oar-organ">直腸</td><td>V50</td><td class="oar-dose">≤50%</td><td class="oar-endpoint">Grade2+直腸炎</td></tr>
-          <tr><td class="oar-organ">直腸</td><td>V60</td><td class="oar-dose">≤35%</td><td class="oar-endpoint">Grade2+直腸炎</td></tr>
-          <tr><td class="oar-organ">直腸</td><td>V70</td><td class="oar-dose">≤20%</td><td class="oar-endpoint">Grade2+直腸炎</td></tr>
-          <tr><td class="oar-organ">膀胱</td><td>V65</td><td class="oar-dose">≤50%</td><td class="oar-endpoint">Grade3+膀胱炎</td></tr>
-          <tr><td class="oar-organ">膀胱</td><td>V70</td><td class="oar-dose">≤35%</td><td class="oar-endpoint">Grade3+膀胱炎</td></tr>
-          <tr><td class="oar-organ">大腿骨頭</td><td>V50</td><td class="oar-dose">≤5%</td><td class="oar-endpoint">骨壊死</td></tr>
-          <tr><td class="oar-organ">陰茎球</td><td>Dmean</td><td class="oar-dose">52 Gy</td><td class="oar-endpoint">勃起機能障害</td></tr>
-          <tr class="oar-category"><td colspan="4">その他</td></tr>
-          <tr><td class="oar-organ">水晶体</td><td>Dmax</td><td class="oar-dose">10 Gy</td><td class="oar-endpoint">白内障</td></tr>
-          <tr><td class="oar-organ">網膜</td><td>Dmax</td><td class="oar-dose">45 Gy</td><td class="oar-endpoint">網膜症</td></tr>
-          <tr><td class="oar-organ">涙腺</td><td>Dmean</td><td class="oar-dose">25 Gy</td><td class="oar-endpoint">ドライアイ</td></tr>
-          <tr><td class="oar-organ">甲状腺</td><td>Dmean</td><td class="oar-dose">45 Gy</td><td class="oar-endpoint">甲状腺機能低下</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:.68rem;color:#aaa;margin-top:6px">Dmax=最大線量 Dmean=平均線量 Vxx=xx Gy以上が照射される体積割合　出典: QUANTEC (2010), RTOG protocols</p>
-  </div>
-</div>
-</div>
-
-<!-- ================= TAB 2: CALENDAR ================= -->
-<div class="tab-pane active" id="tab-calendar">
-<div class="container">
-  <div style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.78rem;color:#e65100;line-height:1.6">
-    ⚠️ このアプリに記載されている副作用の時期・症状は一般的な目安です。患者様個々において副作用の出方や程度には個人差があります。自己責任においてご使用ください。気になる症状がある場合は必ず主治医にご相談ください。
-  </div>
-  <div class="input-card">
-    <h2>📋 治療情報の入力</h2>
-    <div class="form-row">
-      <div class="fg" style="flex:1.5;min-width:180px">
-        <label>患者様のお名前</label>
-        <input type="text" id="patientName" placeholder="例：山田 太郎" />
+      <div class="warn-box mt14">
+        ⚠️ このアプリに記載の情報は一般的な目安です。気になる症状は必ず主治医・看護師にご相談ください。<br><br>
+        🌐 がんの正しい情報：<a href="https://ganjoho.jp/public/index.html" target="_blank" style="color:#7a5010">国立がん研究センター がん情報サービス</a>
       </div>
-      <div class="fg">
-        <label>疾患・治療の種類</label>
-        <select id="diseaseSelect" onchange="onDiseaseChange()"></select>
+      <div class="lifecolor-footer">
+        本アプリは <a href="https://lifecolor-health.com/">Lifecolor</a> が患者さんの療養生活を支援するために無償提供しています。
       </div>
     </div>
-    <div class="form-row" style="margin-top:10px">
-      <div class="fg">
-        <label>治療開始日</label>
-        <input type="date" id="startDate" />
+
+    <!-- Records -->
+    <div id="pt-record" class="tab-pane">
+      <div class="section-title">体調・痛みの記録</div>
+      <div class="card">
+        <div class="input-group"><label>記録日</label>
+          <input type="date" id="rec-date"></div>
+        <div style="font-size:12px;font-weight:700;color:var(--pt-muted);margin:10px 0 6px">今の痛みの強さ（NRS）</div>
+        <div class="nrs-row" id="nrs-btns"></div>
+        <div class="input-group mt8">
+          <label>体重（kg）</label>
+          <input type="number" id="rec-weight" placeholder="任意" step="0.1">
+        </div>
+        <div class="input-group mt8">
+          <label>体調メモ（診察で伝えたいこと）</label>
+          <textarea class="modal-textarea" id="rec-memo" placeholder="例：昨夜から右側の胸が少し痛い。食欲が落ちてきた。"></textarea>
+        </div>
+        <button class="btn-primary mt8" onclick="saveRecord()">💾 記録を保存</button>
       </div>
-      <div class="fg" style="min-width:110px">
-        <label>治療回数</label>
-        <input type="number" id="treatDays" min="1" max="39" value="25" />
-        <div class="hint">最大39回</div>
-      </div>
+      <div class="section-title mt14">過去の記録</div>
+      <div id="records-list"><p style="font-size:13px;color:#999;text-align:center;padding:20px">まだ記録がありません</p></div>
     </div>
-    <div style="margin-top:12px">
-      <button class="btn-primary" onclick="generateCalendar()">📅 カレンダーを作成</button>
-    </div>
-  </div>
 
-  <div id="calendarOutput">
-    <div class="summary-bar" id="summaryBar"></div>
-    <div class="se-timeline-card" id="seTimelineCard">
-      <h3>⚠️ 副作用が出やすい時期（目安）</h3>
-      <div class="timeline-scroll"><div class="timeline-wrap" id="timelineWrap"></div></div>
-      <p style="font-size:.7rem;color:#999;margin-top:6px">※個人差があります。気になる症状は医師・看護師にご相談ください。</p>
+    <!-- Side Effects (Patient) -->
+    <div id="pt-se" class="tab-pane">
+      <div class="section-title">副作用の見通し</div>
+      <p style="font-size:12px;color:#666;margin-bottom:14px;line-height:1.7">治療の種類によって、どんな副作用がいつごろ出やすいかを確認できます。個人差が大きく、症状が出ない方も多いので、あくまで参考としてご覧ください。</p>
+      <div class="disease-grid" id="pt-se-disease-grid"></div>
+      <div id="pt-se-output"></div>
     </div>
-    <div class="action-bar">
-      <div class="hint-text">💡 日付タップで体調・痛みを記録</div>
-      <button class="btn-outline" onclick="window.print()">🖨️ 印刷</button>
+
+    <!-- FAQ -->
+    <div id="pt-faq" class="tab-pane">
+      <div class="section-title">よくある質問</div>
+      <div id="faq-list"></div>
     </div>
-    <div class="calendar-grid" id="calendarGrid"></div>
-    <div class="legend">
-      <div class="leg-item"><div class="leg-box treatment">1</div>治療日</div>
-      <div class="leg-item"><div class="leg-box has-note">月</div>記録あり</div>
-      <div class="leg-item"><span style="width:7px;height:7px;border-radius:50%;background:#ff9800;display:inline-block"></span>副作用注意</div>
-      <div class="leg-item"><span style="color:#2266cc;font-weight:700;font-size:.8rem">土</span></div>
-      <div class="leg-item"><span style="color:#d94040;font-weight:700;font-size:.8rem">日祝</span></div>
-    </div>
+
   </div>
-</div>
 </div>
 
-<!-- ================= TAB 3: SUMMARY ================= -->
-<div class="tab-pane" id="tab-summary">
-<div class="container">
-  <div class="summary-controls">
-    <button class="btn-primary" onclick="renderSummary()" style="width:auto;padding:10px 18px">🔄 最新データ</button>
-    <button class="btn-outline" onclick="window.print()">🖨️</button>
-    <span id="summaryPatientLabel" style="font-size:.85rem;color:#555;font-weight:600"></span>
+<!-- ═══ MEDICAL APP ═══ -->
+<div id="app-md" class="app md">
+  <div class="app-bar">
+    <button class="back-btn" onclick="goBack()">← 戻る</button>
+    <h1>放射線治療 臨床ツール</h1>
+    <span class="mode-badge">医療者向け</span>
   </div>
-  <div id="summaryContent"><div class="empty-summary">カレンダーを作成し体調を記録すると<br>ここに一覧が表示されます</div></div>
-</div>
-</div>
+  <div class="tab-bar" id="md-tabs">
+    <button class="tab-btn active" onclick="switchTab('md','bed')">🧮 BED/EQD2</button>
+    <button class="tab-btn" onclick="switchTab('md','oar')">🛡️ OAR</button>
+    <button class="tab-btn" onclick="switchTab('md','pubmed')">🔬 文献</button>
+    <button class="tab-btn" onclick="switchTab('md','md-se')">📖 副作用</button>
+  </div>
+  <div class="tab-content">
 
-<!-- ================= TAB 4: FAQ ================= -->
-<div class="tab-pane" id="tab-faq">
-<div class="container">
-  <h2 style="margin-bottom:14px">❓ よくある質問</h2>
-
-  <!-- ── このアプリの使い方 ── -->
-  <div style="background:linear-gradient(135deg,#e8f4fd,#d0eaf7);border-left:4px solid #1a6b9a;border-radius:12px;padding:16px 18px;margin-bottom:16px">
-    <div style="font-weight:700;color:#1a6b9a;font-size:1rem;margin-bottom:10px">📱 このアプリの使い方</div>
-    <ul style="margin:0;padding-left:1.2em;font-size:.88rem;color:#333;line-height:1.9">
-      <li><strong>平日をタップ</strong> → メモの入力や照射休止（お休み）の設定ができます。</li>
-      <li><strong>土日をタップ</strong> → 臨時照射（休日に治療を行った場合）を記録できます。カレンダーの照射日数も自動的に調整されます。</li>
-      <li><strong>副作用の目安を確認</strong> → 部位別にどんな副作用がいつごろ出やすいかを確認できます。個人差が大きく、症状が出ない方も多いので、あくまで参考としてご覧ください。</li>
-      <li><strong>メモを活用</strong> → 自宅で気になったことをその場でメモしておくことで、翌日の受診時に聞きたいことを忘れずに伝えられます。</li>
-    </ul>
-    <div style="margin-top:10px;font-size:.8rem;color:#555;background:rgba(255,255,255,.6);border-radius:8px;padding:8px 10px">
-      ⚠️ セキュリティ上の理由から、病院の診療システムやカレンダーとの連動はできません。本アプリのデータはこの端末内にのみ保存されます。
-    </div>
-  </div>
-
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">治療中、お風呂に入っても大丈夫ですか？</div>
-    <div class="faq-a">入浴は可能ですが、照射部位をゴシゴシ擦らないようにしてください。ぬるめのお湯で短時間の入浴が望ましいです。石鹸は低刺激のものを使い、タオルで優しく拭いてください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">日焼け止めは塗ってもいいですか？</div>
-    <div class="faq-a">照射部位への日焼け止めは、治療中は避けてください。治療終了後も照射部位の皮膚はデリケートです。外出時は衣服や帽子で照射部位を保護することをお勧めします。日焼け止めの使用再開時期は主治医にご確認ください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">治療中に運動しても大丈夫ですか？</div>
-    <div class="faq-a">軽い散歩やストレッチなど、無理のない範囲での運動は問題ありません。むしろ適度な運動は体力維持や気分転換に効果的です。ただし、激しい運動や照射部位に負担がかかる運動は避け、疲労を感じたら休むようにしてください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">治療中にお酒を飲んでもいいですか？</div>
-    <div class="faq-a">基本的に少量の飲酒は可能ですが、頭頸部や食道への照射中は粘膜が敏感になっているため禁酒が望ましいです。アルコールは粘膜への刺激となり、副作用を悪化させる可能性があります。主治医にご相談ください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">照射部位にクリームや薬を塗ってもいいですか？</div>
-    <div class="faq-a">主治医の指示のないクリーム・軟膏・湿布等は照射部位に塗らないでください。金属成分を含むもの（亜鉛など）は照射に影響する可能性があります。保湿が必要な場合は担当医に相談し、処方されたものをお使いください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">治療中、仕事や家事は続けられますか？</div>
-    <div class="faq-a">多くの方が治療中も仕事や家事を続けています。1回の照射時間は数分〜15分程度で、通院は毎日ですが時間の融通がきくことが多いです。ただし治療が進むにつれて疲労感が出ることがあるので、無理をせずペースを調整してください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">他の人に放射線がうつることはありますか？</div>
-    <div class="faq-a">外部照射（体の外から放射線を当てる治療）では、体に放射線が残ることはありません。治療後すぐにご家族やお子様と接触しても全く問題ありません。安心して日常生活を送ってください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">治療が終わった後も副作用は続きますか？</div>
-    <div class="faq-a">急性の副作用（皮膚炎・粘膜炎など）は治療終了後2〜4週間でピークを迎え、その後徐々に改善します。晩期の副作用は数か月〜数年後に現れる場合がありますが、頻度は低いです。定期的な経過観察が大切です。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">食事で気をつけることはありますか？</div>
-    <div class="faq-a">バランスの良い食事を心がけてください。頭頸部や食道への照射中は口内炎・嚥下痛が出ることがあるため、軟らかい食事や刺激の少ないものを選んでください。腹部照射中は消化に良いものを。栄養補助食品の使用は医師や栄養士にご相談ください。</div>
-  </div>
-  <div class="faq-card" onclick="this.classList.toggle('open')">
-    <div class="faq-q">治療の途中で休んでも大丈夫ですか？</div>
-    <div class="faq-a">放射線治療は決められた期間で決められた回数を照射することが大切です。治療の中断は効果に影響する可能性があります。体調不良などで休む必要がある場合は、必ず主治医にご相談ください。</div>
-  </div>
-</div>
-</div>
-
-<!-- ================= TAB: EVIDENCE SEARCH ================= -->
-<div class="tab-pane" id="tab-evidence">
-<div class="container">
-  <div class="input-card">
-    <h2>🔬 エビデンス検索</h2>
-    <p style="font-size:.8rem;color:#666;margin-bottom:12px">PubMed（国際医学文献データベース）から放射線治療の最新エビデンスを検索します。</p>
-    <div class="ev-search-row">
-      <input type="text" class="ev-search-input" id="evSearchInput" placeholder="例: prostate cancer IMRT, lung SBRT, breast hypofractionation" onkeydown="if(event.key==='Enter')searchEvidence()" />
-      <button class="ev-search-btn" id="evSearchBtn" onclick="searchEvidence()">🔍 検索</button>
-    </div>
-    <div class="ev-chip-row">
-      <button class="ev-chip" onclick="setEvSearch('radiation therapy toxicity')">副作用</button>
-      <button class="ev-chip" onclick="setEvSearch('prostate cancer radiotherapy')">前立腺がん</button>
-      <button class="ev-chip" onclick="setEvSearch('breast cancer hypofractionation')">乳がん寡分割</button>
-      <button class="ev-chip" onclick="setEvSearch('lung cancer SBRT')">肺SBRT</button>
-      <button class="ev-chip" onclick="setEvSearch('head neck cancer IMRT')">頭頸部IMRT</button>
-      <button class="ev-chip" onclick="setEvSearch('cervical cancer brachytherapy')">子宮頸がん</button>
-      <button class="ev-chip" onclick="setEvSearch('rectal cancer preoperative radiation')">直腸がん</button>
-      <button class="ev-chip" onclick="setEvSearch('brain metastasis SRS')">脳転移SRS</button>
-      <button class="ev-chip" onclick="setEvSearch('QUANTEC dose constraints')">OAR線量制約</button>
-    </div>
-    <div id="evResults"></div>
-  </div>
-</div>
-</div>
-
-<!-- ================= DAY MODAL ================= -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-hdr">
-      <h3 id="modalTitle">体調を記録</h3>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div id="modalTreatBadge"></div>
-      <div id="modalSkipNote" class="skip-note">⚠️ この日はスキップ（欠席）扱いです。終了予定日が1日後ろにずれています。</div>
-      <div id="modalAdhocNote" class="adhoc-note">✅ この日は臨時照射日です。終了予定日が1日前倒しになります。</div>
-      <div id="modalSeChips"></div>
-      <div class="modal-section">
-        <label>🩺 今の痛みの強さ（NRS）</label>
-        <div class="nrs-wrap" id="nrsWrap"></div>
-        <div class="nrs-scale"><span>0 全く痛くない</span><span style="text-align:center">5</span><span style="text-align:right">10 非常に痛い</span></div>
-      </div>
-      <div class="modal-section">
-        <label>⚖️ 体重</label>
-        <div class="weight-input-row">
-          <input type="number" class="weight-input" id="weightInput" step="0.1" min="20" max="200" placeholder="--.-" />
-          <span class="weight-unit">kg</span>
+    <!-- BED/EQD2 -->
+    <div id="md-bed" class="tab-pane active">
+      <div class="section-title">生物学的線量計算</div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="input-group">
+            <label>1回線量 (Gy)</label>
+            <input type="number" id="bed-d" placeholder="例：2" step="0.1" oninput="calcBED()">
+          </div>
+          <div class="input-group">
+            <label>回数 (fx)</label>
+            <input type="number" id="bed-n" placeholder="例：30" oninput="calcBED()">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>α/β比</label>
+          <select id="bed-ab" onchange="calcBED()">
+            <option value="10">α/β = 10 Gy（腫瘍・急性反応組織）</option>
+            <option value="2">α/β = 2 Gy（脊髄・脳など晩期反応）</option>
+            <option value="3">α/β = 3 Gy（前立腺癌）</option>
+            <option value="1.5">α/β = 1.5 Gy（前立腺癌・一部の晩期）</option>
+          </select>
+        </div>
+        <div id="bed-result" style="display:none" class="result-box">
+          <div class="result-row"><span>総線量</span><span class="result-val" id="r-total">—</span></div>
+          <div class="result-row"><span>BED</span><span class="result-val" id="r-bed">—</span></div>
+          <div class="result-row"><span>EQD2</span><span class="result-val" id="r-eqd2">—</span></div>
         </div>
       </div>
-      <div class="modal-section">
-        <label>📝 体調メモ（患者さん・診察で伝えたいこと）</label>
-        <textarea class="note-textarea" id="noteText" placeholder="症状・気になること・質問したいことなど自由に"></textarea>
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--md-primary);margin-bottom:10px">📐 よく使う分割スケジュール比較</div>
+        <div id="preset-table"></div>
       </div>
-      <div class="modal-section">
-        <label>📷 皮膚の写真記録</label>
-        <div class="photo-grid" id="photoGrid"></div>
-        <input type="file" id="photoFileInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoCapture(event)" />
-      </div>
-      <div class="modal-section">
-        <label class="takeda-label">🌿 武田メモ（看護師 武田）</label>
-        <textarea class="takeda-textarea" id="takedaMemoText" placeholder="看護師記録・指導内容・申し送りなど"></textarea>
+      <div class="card" style="font-size:12px;color:var(--md-muted);line-height:1.8">
+        <b style="color:var(--md-text)">計算式</b><br>
+        BED = n × d × (1 + d / [α/β])<br>
+        EQD2 = BED / (1 + 2 / [α/β])<br><br>
+        <b style="color:var(--md-text)">参考</b><br>
+        Fowler JF. Radiother Oncol. 1989;16(2):83-101.<br>
+        Joiner MC, van der Kogel A. Basic Clinical Radiobiology. 5th ed.
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-adhoc" id="adhocBtn" onclick="toggleAdhocTreat()" style="display:none">💉 臨時照射</button>
-      <button class="btn-skip" id="skipBtn" onclick="toggleSkip()" style="display:none">⏭ スキップ</button>
-      <button class="btn-outline" onclick="deleteEntry()" id="deleteBtn" style="color:#e53935;border-color:#e53935;display:none">削除</button>
-      <button class="btn-primary" onclick="saveEntry()" style="width:auto;padding:10px 24px">保存</button>
+
+    <!-- OAR -->
+    <div id="md-oar" class="tab-pane">
+      <div class="section-title">OAR 耐容線量一覧</div>
+      <p style="font-size:11px;color:var(--md-muted);margin-bottom:12px">QUANTEC / RTOG ガイドラインに基づく通常分割（EQD2）での一般的な目安。個々の症例では主治医の判断が優先されます。</p>
+      <div style="overflow-x:auto">
+        <table class="oar-table">
+          <thead><tr><th>臓器</th><th>指標</th><th>耐容線量</th><th>エンドポイント</th></tr></thead>
+          <tbody id="oar-body"></tbody>
+        </table>
+      </div>
+      <p style="font-size:10px;color:var(--md-muted);margin-top:10px">Dmax=最大線量 Dmean=平均線量 Vxx=xx Gy以上の体積割合 　出典: QUANTEC (2010), RTOG protocols</p>
     </div>
+
+    <!-- PubMed -->
+    <div id="md-pubmed" class="tab-pane">
+      <div class="section-title">PubMed 文献検索</div>
+      <div class="card">
+        <div class="input-group">
+          <label>検索キーワード（英語推奨）</label>
+          <input type="text" id="pub-query" placeholder="例：lung SBRT stereotactic" onkeydown="if(event.key==='Enter')searchPubMed()">
+        </div>
+        <button class="btn-primary" onclick="searchPubMed()" id="pub-btn">🔍 検索</button>
+      </div>
+      <div class="search-chip-row">
+        <span class="search-chip" onclick="quickSearch('lung SBRT stereotactic radiotherapy')">肺SBRT</span>
+        <span class="search-chip" onclick="quickSearch('bone metastasis radiotherapy ADC')">骨転移ADC</span>
+        <span class="search-chip" onclick="quickSearch('prostate cancer radiotherapy hypofractionation')">前立腺寡分割</span>
+        <span class="search-chip" onclick="quickSearch('head neck IMRT radiotherapy')">頭頸部IMRT</span>
+        <span class="search-chip" onclick="quickSearch('breast cancer radiotherapy')">乳がん照射</span>
+        <span class="search-chip" onclick="quickSearch('liver SBRT hepatocellular carcinoma')">肝臓SBRT</span>
+        <span class="search-chip" onclick="quickSearch('brain metastasis SRS')">脳転移SRS</span>
+        <span class="search-chip" onclick="quickSearch('SBRT DECT dual energy CT')">DECT</span>
+        <span class="search-chip" onclick="quickSearch('diffusion weighted MRI radiotherapy response')">DWI反応</span>
+      </div>
+      <div id="pub-results"></div>
+    </div>
+
+    <!-- Side Effects (Medical) -->
+    <div id="md-md-se" class="tab-pane">
+      <div class="section-title">副作用情報（臨床詳細）</div>
+      <div class="disease-grid" id="md-se-disease-grid"></div>
+      <div id="md-se-output"></div>
+    </div>
+
   </div>
 </div>
 
-<!-- ================= FOOTER ================= -->
-<footer class="app-footer">
-  <div class="footer-card fc-lifecolor">
-    <a href="https://lifecolor-health.com/" target="_blank" rel="noopener">
-      <div class="footer-card-inner">
-        <div class="footer-icon">💚</div>
-        <div class="footer-text">
-          <h3>Lifecolor</h3>
-          <p>本アプリはLifecolorが患者さんの療養生活を支援するために無償提供しています。詳しくはLifecolorのウェブサイトをご覧ください。</p>
-        </div>
-        <div class="footer-arrow">›</div>
-      </div>
-    </a>
+<!-- RECORD MODAL -->
+<div class="modal-overlay" id="day-modal">
+  <div class="modal-box">
+    <h3 id="modal-date-title">体調を記録</h3>
+    <div style="font-size:12px;font-weight:700;color:var(--pt-muted);margin-bottom:6px">痛みの強さ（NRS）</div>
+    <div class="nrs-row" id="modal-nrs-btns"></div>
+    <div class="input-group mt8">
+      <label>体調メモ</label>
+      <textarea class="modal-textarea" id="modal-memo" placeholder="気になる症状・診察で伝えたいこと"></textarea>
+    </div>
+    <div class="modal-row">
+      <button class="modal-btn cancel" onclick="closeModal()">キャンセル</button>
+      <button class="modal-btn save" onclick="saveModalRecord()">保存</button>
+    </div>
   </div>
-
-  <div class="footer-notice">
-    <div class="fn-title">🚨 インターネットの情報にご注意ください</div>
-    がんに関する正しい情報は <a href="https://ganjoho.jp/public/index.html" target="_blank" rel="noopener">国立がん研究センター がん情報サービス</a> をご参照ください。<br>
-    <div class="fn-warn">⚠️ 3万円以上の栄養食品・サプリメントを購入される際は、事前に当科の医師または看護師にご相談ください。</div>
-  </div>
-  <div class="footer-copy">放射線治療サポートカレンダー | Provided by <a href="https://lifecolor-health.com/" target="_blank" rel="noopener" style="color:#2e7d32;font-weight:600">Lifecolor</a></div>
-</footer>
-
-<!-- Hidden file input for import -->
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+</div>
 
 <script>
-// ===============================================================
-// DISEASE DATA
-// ===============================================================
-const DISEASES={
-  brain_sbrt:{name:"脳腫瘍（ピンポイント照射）",icon:"🧠",defaultFx:3,
-    description:"定位放射線治療（SRS/SBRT）で腫瘍に集中して照射します。治療回数は通常1〜5回です。",
-    treatmentInfo:"多方向から放射線をピンポイントに集中させ、周囲の正常な脳組織への影響を最小限に抑えます。1回の治療は15〜30分程度で、通常1〜5回で完了します。転移性脳腫瘍や小さな原発性脳腫瘍に対して高い治療効果が期待できます。入院不要で通院治療が可能です。",
-    sideEffects:[
-    {label:"頭痛・吐き気",startDay:0,endDay:21,color:"#ff9800",note:"治療中から2〜3週間にかけて頭痛・吐き気が出ることがあります。",reassure:"これは照射による一時的な脳のむくみで、多くの方に起こりうる正常な反応です。通常は自然に治まります。"},
-    {label:"放射線壊死（まれ）",startDay:90,endDay:270,color:"#f44336",note:"治療後3〜9か月でごくまれに放射線壊死が起こることがあります。症状が出た場合は速やかにご連絡ください。",reassure:"頻度は低いですが、万が一症状が出ても治療法がありますのでご安心ください。"}
-  ]},
-  brain_wbrt:{name:"脳腫瘍（全脳照射）",icon:"🧠",defaultFx:10,
-    description:"脳全体に放射線を照射する治療法です。転移性脳腫瘍などに行います。",
-    treatmentInfo:"脳全体に1日1回、週5回、計10〜15回照射します。1回の線量は2.5〜3Gy、総線量30〜40Gy程度です。複数の転移がある場合や、術後の再発予防に用います。1回の治療は10〜15分程度で外来通院で行えます。",
-    sideEffects:[
-    {label:"倦怠感・頭重感",startDay:0,endDay:42,color:"#ff9800",note:"治療中は倦怠感や頭重感が出やすいです。十分な休養をとってください。",reassure:"ほとんどの方に出る正常な反応です。無理をせず休んでいただければ、治療終了後に改善していきます。"},
-    {label:"脱毛",startDay:14,endDay:120,color:"#9c27b0",note:"2〜3週目ごろから脱毛が始まります。治療終了後3〜6か月で毛は生え始め、6か月〜1年程度でほぼ回復します。",reassure:"一時的なものです。治療終了後3〜6か月で再び生え始めるのが一般的です。"},
-    {label:"認知機能の変化",startDay:90,endDay:365,color:"#f44336",note:"治療後3〜6か月で記憶力・集中力の低下が出ることがあります。気になる場合は医師にご相談ください。",reassure:"すべての方に出るわけではありません。気になる変化があれば対応策を一緒に考えます。"}
-  ]},
-  head_neck:{name:"頭頚部癌",icon:"🗣️",defaultFx:33,
-    description:"咽頭・喉頭・口腔・甲状腺などへの照射です。化学療法と同時に行うこともあります。",
-    treatmentInfo:"根治目的では総線量66〜70Gyを1日1回2Gy、週5回、約6〜7週間かけて照射します。IMRT（強度変調放射線治療）により唾液腺などの正常組織への線量を減らせるようになりました。化学療法と同時に行うことで治療効果が高まります。1回の治療は10〜15分程度です。",
-    sideEffects:[
-    {label:"皮膚炎（日焼け）",startDay:10,endDay:60,color:"#ff7043",note:"2週目ごろから日焼けのような皮膚炎が出始めます。治療終了後4週間程度で落ち着きます。",medication:"ヒルドイド＋リンデロン使用を考慮",reassure:"放射線が効いている正常な反応です。治療終了後4週間ほどで収まります。保湿剤でケアしましょう。"},
-    {label:"口腔粘膜炎・嚥下困難",startDay:14,endDay:70,color:"#e91e63",note:"2〜3週目ごろから口内炎・飲み込みにくさが出ます。治療終了後4〜6週間で収まることが多いです。",reassure:"多くの方に起こる一時的な反応です。痛みが強い場合は鎮痛薬で対応できますのでご相談ください。"},
-    {label:"口腔乾燥（長期）",startDay:42,endDay:365,color:"#795548",note:"唾液腺への照射による口腔乾燥が続くことがあります。改善には年単位の時間がかかることもあります。",reassure:"IMRTの普及により以前より軽減されています。保湿剤やうがい薬で対応可能です。"}
-  ]},
-  breast:{name:"乳がん",icon:"🎀",defaultFx:25,
-    description:"乳房温存術後・乳房切除術後の放射線治療です。再発予防が主な目的です。",
-    treatmentInfo:"温存術後は乳房全体に総線量50Gy（25回）または寡分割照射で42.56Gy（16回）を照射します。週5回通院で3〜5週間です。手術の傷が治った術後2週間〜2か月で開始します。1回の治療は数分〜15分程度で、痛みはありません。再発率を約半分に減らす効果があります。",
-    sideEffects:[
-    {label:"皮膚炎（日焼け）",startDay:10,endDay:60,color:"#ff7043",note:"2〜4週目ごろから日焼けのような皮膚炎が出ます。ほぼ全員に起こりますが、治療後1〜2か月で治まります。",medication:"ヒルドイド＋リンデロン使用を考慮",reassure:"ほぼ全員に出る正常な反応で、放射線がしっかり届いている証拠です。保湿ケアで対応でき、必ず治まります。"},
-    {label:"放射線肺炎（咳）",startDay:180,endDay:365,color:"#2196f3",note:"治療半年〜1年後に咳が出ることがあります。10人に1人未満のため心配しすぎなくて大丈夫です。数か月で落ち着きます。",reassure:"発生率は1%程度と非常に低く、出たとしても軽症で自然に治まることがほとんどです。"}
-  ]},
-  lung_chemo:{name:"肺癌（60Gy同時化学療法）",icon:"🫁",defaultFx:30,
-    description:"抗がん剤と放射線治療を同時に行う根治的治療です。",
-    treatmentInfo:"総線量60Gyを30回に分けて照射し、1日1回、週5回、計6週間かけて治療します。同時に抗がん剤（シスプラチン等）を投与することで治療効果を高めます。局所進行の非小細胞肺がんに対する標準治療です。1回の放射線治療は10〜15分程度です。",
-    sideEffects:[
-    {label:"放射線食道炎",startDay:14,endDay:56,color:"#ff5722",note:"2〜3週目ごろから食道炎による飲み込み時の痛み・胸やけが出ることがあります。治療終了後2週間程度で改善します。",reassure:"治療中の方に多くみられる一時的な反応です。鎮痛剤や栄養補給で対応でき、治療後2〜4週で改善します。"},
-    {label:"皮膚炎",startDay:14,endDay:56,color:"#ff7043",note:"照射部位の皮膚炎が出ることがあります。",reassure:"照射範囲の皮膚が赤くなる正常な反応で、治療後に自然に治まります。"},
-    {label:"放射線肺炎（要注意）",startDay:30,endDay:120,color:"#f44336",note:"治療後1〜3か月で咳・発熱・息切れが出た場合は放射線肺炎の可能性があります。早めにご連絡ください。",reassure:"症状が出た場合はステロイド治療で対応できます。早めのご連絡が大切です。当科 058-214-6995 までお電話ください。"}
-  ]},
-  lung_sbrt:{name:"肺癌（ピンポイント照射4日間）",icon:"🫁",defaultFx:4,
-    description:"早期肺癌などへの定位放射線治療（SBRT）です。通常4〜5回の照射を行います。",
-    treatmentInfo:"1回12Gy×4回＝総線量48Gy程度を照射するのが一般的です。多方向からピンポイントに集中して高い線量を当てます。手術が困難な早期肺がんに対して手術と同等の高い治療効果が期待できます。通院4〜5日で完了する体に負担の少ない治療です。",
-    sideEffects:[
-    {label:"疲労感",startDay:0,endDay:21,color:"#ff9800",note:"治療中から1〜2週間は疲労感が出ることがあります。",reassure:"短期間の治療ですので体への負担は小さく、疲労感も軽度で自然に回復します。"},
-    {label:"放射線肺炎",startDay:30,endDay:90,color:"#2196f3",note:"治療後1〜3か月で軽い咳が出ることがあります。治療が必要な肺炎は約7%、重症は1%未満です。",reassure:"多くの場合軽度で、経過観察のみで改善します。症状が強い場合はステロイドで治療可能です。"}
-  ]},
-  liver_sbrt:{name:"肝臓がん（ピンポイント照射4日間）",icon:"🫀",defaultFx:4,
-    description:"肝細胞がん・転移性肝がんへの定位放射線治療（SBRT）です。",
-    treatmentInfo:"1回8〜12Gy×4〜5回＝総線量40〜48Gy程度をピンポイントに照射します。呼吸による肝臓の動きに合わせた照射技術を使い、周囲への影響を最小限に抑えます。手術やラジオ波が難しい場合の有効な治療選択肢です。通院4〜5日で完了します。",
-    sideEffects:[
-    {label:"疲労感・気分不良",startDay:0,endDay:42,color:"#ff9800",note:"治療中から数週間は疲労感や気分不良（宿酔様症状）が出ることがあります。",reassure:"一時的な反応で、無理をせず休養をとれば自然に回復します。"},
-    {label:"肝機能変化",startDay:14,endDay:60,color:"#f44336",note:"治療後1〜2か月で肝機能の変化がみられることがあります。定期的な採血で確認します。",reassure:"ピンポイント照射により肝臓への影響は限定的です。採血で経過を見守りますのでご安心ください。"}
-  ]},
-  bladder:{name:"膀胱がん",icon:"🫘",defaultFx:25,
-    description:"膀胱がんへの根治的放射線治療です。化学療法と組み合わせることもあります。",
-    treatmentInfo:"総線量60〜66Gyを30〜33回に分けて照射します。1日1回、週5回で約6〜7週間です。手術（膀胱全摘）をせずに膀胱を温存できる治療法で、TURBTと化学療法を組み合わせた三者併用療法が行われます。1回の治療は数分〜10分程度です。",
-    sideEffects:[
-    {label:"頻尿・排尿痛",startDay:14,endDay:90,color:"#2196f3",note:"3〜4週目ごろから頻尿や排尿時の痛みが出てきます。治療終了後に回復します。",reassure:"膀胱粘膜の一時的な炎症で、治療を受ける方の多くに起こる正常な反応です。治療終了後に改善していきます。"},
-    {label:"下痢・腸炎",startDay:21,endDay:70,color:"#ff9800",note:"治療3週目ごろから下痢や腹部不快感が出ることがあります。",reassure:"腸管への放射線の影響で起こる一時的な症状です。整腸剤等で対応でき、治療後に改善します。"}
-  ]},
-  prostate:{name:"前立腺癌",icon:"👨",defaultFx:39,
-    description:"前立腺癌への根治的放射線治療です。最大39回の照射を行います。",
-    treatmentInfo:"IMRT（強度変調放射線治療）で総線量74〜78Gyを37〜39回に分けて照射します。1日1回、週5回で約8週間です。IMRT技術により直腸や膀胱への線量を減らしつつ前立腺に集中して照射できます。手術と同等の治療成績が報告されています。1回の治療は15分程度です。",
-    sideEffects:[
-    {label:"頻尿（始まり）",startDay:14,endDay:42,color:"#90caf9",note:"3週目ごろから頻尿が出始めます。",reassure:"膀胱粘膜の一時的な反応で、治療を受ける方の多くに出る想定内の症状です。"},
-    {label:"頻尿（強い時期）",startDay:35,endDay:90,color:"#1565c0",note:"6週目ごろから頻尿がかなり強くなります。治療終了後1〜2か月で落ち着いてきます。",reassure:"治療の後半で強まるのは正常な経過です。治療終了後は必ず改善していきますので、もう少しの辛抱です。"},
-    {label:"便通異常（長期）",startDay:300,endDay:480,color:"#795548",note:"治療後約1年後に便の調子が悪くなる場合がありますが、数か月で落ち着きます。",reassure:"IMRTの普及により発生率は大きく低下しています（2〜3%程度）。出ても多くの場合軽症です。"}
-  ]},
-  bone_met:{name:"骨転移",icon:"🦴",defaultFx:5,
-    description:"骨転移による疼痛緩和・骨折予防を目的とした放射線治療です。",
-    treatmentInfo:"痛みの緩和を目的に3Gy×10回（総線量30Gy）や8Gy×1回などの照射を行います。約70%の患者さんで治療後1か月以内に疼痛緩和効果が得られます。骨折予防にも有効で、日常生活の質（QOL）の改善が期待できます。",
-    sideEffects:[
-    {label:"一時的な疼痛増悪（フレア）",startDay:1,endDay:10,color:"#ff5722",note:"治療後数日は一時的に痛みが強くなることがあります（フレア反応）。その後緩和されます。",reassure:"治療が効いている反応の一つです。約10〜40%の方に起こりますが数日で治まり、その後痛みが楽になります。鎮痛薬で対応できます。"},
-    {label:"疼痛緩和効果",startDay:14,endDay:56,color:"#4caf50",note:"治療後2〜4週で疼痛緩和効果が出てきます。",reassure:"約70%の方で痛みの改善が得られます。効果が出るまで少し時間がかかりますが、しっかり効いてきます。"}
-  ]},
-  oligo:{name:"オリゴメタ転移（30Gy/3回）",icon:"🎯",defaultFx:3,
-    description:"少数転移（オリゴメタスタシス）に対するSBRT（30Gy/3回）です。",
-    treatmentInfo:"1回10Gy×3回＝総線量30Gyをピンポイントに照射します。転移巣が少数（5個以下）の場合、局所治療により長期の病勢コントロールが期待できることが複数の臨床試験で示されています。通院3日で完了する体に負担の少ない治療です。",
-    sideEffects:[
-    {label:"疲労感・局所違和感",startDay:0,endDay:30,color:"#ff9800",note:"治療中から1か月程度は照射部位の違和感・疲労感が出ることがあります。",reassure:"短期間の治療で体への負担は小さく、軽度の疲労感は自然に回復します。"},
-    {label:"局所反応（部位により様々）",startDay:14,endDay:90,color:"#9c27b0",note:"治療後1〜3か月で局所の反応が出ることがあります。部位によって症状が異なります。",reassure:"照射部位を限定したピンポイント治療のため、副作用は局所的で全身への影響は少ないです。"}
-  ]},
-  reirradiation:{name:"再照射",icon:"⚠️",defaultFx:10,
-    description:"過去に放射線治療を受けた部位への再照射です。前回の照射との兼ね合いで副作用が異なります。",
-    treatmentInfo:"以前の照射部位・線量・経過期間を慎重に評価した上で、最新の照射技術（IMRT・SBRTなど）を用いて安全に照射を行います。線量や回数は個々の状況に合わせて計画します。近年の技術の進歩により、以前は難しかった再照射も安全に行えるケースが増えています。",
-    sideEffects:[
-    {label:"副作用は個人差が大きい",startDay:0,endDay:365,color:"#607d8b",note:"過去の照射歴・部位・線量によって副作用の現れ方が大きく異なります。気になる症状があれば速やかにご連絡ください。",reassure:"担当医が過去の照射情報を踏まえた上で安全な治療計画を立てています。気になることはいつでもご相談ください。"}
-  ]},
-  other:{name:"その他",icon:"📋",defaultFx:25,
-    description:"上記に該当しない放射線治療全般です。1回線量・回数は主治医の指示に従ってください。",
-    treatmentInfo:"放射線治療の内容（1回線量・総線量・回数）は疾患や部位によって異なります。詳しくは主治医にお尋ねください。治療回数は上の入力欄で自由に設定できます。",
-    sideEffects:[
-    {label:"副作用については主治医にお尋ねください",startDay:0,endDay:90,color:"#78909c",note:"副作用の種類・時期・程度は治療部位や線量によって大きく異なります。詳しくは主治医・看護師にご相談ください。",reassure:"主治医が患者様の状態に合わせた治療計画を立てています。気になることがあればいつでもお声がけください。"}
-  ]}
+// ═════════════ DATA ═════════════
+
+const FAQ = [
+  { q: "治療中、お風呂に入っても大丈夫ですか？",
+    a: "入浴は可能ですが、照射部位をゴシゴシ擦らないようにしてください。ぬるめのお湯で短時間の入浴が望ましいです。石鹸は低刺激のものを使い、タオルで優しく拭いてください。" },
+  { q: "日焼け止めは塗ってもいいですか？",
+    a: "照射部位への日焼け止めは、治療中は避けてください。治療終了後も照射部位の皮膚はデリケートです。外出時は衣服や帽子で照射部位を保護することをお勧めします。日焼け止めの使用再開時期は主治医にご確認ください。" },
+  { q: "治療中に運動しても大丈夫ですか？",
+    a: "軽い散歩やストレッチなど、無理のない範囲での運動は問題ありません。むしろ適度な運動は体力維持や気分転換に効果的です。ただし、激しい運動や照射部位に負担がかかる運動は避け、疲労を感じたら休むようにしてください。" },
+  { q: "治療中にお酒を飲んでもいいですか？",
+    a: "基本的に少量の飲酒は可能ですが、頭頸部や食道への照射中は粘膜が敏感になっているため禁酒が望ましいです。アルコールは粘膜への刺激となり、副作用を悪化させる可能性があります。主治医にご相談ください。" },
+  { q: "照射部位にクリームや薬を塗ってもいいですか？",
+    a: "主治医の指示のないクリーム・軟膏・湿布等は照射部位に塗らないでください。金属成分を含むもの（亜鉛など）は照射に影響する可能性があります。保湿が必要な場合は担当医に相談し、処方されたものをお使いください。" },
+  { q: "治療中、仕事や家事は続けられますか？",
+    a: "多くの方が治療中も仕事や家事を続けています。1回の照射時間は数分〜15分程度で、通院は毎日ですが時間の融通がきくことが多いです。ただし治療が進むにつれて疲労感が出ることがあるので、無理をせずペースを調整してください。" },
+  { q: "他の人に放射線がうつることはありますか？",
+    a: "外部照射（体の外から放射線を当てる治療）では、体に放射線が残ることはありません。治療後すぐにご家族やお子様と接触しても全く問題ありません。安心して日常生活を送ってください。" },
+  { q: "治療が終わった後も副作用は続きますか？",
+    a: "急性の副作用（皮膚炎・粘膜炎など）は治療終了後2〜4週間でピークを迎え、その後徐々に改善します。晩期の副作用は数か月〜数年後に現れる場合がありますが、頻度は低いです。定期的な経過観察が大切です。" },
+  { q: "食事で気をつけることはありますか？",
+    a: "バランスの良い食事を心がけてください。頭頸部や食道への照射中は口内炎・嚥下痛が出ることがあるため、軟らかい食事や刺激の少ないものを選んでください。腹部照射中は消化に良いものを。栄養補助食品の使用は医師や栄養士にご相談ください。" },
+  { q: "治療の途中で休んでも大丈夫ですか？",
+    a: "放射線治療は決められた期間で決められた回数を照射することが大切です。治療の中断は効果に影響する可能性があります。体調不良などで休む必要がある場合は、必ず主治医にご相談ください。" }
+];
+
+const DISEASES = {
+  lung:     { label: "肺がん",    color: "#4a90d9" },
+  breast:   { label: "乳がん",    color: "#e97ab0" },
+  prostate: { label: "前立腺がん", color: "#5a9e6e" },
+  hnc:      { label: "頭頸部がん", color: "#e07030" },
+  brain:    { label: "脳腫瘍",    color: "#8a5cc0" },
+  liver:    { label: "肝臓",      color: "#c08030" },
+  bone:     { label: "骨転移",    color: "#6088b0" },
+  esophagus:{ label: "食道がん",  color: "#b04060" }
 };
 
-// ===============================================================
-// STATE
-// ===============================================================
-let currentDisease=null,treatMap={},seDotMap={},currentStartDate=null,currentEndDate=null,currentPatientKey='',modalDate=null,selectedNrs=null,allHolidaysCache={},currentTreatDaysVal=0;
-let deferredPrompt=null;
-
-// ===============================================================
-// PWA: SERVICE WORKER & INSTALL
-// ===============================================================
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  });
-}
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();deferredPrompt=e;
-  document.getElementById('installBanner').classList.add('show');
-});
-function installPWA(){
-  if(!deferredPrompt)return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(()=>{
-    deferredPrompt=null;
-    document.getElementById('installBanner').classList.remove('show');
-  });
-}
-window.addEventListener('appinstalled',()=>{
-  document.getElementById('installBanner').classList.remove('show');
-});
-
-// ===============================================================
-// DATA EXPORT / IMPORT
-// ===============================================================
-function exportData(){
-  const allKeys=[];
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(k.startsWith('rt_'))allKeys.push(k);
-  }
-  if(!allKeys.length){alert('保存されたデータがありません。');return}
-  const data={};
-  allKeys.forEach(k=>data[k]=JSON.parse(localStorage.getItem(k)));
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='radiation_data_'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();URL.revokeObjectURL(a.href);
-}
-function importData(){document.getElementById('importFile').click()}
-function handleImport(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const data=JSON.parse(ev.target.result);
-      Object.keys(data).forEach(k=>{if(k.startsWith('rt_'))localStorage.setItem(k,JSON.stringify(data[k]))});
-      alert('データを復元しました。カレンダーを再作成してください。');
-    }catch(err){alert('ファイルの読み込みに失敗しました。')}
-  };
-  reader.readAsText(file);e.target.value='';
-}
-
-// ===============================================================
-// JAPANESE HOLIDAYS
-// ===============================================================
-function toDS(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-function getHolidays(year){
-  if(allHolidaysCache[year])return allHolidaysCache[year];
-  const h=new Set();
-  const add=(m,d)=>h.add(`${year}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
-  const nthMon=(m,n)=>{let d=new Date(year,m-1,1),c=0;while(1){if(d.getDay()===1){c++;if(c===n)return d.getDate()}d.setDate(d.getDate()+1)}};
-  add(1,1);add(2,11);add(2,23);add(4,29);add(5,3);add(5,4);add(5,5);add(8,11);add(11,3);add(11,23);
-  add(1,nthMon(1,2));add(7,nthMon(7,3));add(9,nthMon(9,3));add(10,nthMon(10,2));
-  const sh=Math.floor(20.8431+0.242194*(year-1980)-Math.floor((year-1980)/4));
-  const au=Math.floor(23.2488+0.242194*(year-1980)-Math.floor((year-1980)/4));
-  add(3,sh);add(9,au);
-  const sub=new Set();
-  Array.from(h).sort().forEach(ds=>{
-    const d=new Date(ds+'T00:00:00');
-    if(d.getDay()===0){let nx=new Date(d);nx.setDate(nx.getDate()+1);while(h.has(toDS(nx))||sub.has(toDS(nx)))nx.setDate(nx.getDate()+1);sub.add(toDS(nx))}
-  });
-  sub.forEach(d=>h.add(d));
-  allHolidaysCache[year]=h;return h;
-}
-function isHoliday(ds){return getHolidays(parseInt(ds.substr(0,4))).has(ds)}
-
-// ===============================================================
-// DISEASE INFO TAB
-// ===============================================================
-function initDiseaseButtons(){
-  const wrap=document.getElementById('diseaseButtons'),sel=document.getElementById('diseaseSelect');
-  Object.keys(DISEASES).forEach(key=>{
-    const dis=DISEASES[key];
-    const btn=document.createElement('button');btn.className='dis-btn';btn.dataset.key=key;
-    btn.innerHTML=`${dis.icon} ${dis.name}`;btn.onclick=()=>showDiseaseInfo(key);
-    wrap.appendChild(btn);
-    const opt=document.createElement('option');opt.value=key;opt.textContent=`${dis.icon} ${dis.name}`;
-    sel.appendChild(opt);
-  });
-}
-function showDiseaseInfo(key){
-  currentDisease=key;
-  document.querySelectorAll('.dis-btn').forEach(b=>b.classList.toggle('selected',b.dataset.key===key));
-  const dis=DISEASES[key],card=document.getElementById('infoCard');
-  let html=`<h3>${dis.icon} ${dis.name}</h3><p class="info-desc">${dis.description}</p><div class="se-list">`;
-  dis.sideEffects.forEach(se=>{
-    const timing=formatTiming(se.startDay,se.endDay);
-    html+=`<div class="se-item" style="border-color:${se.color}"><div class="se-label" style="color:${se.color}">${se.label}</div><div class="se-timing">📅 ${timing}</div><div class="se-note">${se.note}</div>${se.medication?`<div class="se-med">💊 ${se.medication}</div>`:''}</div>`;
-  });
-  card.innerHTML=html+'</div>';
-}
-function formatTiming(s,e){
-  const fmt=d=>{if(d===0)return'治療開始日〜';if(d<7)return`治療${d}日目`;if(d<30)return`治療${Math.round(d/7)}週目`;return`治療${Math.round(d/30)}か月後`};
-  const fmtE=d=>{if(d<7)return`${d}日間`;if(d<30)return`約${Math.round(d/7)}週間`;return`約${Math.round(d/30)}か月間`};
-  return`${fmt(s)}ごろ〜（${fmtE(e-s)}程度）`;
-}
-
-// ===============================================================
-// CALENDAR
-// ===============================================================
-function rebuildTreatMap(){
-  if(!currentStartDate||!currentTreatDaysVal)return;
-  const data=getPatientData();
-  treatMap={};seDotMap={};
-  // First pass: collect all adhoc treatment dates (weekend/holiday extras)
-  const adhocDates=new Set();
-  Object.keys(data).forEach(ds=>{if(data[ds]&&data[ds].adhocTreat)adhocDates.add(ds)});
-  let cur=new Date(currentStartDate),count=0,safety=0;
-  // We iterate day by day; weekdays count normally, adhoc weekend/holiday days also count
-  while(count<currentTreatDaysVal&&safety<400){
-    const dow=cur.getDay(),ds=toDS(cur);
-    const isWeekend=dow===0||dow===6||isHoliday(ds);
-    if(!isWeekend){
-      if(data[ds]&&data[ds].skipped){/* skipped */}
-      else treatMap[ds]=++count;
-    } else if(adhocDates.has(ds)){
-      treatMap[ds]=++count;
+const SE_DATA = {
+  lung: {
+    pt: {
+      acute:    ["疲れやすい","咳が出る","息苦しさ","皮膚が赤くなる・かゆい","食欲低下"],
+      subacute: ["咳の増加","発熱（放射線肺臓炎）","倦怠感の持続"],
+      late:     ["息切れ（肺線維症）","皮膚の色素沈着","肋骨の痛み（稀）"]
+    },
+    md: {
+      acute:    ["放射線肺臓炎（急性期）","皮膚炎（Grade1-2）","食道炎（中枢型）","倦怠感"],
+      subacute: ["症候性肺臓炎（2〜6か月、V20>30-35%でリスク増大）","食道狭窄（稀）"],
+      late:     ["肺線維症（晩期肺臓炎）","肋骨骨折（SBRT後5〜30%）","食道狭窄"],
+      note:     "肺SBRT後の画像変化（consolidation, ground glass）は6〜12か月で安定化。局所再発との鑑別にFDG-PETまたはDWI/ADC変化が有用（Tanaka et al.）。"
     }
-    cur.setDate(cur.getDate()+1);safety++;
+  },
+  breast: {
+    pt: {
+      acute:    ["照射部位の皮膚炎（赤み・ヒリヒリ）","疲れ","乳房の腫れ感","リンパ節照射時の腕のむくみ"],
+      subacute: ["皮膚の乾燥・色素沈着","倦怠感の持続","乳房の硬さ"],
+      late:     ["乳房の形態変化・硬化","リンパ浮腫","まれに肺臓炎・心毒性（左乳房）"]
+    },
+    md: {
+      acute:    ["皮膚炎（Grade1-2: 80%以上）","乳腺炎","倦怠感","リンパ節照射部の浮腫"],
+      subacute: ["皮膚の色素沈着・乾燥","乳腺線維化"],
+      late:     ["乳腺線維化・萎縮","リンパ浮腫（腋窩郭清+照射で15-25%）","心毒性（左Dmean<4Gy推奨）","肺臓炎（V20<10%目標）","二次発がん（稀）"],
+      note:     "寡分割照射（40Gy/15fx または 26Gy/5fx）は標準的アプローチ。FAST-Forward試験では5分割が標準に非劣性。"
+    }
+  },
+  prostate: {
+    pt: {
+      acute:    ["頻尿・排尿痛","残尿感・排尿困難","下痢・軟便","直腸の違和感"],
+      subacute: ["排尿症状の一時的悪化","倦怠感"],
+      late:     ["頻尿・夜間尿（慢性）","出血性膀胱炎（稀）","直腸炎・出血（稀）","勃起機能の低下"]
+    },
+    md: {
+      acute:    ["尿道炎様症状（IPSS増加）","直腸炎（Grade1-2: 30-40%）","疲労"],
+      subacute: ["PSA値の一時的な上昇（bounce）は治療後18か月以内に見られることがある"],
+      late:     ["Grade2+晩期泌尿器毒性（5-10%）","Grade2+晩期消化器毒性（2-5%）","勃起機能障害（50-70%、術前機能による）"],
+      note:     "超寡分割（SBRT 36.25Gy/5fx）はIPCS試験・PACE-B試験で標準に非劣性。α/β≒1.5-3 Gy。PSA nadir達成に2〜3年を要する場合がある。"
+    }
+  },
+  hnc: {
+    pt: {
+      acute:    ["口内炎・のどの痛み","嚥下障害（飲み込みにくい）","皮膚炎","口が乾く","味覚変化","体重減少"],
+      subacute: ["口内炎の持続","嚥下障害の遷延","倦怠感"],
+      late:     ["口腔乾燥症（唾液分泌低下）","嚥下障害（慢性）","頸部の硬さ・線維化","まれに骨壊死・軟組織壊死"]
+    },
+    md: {
+      acute:    ["口腔粘膜炎（Grade3: 50-70%）","急性耳下腺炎","皮膚炎（Grade2-3）","嚥下障害（Gr2-3）","体重減少（>10%: 20-30%）"],
+      subacute: ["粘膜炎の遷延（2〜6週）","浮腫","疲労"],
+      late:     ["口腔乾燥（Dmean>25-26Gy で Grade2+）","嚥下障害（Dmean咽頭収縮筋>50Gy）","骨壊死（下顎骨>70Gy）","頸部線維症","視神経障害（Dmax>55Gy）","甲状腺機能低下（40-45%）"],
+      note:     "IMRT/VMAT による耳下腺温存は QOL 改善に重要。QUANTEC 耳下腺 Dmean ≤25-26 Gy（両側） / ≤20Gy（一側）。"
+    }
+  },
+  brain: {
+    pt: {
+      acute:    ["頭痛","吐き気・嘔吐","倦怠感・眠気","固定具による頭皮の圧痛","めまい"],
+      subacute: ["神経症状の一時的悪化（2〜6か月）","倦怠感の持続","眠気"],
+      late:     ["認知機能の変化","脱毛（局所的）","放射線壊死（稀）","視力・聴力変化（高線量時）"]
+    },
+    md: {
+      acute:    ["頭蓋内圧亢進症状（浮腫）","Grade1-2頭痛：50-60%","悪心・嘔吐","疲労"],
+      subacute: ["Somnolence syndrome（全脳照射2〜6か月）","神経症状の一時的悪化（浮腫）","Pseudo-progression（免疫療法併用時）"],
+      late:     ["放射線壊死（SRS後2〜3年、12-14%）","認知機能障害（全脳照射後: HVMEM低下）","白質脳症","下垂体機能低下","二次発がん（稀）"],
+      note:     "全脳照射後の認知機能障害予防にメマンチン（RTOG 0614）、海馬回避WBRT（RTOG 0933）が有用。SRS単独は全脳照射より神経認知温存に優れる。"
+    }
+  },
+  liver: {
+    pt: {
+      acute:    ["疲れやすい","食欲低下","吐き気","右上腹部の違和感"],
+      subacute: ["倦怠感の持続","食欲低下の遷延"],
+      late:     ["肝機能変化（稀）","皮膚の色素沈着"]
+    },
+    md: {
+      acute:    ["Grade1-2倦怠感・悪心","肝機能検査値上昇（一時的）"],
+      subacute: ["RILD（放射線性肝障害）：2〜6か月、Dmean>28-32Gy でリスク"],
+      late:     ["慢性肝機能低下（肝硬変ベースラインで顕著）","胃・十二指腸潰瘍（近接時）"],
+      note:     "肝SBRT（40-60Gy/3-5fx）の局所制御率は90%以上。Child-Pugh A vs B で耐容線量が異なる。胃腸管 Dmax 35-38 Gy/3-5fx を厳守。"
+    }
+  },
+  bone: {
+    pt: {
+      acute:    ["一時的な痛みの増強（フレア反応、1〜4日）","疲れやすい","皮膚の軽い反応（脊椎照射時）"],
+      subacute: ["痛みの改善（2〜4週で効果が出てくることが多い）"],
+      late:     ["神経症状（脊髄圧迫に注意）","骨折のリスク（高線量時）"]
+    },
+    md: {
+      acute:    ["疼痛フレア（8-40%、予防的デカドロン有効）","Grade1-2皮膚炎","疲労"],
+      subacute: ["疼痛緩和効果発現（中央値4週）","脊椎SBRT後のADC上昇（Tanaka et al.）"],
+      late:     ["椎体圧迫骨折（脊椎SBRT後14-39%、骨浸潤程度・Spinal Instability Neoplastic Scoreと相関）","晩期神経障害（脊髄Dmax<14Gy/1fx厳守）"],
+      note:     "単回8Gy vs 多分割20-30Gy の疼痛緩和効果は同等（RTOG 97-14）。脊椎SBRTはQOL・再照射耐性・長期局所制御で優れる（SABR）。"
+    }
+  },
+  esophagus: {
+    pt: {
+      acute:    ["飲み込みにくい・のどの痛み","胸のヒリヒリ感","食欲低下","体重減少"],
+      subacute: ["嚥下障害の一時的悪化","倦怠感"],
+      late:     ["食道狭窄（慢性嚥下障害）","まれに気管食道瘻","体重管理が必要"]
+    },
+    md: {
+      acute:    ["Grade2-3食道炎（60-70%）","体重減少（>10%: 30-40%）","疲労","肺臓炎（V20<30%）"],
+      subacute: ["食道炎の遷延","栄養管理が重要"],
+      late:     ["食道狭窄（5-20%）","気管食道瘻（<5%）","放射線肺臓炎","心膜炎"],
+      note:     "根治的CRT（50.4Gy/28fx + 化学療法）。切除不能例では CROSS / CHECKMATE 577プロトコルを参照。Dmean 食道<34Gy、V50<50%（Grade3+食道炎予防）。"
+    }
   }
-  const sortedDays=Object.keys(treatMap).sort();
-  currentEndDate=sortedDays.length?new Date(sortedDays.pop()+'T00:00:00'):new Date(currentStartDate);
-  if(currentDisease&&DISEASES[currentDisease]){
-    DISEASES[currentDisease].sideEffects.forEach(se=>{
-      let d=new Date(currentStartDate);d.setDate(d.getDate()+se.startDay);
-      const end=new Date(currentStartDate);end.setDate(end.getDate()+se.endDay);
-      while(d<=end){const ds=toDS(d);if(!seDotMap[ds])seDotMap[ds]=[];seDotMap[ds].push(se.color);d.setDate(d.getDate()+1)}
+};
+
+const OAR_DATA = [
+  { section: "中枢神経系" },
+  { organ:"脊髄", metric:"Dmax", limit:"45–50 Gy", endpoint:"脊髄症" },
+  { organ:"脳幹", metric:"Dmax", limit:"54 Gy", endpoint:"永続的神経障害・壊死" },
+  { organ:"視神経/視交叉", metric:"Dmax", limit:"54–55 Gy", endpoint:"視神経障害" },
+  { organ:"蝸牛（内耳）", metric:"Dmean", limit:"45 Gy", endpoint:"感音性難聴" },
+  { section: "頭頸部" },
+  { organ:"耳下腺（両側）", metric:"Dmean", limit:"25–26 Gy", endpoint:"長期唾液分泌障害" },
+  { organ:"下顎骨", metric:"Dmax", limit:"70 Gy", endpoint:"骨壊死" },
+  { organ:"喉頭", metric:"Dmean", limit:"44 Gy", endpoint:"喉頭浮腫" },
+  { organ:"咽頭収縮筋", metric:"Dmean", limit:"50 Gy", endpoint:"嚥下障害" },
+  { section: "胸部" },
+  { organ:"肺（両側）", metric:"Dmean", limit:"20 Gy", endpoint:"放射線肺臓炎" },
+  { organ:"肺（両側）", metric:"V20", limit:"≤30–35%", endpoint:"放射線肺臓炎" },
+  { organ:"肺（両側）", metric:"V5", limit:"≤60%", endpoint:"放射線肺臓炎" },
+  { organ:"心臓", metric:"Dmean", limit:"26 Gy", endpoint:"心膜炎" },
+  { organ:"心臓", metric:"V25", limit:"≤10%", endpoint:"長期心毒性" },
+  { organ:"食道", metric:"Dmean", limit:"34 Gy", endpoint:"Grade3+ 食道炎" },
+  { organ:"腕神経叢", metric:"Dmax", limit:"66 Gy", endpoint:"神経障害" },
+  { section: "腹部・骨盤" },
+  { organ:"肝臓", metric:"Dmean", limit:"30–32 Gy", endpoint:"放射線性肝障害（RILD）" },
+  { organ:"腎臓（両側）", metric:"Dmean", limit:"18 Gy", endpoint:"腎機能障害" },
+  { organ:"腎臓（両側）", metric:"V20", limit:"≤32%", endpoint:"腎機能障害" },
+  { organ:"小腸", metric:"Dmax", limit:"50 Gy", endpoint:"穿孔・瘻孔・狭窄" },
+  { organ:"小腸", metric:"V15", limit:"≤120 cc", endpoint:"Grade3+ 毒性" },
+  { organ:"直腸", metric:"V50", limit:"≤50%", endpoint:"Grade2+ 直腸炎" },
+  { organ:"直腸", metric:"V60", limit:"≤35%", endpoint:"Grade2+ 直腸炎" },
+  { organ:"直腸", metric:"V70", limit:"≤20%", endpoint:"Grade2+ 直腸炎" },
+  { organ:"膀胱", metric:"V65", limit:"≤50%", endpoint:"Grade3+ 膀胱炎" },
+  { organ:"膀胱", metric:"V70", limit:"≤35%", endpoint:"Grade3+ 膀胱炎" },
+  { organ:"大腿骨頭", metric:"V50", limit:"≤5%", endpoint:"骨壊死" },
+  { organ:"陰茎球", metric:"Dmean", limit:"52 Gy", endpoint:"勃起機能障害" },
+  { section: "その他" },
+  { organ:"水晶体", metric:"Dmax", limit:"10 Gy", endpoint:"白内障" },
+  { organ:"網膜", metric:"Dmax", limit:"45 Gy", endpoint:"網膜症" },
+  { organ:"涙腺", metric:"Dmean", limit:"25 Gy", endpoint:"ドライアイ" },
+  { organ:"甲状腺", metric:"Dmean", limit:"45 Gy", endpoint:"甲状腺機能低下" }
+];
+
+const BED_PRESETS = [
+  { label:"通常分割（60Gy/30fx）", d:2, n:30 },
+  { label:"通常分割（50.4Gy/28fx）", d:1.8, n:28 },
+  { label:"寡分割（52.5Gy/20fx）", d:2.625, n:20 },
+  { label:"乳癌寡分割（40Gy/15fx）", d:2.667, n:15 },
+  { label:"乳癌超寡分割（26Gy/5fx）", d:5.2, n:5 },
+  { label:"前立腺SBRT（36.25Gy/5fx）", d:7.25, n:5, ab:3 },
+  { label:"肺SBRT（48Gy/4fx）", d:12, n:4 },
+  { label:"肺SBRT（54Gy/3fx）", d:18, n:3 },
+  { label:"骨転移（8Gy/1fx）", d:8, n:1 },
+  { label:"脊椎SBRT（30Gy/3fx）", d:10, n:3 },
+  { label:"脳SRS（20Gy/1fx）", d:20, n:1, ab:2 }
+];
+
+// ═════════════ STATE ═════════════
+let calData = {}; // { dateStr: { nrs, memo, treat, skip } }
+let records = [];
+let currentModal = null;
+
+// ═════════════ INIT ═════════════
+function init() {
+  // FAQ
+  const faqList = document.getElementById('faq-list');
+  FAQ.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'faq-item';
+    div.innerHTML = `<button class="faq-q" onclick="toggleFaq(${i})"><span>${f.q}</span><span class="arrow">▼</span></button>
+      <div class="faq-a">${f.a}</div>`;
+    faqList.appendChild(div);
+  });
+
+  // Disease grids
+  ['pt-se-disease-grid','md-se-disease-grid'].forEach(id => {
+    const grid = document.getElementById(id);
+    Object.keys(DISEASES).forEach(k => {
+      const btn = document.createElement('button');
+      btn.className = 'disease-btn';
+      btn.textContent = DISEASES[k].label;
+      btn.onclick = () => showSE(k, id.startsWith('md') ? 'md' : 'pt');
+      grid.appendChild(btn);
     });
-  }
-  // Update summary bar end date
-  const endEl=document.querySelector('#summaryBar .sum-icon.green');
-  if(endEl&&endEl.parentElement){endEl.parentElement.querySelector('strong').textContent=fmtDate(currentEndDate)}
-}
-
-function onDiseaseChange(){const k=document.getElementById('diseaseSelect').value;if(DISEASES[k])document.getElementById('treatDays').value=DISEASES[k].defaultFx}
-
-function generateCalendar(){
-  const patientName=document.getElementById('patientName').value.trim();
-  const startDateVal=document.getElementById('startDate').value;
-  const treatDaysVal=parseInt(document.getElementById('treatDays').value);
-  const diseaseKey=document.getElementById('diseaseSelect').value;
-  if(!startDateVal){alert('治療開始日を入力してください');return}
-  if(!treatDaysVal||treatDaysVal<1||treatDaysVal>39){alert('治療回数は1〜39の範囲で入力してください');return}
-  const startDate=new Date(startDateVal+'T00:00:00');
-  if(startDate.getDay()===0||startDate.getDay()===6||getHolidays(startDate.getFullYear()).has(startDateVal)){alert('開始日は平日を選択してください');return}
-
-  currentDisease=diseaseKey;currentPatientKey=(patientName||'患者')+'-'+startDateVal;currentStartDate=startDate;currentTreatDaysVal=treatDaysVal;
-  const maxD=new Date(startDate);maxD.setDate(maxD.getDate()+100);
-  for(let y=startDate.getFullYear();y<=maxD.getFullYear();y++)getHolidays(y);
-
-  rebuildTreatMap();
-
-  // Save settings for session restore
-  try{localStorage.setItem('rt_lastSettings',JSON.stringify({patientName,diseaseKey,startDateVal,treatDaysVal}))}catch(e){}
-
-  const dis=DISEASES[diseaseKey];
-  document.getElementById('summaryBar').innerHTML=`
-    <div class="sum-item"><div class="sum-icon blue">📅</div><div class="sum-text"><strong>${fmtDate(startDate)}</strong><span>開始日</span></div></div>
-    <div class="sum-item"><div class="sum-icon green">🏁</div><div class="sum-text"><strong>${fmtDate(currentEndDate)}</strong><span>終了予定</span></div></div>
-    <div class="sum-item"><div class="sum-icon orange">💊</div><div class="sum-text"><strong>${treatDaysVal}回</strong><span>${dis?dis.name:''}</span></div></div>
-    ${patientName?`<div class="sum-patient">${patientName} 様</div>`:''}`;
-
-  buildTimeline(diseaseKey,startDate,currentEndDate,treatDaysVal);
-  buildCalendar(startDate,currentEndDate);
-  document.getElementById('calendarOutput').style.display='block';
-  document.getElementById('calendarOutput').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function buildTimeline(diseaseKey,startDate,endDate,totalFx){
-  const dis=DISEASES[diseaseKey];if(!dis){document.getElementById('timelineWrap').innerHTML='';return}
-  const treatDays=(endDate-startDate)/(864e5)+1;
-  let maxDay=treatDays+14;dis.sideEffects.forEach(se=>{if(se.endDay>maxDay)maxDay=se.endDay});maxDay=Math.min(maxDay,400);
-  let html='<div class="tl-axis">';
-  for(let d=0;d<=maxDay;d+=30){
-    html+=`<div class="tl-axis-seg" style="flex:${30/maxDay*100}">${d===0?'治療中':d/30+'か月後'}</div>`;
-  }
-  html+='</div>';
-  const txPct=(treatDays/maxDay*100).toFixed(1);
-  html+=`<div class="tl-row"><div class="tl-label">🔵 治療期間</div><div class="tl-bar-wrap"><div class="tl-segment tl-treatment-bar" style="left:0;width:${txPct}%">${totalFx}回</div></div></div>`;
-  dis.sideEffects.forEach(se=>{
-    const l=(se.startDay/maxDay*100).toFixed(1),w=((se.endDay-se.startDay)/maxDay*100).toFixed(1);
-    html+=`<div class="tl-row"><div class="tl-label">${se.label}</div><div class="tl-bar-wrap"><div class="tl-segment" style="left:${l}%;width:${Math.max(parseFloat(w),2)}%;background:${se.color}">${se.label}</div></div></div>`;
-    if(se.medication)html+=`<div class="tl-row" style="margin-top:-3px;margin-bottom:1px"><div class="tl-label" style="font-size:.68rem;color:#e65100">　└ 💊 ${se.medication}</div><div class="tl-bar-wrap"></div></div>`;
   });
-  document.getElementById('timelineWrap').innerHTML=html;
-}
 
-function buildCalendar(startDate,endDate){
-  const months=[];let m=new Date(startDate.getFullYear(),startDate.getMonth(),1);const em=new Date(endDate.getFullYear(),endDate.getMonth(),1);
-  while(m<=em){months.push(new Date(m));m.setMonth(m.getMonth()+1)}
-  const grid=document.getElementById('calendarGrid');grid.innerHTML='';
-  const wks=['日','月','火','水','木','金','土'],mns=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  const data=getPatientData();
-
-  months.forEach(ms=>{
-    const yr=ms.getFullYear(),mo=ms.getMonth();
-    const card=document.createElement('div');card.className='month-card';
-    card.innerHTML=`<div class="month-hdr">${yr}年 ${mns[mo]}</div>`;
-    const wr=document.createElement('div');wr.className='wk-row';
-    wks.forEach((w,i)=>{const s=document.createElement('span');s.textContent=w;if(i===0)s.className='sun';if(i===6)s.className='sat';wr.appendChild(s)});
-    card.appendChild(wr);
-    const dg=document.createElement('div');dg.className='days-grid';
-    for(let i=0;i<new Date(yr,mo,1).getDay();i++){const e=document.createElement('div');e.className='day-cell empty';dg.appendChild(e)}
-    for(let d=1;d<=new Date(yr,mo+1,0).getDate();d++){
-      const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const dow=new Date(yr,mo,d).getDay(),treatNum=treatMap[ds],hol=isHoliday(ds);
-      const entry=data[ds],hasNote=entry&&(entry.note||entry.nrs!=null||entry.takedaMemo);
-      const isSkipped=entry&&entry.skipped;
-      const isAdhoc=entry&&entry.adhocTreat;
-      const cell=document.createElement('div');cell.className='day-cell';cell.onclick=()=>openModal(ds);
-      if(isSkipped){cell.classList.add('treatment','skipped');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">欠席</span>`}
-      else if(treatNum&&isAdhoc){cell.classList.add('treatment','adhoc-treat');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">${treatNum}回</span>`}
-      else if(treatNum){cell.classList.add('treatment');cell.innerHTML=`<span class="day-num">${d}</span><span class="treat-num">${treatNum}回</span>`}
-      else{if(hol||dow===0)cell.classList.add(hol?'holiday':'wsun');else if(dow===6)cell.classList.add('wsat');else cell.classList.add('normal');cell.innerHTML=`<span class="day-num">${d}</span>`}
-      const dots=seDotMap[ds];
-      if(dots&&dots.length){const dc=document.createElement('div');dc.className='se-dots';[...new Set(dots)].slice(0,4).forEach(c=>{const dot=document.createElement('span');dot.className='se-dot';dot.style.background=c;dc.appendChild(dot)});cell.appendChild(dc)}
-      if(hasNote)cell.classList.add('has-note');
-      dg.appendChild(cell);
+  // OAR table
+  const tbody = document.getElementById('oar-body');
+  OAR_DATA.forEach(row => {
+    if (row.section) {
+      const tr = document.createElement('tr');
+      tr.className = 'organ-header';
+      tr.innerHTML = `<td colspan="4">${row.section}</td>`;
+      tbody.appendChild(tr);
+    } else {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.organ}</td><td>${row.metric}</td><td><b>${row.limit}</b></td><td>${row.endpoint}</td>`;
+      tbody.appendChild(tr);
     }
-    card.appendChild(dg);grid.appendChild(card);
   });
+
+  // NRS buttons
+  renderNRSBtns('nrs-btns', 'rec-nrs');
+  renderNRSBtns('modal-nrs-btns', 'modal-nrs');
+
+  // BED presets
+  renderPresets();
+
+  // Set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('rec-date').value = today;
+  document.getElementById('pt-start').value = today;
+
+  // Load saved data
+  try { calData = JSON.parse(localStorage.getItem('lc-caldata') || '{}'); } catch(e){}
+  try { records = JSON.parse(localStorage.getItem('lc-records') || '[]'); } catch(e){}
+  renderRecords();
 }
 
-// ===============================================================
-// MODAL
-// ===============================================================
-function openModal(ds){
-  modalDate=ds;selectedNrs=null;
-  const data=getPatientData();
-  const dis=currentDisease&&DISEASES[currentDisease],entry=data[ds]||{};
-  // Determine if this date is (or was) a treatment day slot (incl. skipped)
-  const treatNum=treatMap[ds];
-  const isSkipped=!!entry.skipped;
-  // A "skippable" day = either current treatment day OR already a skipped weekday
-  const d=new Date(ds+'T00:00:00'),dow=d.getDay();
-  const isWeekday=dow!==0&&dow!==6&&!isHoliday(ds);
-  const isWeekendOrHoliday=!isWeekday;
-  const isInTreatmentPeriod=currentStartDate&&d>=currentStartDate&&d<=new Date(currentEndDate.getTime()+14*864e5);
-  const showSkipBtn=isWeekday&&isInTreatmentPeriod&&(treatNum||isSkipped);
-  const isAdhoc=!!entry.adhocTreat;
-  const showAdhocBtn=isWeekendOrHoliday&&isInTreatmentPeriod;
-
-  selectedNrs=entry.nrs!=null?entry.nrs:null;
-  const wks=['日','月','火','水','木','金','土'];
-  document.getElementById('modalTitle').textContent=`${d.getMonth()+1}/${d.getDate()}（${wks[d.getDay()]}）`;
-  if(isSkipped){
-    document.getElementById('modalTreatBadge').innerHTML=`<span class="treat-badge" style="background:#ff7043">⏭ 欠席日（スキップ）</span><br><br>`;
-  } else if(isAdhoc&&treatNum){
-    document.getElementById('modalTreatBadge').innerHTML=`<span class="treat-badge" style="background:#43a047">💉 第${treatNum}回 臨時照射</span><br><br>`;
-  } else {
-    document.getElementById('modalTreatBadge').innerHTML=treatNum?`<span class="treat-badge">💊 第${treatNum}回 治療日</span><br><br>`:'';
-  }
-  // Skip note banner
-  const skipNote=document.getElementById('modalSkipNote');
-  skipNote.classList.toggle('show',isSkipped);
-  // Adhoc note banner
-  const adhocNote=document.getElementById('modalAdhocNote');
-  adhocNote.classList.toggle('show',isAdhoc);
-  // Skip button
-  const skipBtn=document.getElementById('skipBtn');
-  if(showSkipBtn){skipBtn.style.display='';skipBtn.textContent=isSkipped?'↩ スキップ解除':'⏭ 欠席にする';skipBtn.classList.toggle('active',isSkipped)}
-  else skipBtn.style.display='none';
-  // Adhoc button
-  const adhocBtn=document.getElementById('adhocBtn');
-  if(showAdhocBtn){adhocBtn.style.display='';adhocBtn.textContent=isAdhoc?'↩ 臨時照射を解除':'💉 臨時照射';adhocBtn.classList.toggle('active',isAdhoc)}
-  else adhocBtn.style.display='none';
-
-  const chips=document.getElementById('modalSeChips');
-  if(seDotMap[ds]&&seDotMap[ds].length&&dis){
-    const activeNames=dis.sideEffects.filter(se=>seDotMap[ds]&&seDotMap[ds].includes(se.color)).map(se=>({label:se.label,color:se.color}));
-    if(activeNames.length)chips.innerHTML='<div style="margin-bottom:10px"><div style="font-size:.75rem;color:#888;margin-bottom:4px">⚠️ 出やすい副作用：</div><div class="se-active-list">'+activeNames.map(a=>`<span class="se-active-chip" style="background:${a.color}">${a.label}</span>`).join('')+'</div></div>';
-    else chips.innerHTML='';
-  }else chips.innerHTML='';
-  const nrsWrap=document.getElementById('nrsWrap');nrsWrap.innerHTML='';
-  for(let i=0;i<=10;i++){
-    const btn=document.createElement('button');btn.className='nrs-btn';
-    if(i>=7)btn.classList.add('nrs-hi');else if(i>=4)btn.classList.add('nrs-med');
-    btn.textContent=i;if(selectedNrs===i)btn.classList.add('selected');
-    btn.onclick=()=>{selectedNrs=i;document.querySelectorAll('.nrs-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')};
-    nrsWrap.appendChild(btn);
-  }
-  document.getElementById('weightInput').value=entry.weight||'';
-  document.getElementById('noteText').value=entry.note||'';
-  document.getElementById('takedaMemoText').value=entry.takedaMemo||'';
-  renderPhotoGrid(entry.photos||[]);
-  document.getElementById('deleteBtn').style.display=(entry.note||entry.nrs!=null||entry.takedaMemo||entry.weight||entry.photos)?'':'none';
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function toggleSkip(){
-  const data=getPatientData();
-  if(!data[modalDate])data[modalDate]={};
-  data[modalDate].skipped=!data[modalDate].skipped;
-  if(!data[modalDate].skipped)delete data[modalDate].skipped;
-  savePatientData(data);
-  rebuildTreatMap();
-  buildCalendar(currentStartDate,currentEndDate);
-  closeModalDirect();
-}
-function toggleAdhocTreat(){
-  const data=getPatientData();
-  if(!data[modalDate])data[modalDate]={};
-  data[modalDate].adhocTreat=!data[modalDate].adhocTreat;
-  if(!data[modalDate].adhocTreat)delete data[modalDate].adhocTreat;
-  savePatientData(data);
-  rebuildTreatMap();
-  buildCalendar(currentStartDate,currentEndDate);
-  closeModalDirect();
-}
-function closeModal(e){if(e.target===document.getElementById('modalOverlay'))closeModalDirect()}
-function closeModalDirect(){document.getElementById('modalOverlay').classList.remove('open')}
-function saveEntry(){
-  const note=document.getElementById('noteText').value.trim();
-  const takedaMemo=document.getElementById('takedaMemoText').value.trim();
-  const weightVal=document.getElementById('weightInput').value.trim();
-  const weight=weightVal?parseFloat(weightVal):null;
-  const photos=currentModalPhotos||[];
-  if(selectedNrs===null&&!note&&!takedaMemo&&!weight&&!photos.length){closeModalDirect();return}
-  const data=getPatientData();if(!data[modalDate])data[modalDate]={};
-  if(selectedNrs!==null)data[modalDate].nrs=selectedNrs;else delete data[modalDate].nrs;
-  if(note)data[modalDate].note=note;else delete data[modalDate].note;
-  if(takedaMemo)data[modalDate].takedaMemo=takedaMemo;else delete data[modalDate].takedaMemo;
-  if(weight)data[modalDate].weight=weight;else delete data[modalDate].weight;
-  if(photos.length)data[modalDate].photos=photos;else delete data[modalDate].photos;
-  savePatientData(data);closeModalDirect();buildCalendar(currentStartDate,currentEndDate);
-}
-function deleteEntry(){
-  const data=getPatientData();
-  const skipped=data[modalDate]&&data[modalDate].skipped;
-  const adhoc=data[modalDate]&&data[modalDate].adhocTreat;
-  delete data[modalDate];
-  if(skipped||adhoc){
-    data[modalDate]={};
-    if(skipped)data[modalDate].skipped=true;
-    if(adhoc)data[modalDate].adhocTreat=true;
-    savePatientData(data);rebuildTreatMap();
-  }
-  else savePatientData(data);
-  closeModalDirect();buildCalendar(currentStartDate,currentEndDate);
-}
-
-// ===============================================================
-// PHOTO CAPTURE
-// ===============================================================
-let currentModalPhotos=[];
-function renderPhotoGrid(photos){
-  currentModalPhotos=photos||[];
-  const grid=document.getElementById('photoGrid');grid.innerHTML='';
-  currentModalPhotos.forEach((src,i)=>{
-    const wrap=document.createElement('div');wrap.className='photo-thumb-wrap';
-    const img=document.createElement('img');img.className='photo-thumb';img.src=src;
-    img.onclick=()=>previewPhoto(src);
-    const del=document.createElement('button');del.className='photo-del-btn';del.textContent='✕';
-    del.onclick=(e)=>{e.stopPropagation();currentModalPhotos.splice(i,1);renderPhotoGrid(currentModalPhotos)};
-    wrap.appendChild(img);wrap.appendChild(del);grid.appendChild(wrap);
-  });
-  if(currentModalPhotos.length<4){
-    const addBtn=document.createElement('button');addBtn.className='photo-add-btn';addBtn.textContent='📷';
-    addBtn.onclick=()=>document.getElementById('photoFileInput').click();
-    grid.appendChild(addBtn);
-  }
-}
-function handlePhotoCapture(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const img=new Image();
-    img.onload=()=>{
-      const max=400;let w=img.width,h=img.height;
-      if(w>max||h>max){if(w>h){h=h*(max/w);w=max}else{w=w*(max/h);h=max}}
-      const c=document.createElement('canvas');c.width=w;c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      const dataUrl=c.toDataURL('image/jpeg',0.7);
-      currentModalPhotos.push(dataUrl);
-      renderPhotoGrid(currentModalPhotos);
+function renderNRSBtns(containerId, valueId) {
+  const container = document.getElementById(containerId);
+  for(let i=0;i<=10;i++) {
+    const btn = document.createElement('button');
+    btn.className = 'nrs-btn';
+    btn.textContent = i;
+    btn.dataset.val = i;
+    btn.dataset.target = valueId;
+    btn.onclick = function() {
+      document.querySelectorAll(`[data-target="${valueId}"]`).forEach(b => b.classList.remove('sel'));
+      this.classList.add('sel');
     };
-    img.src=ev.target.result;
-  };
-  reader.readAsDataURL(file);
-  e.target.value='';
-}
-function previewPhoto(src){
-  const ov=document.createElement('div');ov.className='photo-preview-overlay';
-  ov.onclick=()=>ov.remove();
-  const img=document.createElement('img');img.src=src;
-  const cls=document.createElement('button');cls.className='photo-preview-close';cls.textContent='✕';cls.onclick=()=>ov.remove();
-  ov.appendChild(img);ov.appendChild(cls);document.body.appendChild(ov);
-}
-
-// ===============================================================
-// STORAGE
-// ===============================================================
-function getPatientData(){try{return JSON.parse(localStorage.getItem('rt_'+currentPatientKey)||'{}')}catch(e){return{}}}
-function savePatientData(d){try{localStorage.setItem('rt_'+currentPatientKey,JSON.stringify(d))}catch(e){}}
-
-// ===============================================================
-// SUMMARY
-// ===============================================================
-function renderSummary(){
-  const label=document.getElementById('summaryPatientLabel');
-  if(!currentPatientKey){document.getElementById('summaryContent').innerHTML='<div class="empty-summary">まずカレンダーを作成してください</div>';return}
-  label.textContent=currentPatientKey.split('-')[0]+' 様';
-  const data=getPatientData(),entries=Object.keys(data).filter(ds=>data[ds]&&(data[ds].note||data[ds].nrs!=null||data[ds].takedaMemo||data[ds].skipped||data[ds].weight||data[ds].photos)).sort();
-  if(!entries.length){document.getElementById('summaryContent').innerHTML='<div class="empty-summary">記録がまだありません。<br>カレンダーの日付タップで記録できます。</div>';return}
-  const wks=['日','月','火','水','木','金','土'];
-  let html='';
-  entries.forEach(ds=>{
-    const e=data[ds],d=new Date(ds+'T00:00:00'),treatNum=treatMap[ds],nrs=e.nrs;
-    let nrsCls='nrs-0',nrsLabel='なし';
-    if(nrs!=null){if(nrs===0){nrsCls='nrs-0';nrsLabel='0 - なし'}else if(nrs<=3){nrsCls='nrs-mild';nrsLabel=`${nrs} - 軽度`}else if(nrs<=6){nrsCls='nrs-mod';nrsLabel=`${nrs} - 中等度`}else{nrsCls='nrs-sev';nrsLabel=`${nrs} - 強い`}}
-    const seNames=currentDisease&&DISEASES[currentDisease]&&seDotMap[ds]?DISEASES[currentDisease].sideEffects.filter(se=>seDotMap[ds]&&seDotMap[ds].includes(se.color)).map(se=>se.label).join('、'):'';
-    const weightHtml=e.weight?`<div style="margin-bottom:4px"><span class="weight-badge">⚖️ ${e.weight} kg</span></div>`:'';
-    const photoHtml=e.photos&&e.photos.length?`<div style="display:flex;gap:4px;margin-top:4px">${e.photos.map(p=>`<img src="${p}" style="width:40px;height:40px;border-radius:4px;object-fit:cover;cursor:pointer" onclick="previewPhoto('${p.replace(/'/g,"\\'")}')">`).join('')}</div>`:'';
-    html+=`<div class="entry-card"><div class="entry-date-col"><div class="e-day">${d.getDate()}</div><div class="e-ymd">${d.getFullYear()}/${d.getMonth()+1}<br>${wks[d.getDay()]}</div>${treatNum?`<div class="treat-tag">${treatNum}回</div>`:''}${e.skipped?`<div class="treat-tag" style="background:#ff7043">欠席</div>`:''}</div><div class="entry-body">${weightHtml}${nrs!=null?`<div class="entry-nrs"><span>NRS：</span><span class="nrs-badge ${nrsCls}">${nrsLabel}</span></div>`:''}${e.note?`<div class="entry-note-text">📝 ${e.note}</div>`:''}${e.takedaMemo?`<div class="entry-note-text" style="color:#2e7d32;background:#f1f8f1;border-radius:6px;padding:4px 8px;margin-top:4px">🌿 武田メモ：${e.takedaMemo}</div>`:''}${photoHtml}${seNames?`<div class="se-active-sm">⚠️ ${seNames}</div>`:''}</div></div>`;
-  });
-  document.getElementById('summaryContent').innerHTML=html;
-}
-
-// ===============================================================
-// TAB NAV
-// ===============================================================
-function showTab(t){
-  ['calendar','summary','faq','info','calc','oar','evidence'].forEach(id=>{document.getElementById('tab-'+id).classList.toggle('active',id===t);document.getElementById('tab-'+id+'-btn').classList.toggle('active',id===t)});
-  if(t==='summary')renderSummary();
-  if(t==='calc')calcBED();
-}
-
-// ===============================================================
-// EVIDENCE SEARCH (PubMed API)
-// ===============================================================
-function setEvSearch(q){
-  document.getElementById('evSearchInput').value=q;
-  searchEvidence();
-}
-
-async function searchEvidence(){
-  const q=document.getElementById('evSearchInput').value.trim();
-  if(!q)return;
-  const btn=document.getElementById('evSearchBtn');
-  const res=document.getElementById('evResults');
-  btn.disabled=true;
-  res.innerHTML='<div class="ev-loading"><div class="spinner"></div><p style="margin-top:10px">PubMedを検索中...</p></div>';
-
-  try{
-    const searchUrl=`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(q)}&retmax=10&sort=relevance&retmode=json`;
-    const searchResp=await fetch(searchUrl);
-    const searchData=await searchResp.json();
-    const ids=searchData.esearchresult.idlist;
-    const total=searchData.esearchresult.count;
-
-    if(!ids||!ids.length){
-      res.innerHTML='<p style="color:#999;text-align:center;padding:20px">該当する文献が見つかりませんでした。キーワードを変えて試してください。</p>';
-      btn.disabled=false;return;
-    }
-
-    const summaryUrl=`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(',')}&retmode=json`;
-    const summaryResp=await fetch(summaryUrl);
-    const summaryData=await summaryResp.json();
-    const articles=summaryData.result;
-
-    let html=`<div class="ev-count">🔎 「${q}」の検索結果：${parseInt(total).toLocaleString()}件中 上位${ids.length}件を表示</div>`;
-
-    ids.forEach(id=>{
-      const a=articles[id];
-      if(!a||a.error)return;
-      const title=a.title||'タイトルなし';
-      const authors=(a.authors||[]).slice(0,3).map(au=>au.name).join(', ')+(a.authors&&a.authors.length>3?' et al.':'');
-      const journal=a.fulljournalname||a.source||'';
-      const year=a.pubdate?a.pubdate.substring(0,4):'';
-      const pmid=a.uid||id;
-      const doi=a.elocationid||'';
-      const pubtype=(a.pubtype||[]).includes('Randomized Controlled Trial')?'<span style="background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700;margin-left:4px">RCT</span>':
-                    (a.pubtype||[]).includes('Meta-Analysis')?'<span style="background:#fff3e0;color:#e65100;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700;margin-left:4px">Meta</span>':
-                    (a.pubtype||[]).includes('Review')?'<span style="background:#f3e5f5;color:#6a1b9a;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700;margin-left:4px">Review</span>':'';
-
-      html+=`<div class="ev-result" id="ev-${pmid}">
-        <a class="ev-result-title" href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" rel="noopener">${title}${pubtype}</a>
-        <div class="ev-result-meta">
-          <span class="ev-result-journal">${journal}</span>${year?' · '+year:''}${authors?' · '+authors:''}
-          <br>PMID: ${pmid}${doi?' · '+doi:''}
-        </div>
-        <span class="ev-toggle" onclick="document.getElementById('ev-${pmid}').classList.toggle('open');this.textContent=document.getElementById('ev-${pmid}').classList.contains('open')?'▲ 閉じる':'▼ 抄録を見る'">▼ 抄録を見る</span>
-        <div class="ev-result-abstract" id="evabs-${pmid}">
-          <div style="color:#bbb;font-size:.78rem;text-align:center;padding:8px" id="evabs-loading-${pmid}">読み込み中...</div>
-        </div>
-      </div>`;
-    });
-
-    res.innerHTML=html;
-
-    res.querySelectorAll('.ev-toggle').forEach(toggle=>{
-      toggle.addEventListener('click',async function(){
-        const card=this.closest('.ev-result');
-        const pmid=card.id.replace('ev-','');
-        const absDiv=document.getElementById('evabs-'+pmid);
-        const loadingDiv=document.getElementById('evabs-loading-'+pmid);
-        if(loadingDiv){
-          try{
-            const r=await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmid}&rettype=abstract&retmode=text`);
-            const text=await r.text();
-            const lines=text.split('\n').filter(l=>l.trim());
-            const abstractIdx=lines.findIndex(l=>l.startsWith('AB  -'));
-            let abstract='抄録データがありません。';
-            if(abstractIdx>=0){
-              abstract=lines.slice(abstractIdx).join(' ')
-                .replace(/^AB\s+-\s*/,'').replace(/\s+[A-Z]{2}\s+-\s+.*/g,'').trim();
-            }
-            absDiv.innerHTML=`<p>${abstract}</p><a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" rel="noopener" style="font-size:.75rem;color:#1a6b9a">→ PubMedで全文を見る</a>`;
-          }catch(e){
-            absDiv.innerHTML='<p style="color:#f44">抄録の取得に失敗しました。</p>';
-          }
-        }
-      },{once:true});
-    });
-
-  }catch(e){
-    res.innerHTML='<p style="color:#f44336;text-align:center;padding:20px">検索中にエラーが発生しました。ネットワーク接続を確認してください。</p>';
+    container.appendChild(btn);
   }
-  btn.disabled=false;
 }
 
-function calcBED(){
-  const d=parseFloat(document.getElementById('calcDose').value);
-  const n=parseInt(document.getElementById('calcFx').value);
-  if(!d||!n||d<=0||n<=0){document.getElementById('calcResult').innerHTML='<p style="color:#999;text-align:center">値を入力してください</p>';return}
-  const totalDose=n*d;
-  const bed10=totalDose*(1+d/10);
-  const bed2=totalDose*(1+d/2);
-  const eqd2_10=bed10/(1+2/10);
-  const eqd2_2=bed2/(1+2/2);
-  document.getElementById('calcResult').innerHTML=`
-    <div class="calc-total-row">
-      <div class="calc-total-label">総線量</div>
-      <div class="calc-total-value">${totalDose.toFixed(1)} <span class="calc-unit">Gy</span></div>
-      <div style="font-size:.75rem;color:#888">${d} Gy × ${n} 回</div>
-    </div>
-    <div class="calc-result-grid">
-      <div class="calc-card">
-        <div class="calc-label">BED<sub>10</sub>（α/β=10）</div>
-        <div class="calc-value">${bed10.toFixed(1)} <span class="calc-unit">Gy</span></div>
-      </div>
-      <div class="calc-card highlight">
-        <div class="calc-label">EQD2（α/β=10）</div>
-        <div class="calc-value">${eqd2_10.toFixed(1)} <span class="calc-unit">Gy</span></div>
-      </div>
-      <div class="calc-card">
-        <div class="calc-label">BED<sub>2</sub>（α/β=2）</div>
-        <div class="calc-value">${bed2.toFixed(1)} <span class="calc-unit">Gy</span></div>
-      </div>
-      <div class="calc-card highlight">
-        <div class="calc-label">EQD2（α/β=2）</div>
-        <div class="calc-value">${eqd2_2.toFixed(1)} <span class="calc-unit">Gy</span></div>
-      </div>
-    </div>
-    <div style="margin-top:12px;font-size:.72rem;color:#999;text-align:center">
-      BED = n×d×(1+d/[α/β])　|　EQD2 = BED/(1+2/[α/β])
-    </div>`;
+function renderPresets() {
+  const ab = 10;
+  let html = '<div style="overflow-x:auto"><table class="oar-table"><thead><tr><th>スケジュール</th><th>BED (α/β=10)</th><th>EQD2 (α/β=10)</th></tr></thead><tbody>';
+  BED_PRESETS.forEach(p => {
+    const pab = p.ab || 10;
+    const bed = p.n * p.d * (1 + p.d / pab);
+    const eqd2 = bed / (1 + 2 / pab);
+    html += `<tr><td>${p.label}</td><td><b>${bed.toFixed(1)} Gy</b></td><td><b>${eqd2.toFixed(1)} Gy</b></td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('preset-table').innerHTML = html;
 }
-function fmtDate(d){return`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`}
 
-// ===============================================================
-// INIT
-// ===============================================================
-(function(){
-  initDiseaseButtons();
-  let d=new Date();while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()+1);
-  document.getElementById('startDate').value=toDS(d);
-  const sel=document.getElementById('diseaseSelect');if(sel.options.length)onDiseaseChange();
-  // Restore last settings
-  try{
-    const last=JSON.parse(localStorage.getItem('rt_lastSettings'));
-    if(last){
-      if(last.patientName)document.getElementById('patientName').value=last.patientName;
-      if(last.diseaseKey){sel.value=last.diseaseKey;onDiseaseChange()}
-      if(last.startDateVal)document.getElementById('startDate').value=last.startDateVal;
-      if(last.treatDaysVal)document.getElementById('treatDays').value=last.treatDaysVal;
+// ═════════════ NAVIGATION ═════════════
+function openApp(mode) {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById(`app-${mode}`).classList.add('active');
+}
+function goBack() {
+  document.querySelectorAll('.app').forEach(a => a.classList.remove('active'));
+  document.getElementById('landing').style.display = 'flex';
+}
+
+function switchTab(app, tabId) {
+  const tabBar = document.getElementById(`${app}-tabs`);
+  tabBar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(`app-${app}`).querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(`${app}-${tabId}`).classList.add('active');
+}
+
+// ═════════════ CALENDAR ═════════════
+function buildCalendar() {
+  const startStr = document.getElementById('pt-start').value;
+  const fx = parseInt(document.getElementById('pt-fx').value) || 0;
+  const disease = document.getElementById('pt-disease').value;
+  if(!startStr || !fx) return;
+
+  const start = new Date(startStr + 'T00:00:00');
+  const treatDays = [];
+  let d = new Date(start), count = 0;
+  while(count < fx) {
+    const dow = d.getDay();
+    if(dow !== 0 && dow !== 6) { treatDays.push(new Date(d)); count++; }
+    d.setDate(d.getDate()+1);
+  }
+  const end = treatDays[treatDays.length-1];
+  const treatSet = new Set(treatDays.map(x => x.toISOString().split('T')[0]));
+
+  // SE risk window: last 1/3 of treatment + 2 weeks after
+  const seStart = treatDays[Math.floor(fx * 2/3)] || treatDays[0];
+  const seEnd = new Date(end); seEnd.setDate(seEnd.getDate()+14);
+
+  // Calendar month range
+  const firstDay = new Date(start.getFullYear(), start.getMonth(), 1);
+  const lastDay = new Date(end.getFullYear(), end.getMonth()+1, 0);
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let html = '';
+  let cur = new Date(firstDay);
+  while(cur <= lastDay) {
+    const monthLabel = `${cur.getFullYear()}年${cur.getMonth()+1}月`;
+    html += `<div class="card"><div style="font-size:13px;font-weight:700;color:var(--pt-primary);margin-bottom:8px">${monthLabel}</div>
+    <div class="cal-grid">`;
+    ['日','月','火','水','木','金','土'].forEach(d => {
+      html += `<div class="cal-day-label">${d}</div>`;
+    });
+    const firstOfMonth = new Date(cur.getFullYear(), cur.getMonth(), 1);
+    for(let i=0;i<firstOfMonth.getDay();i++) html += '<div></div>';
+    const daysInMonth = new Date(cur.getFullYear(), cur.getMonth()+1, 0).getDate();
+    for(let day=1; day<=daysInMonth; day++) {
+      const dt = new Date(cur.getFullYear(), cur.getMonth(), day);
+      const ds = dt.toISOString().split('T')[0];
+      const dow = dt.getDay();
+      const isTreat = treatSet.has(ds);
+      const isSE = dt >= seStart && dt <= seEnd;
+      const isToday = dt.getTime() === today.getTime();
+      const hasRecord = calData[ds];
+      let cls = 'cal-day';
+      if(isTreat) cls += ' treat';
+      else if(isSE && !isTreat) cls += ' se-risk';
+      else if(dow===0||dow===6) cls += ' holiday';
+      if(dow===0) cls += ' sun'; if(dow===6) cls += ' sat';
+      if(isToday) cls += ' today';
+      const recorded = hasRecord ? '<br><span style="font-size:9px">📝</span>' : '';
+      html += `<div class="${cls}" onclick="openDayModal('${ds}','${monthLabel}${day}日')"><div class="day-num">${day}</div>${recorded}</div>`;
     }
-  }catch(e){}
-})();
+    html += '</div></div>';
+    cur.setMonth(cur.getMonth()+1);
+    cur.setDate(1);
+  }
+  document.getElementById('cal-output').innerHTML = html;
+  document.getElementById('cal-legend').style.display = 'block';
+
+  // Show SE info if disease selected
+  if(disease) showSE(disease, 'pt', true);
+}
+
+// ═════════════ SIDE EFFECTS ═════════════
+function showSE(key, mode, embedded=false) {
+  const data = SE_DATA[key];
+  if(!data) return;
+  const d = mode === 'md' ? data.md : data.pt;
+  if(!d) return;
+
+  // Update grid buttons
+  const gridId = mode === 'md' ? 'md-se-disease-grid' : 'pt-se-disease-grid';
+  document.querySelectorAll(`#${gridId} .disease-btn`).forEach(b => b.classList.remove('active'));
+  const btns = document.querySelectorAll(`#${gridId} .disease-btn`);
+  const labels = Object.values(DISEASES).map(x=>x.label);
+  btns.forEach(b => { if(b.textContent === DISEASES[key].label) b.classList.add('active'); });
+
+  const name = DISEASES[key].label;
+  let html = `<div class="card"><div style="font-size:13px;font-weight:700;color:${DISEASES[key].color};margin-bottom:12px">${name} の副作用</div>`;
+  html += '<div class="se-timeline">';
+  const periods = [
+    { label:'急性期（治療中〜終了後4週）', key:'acute' },
+    { label:'亜急性期（1〜6か月）', key:'subacute' },
+    { label:'晩期（6か月以降）', key:'late' }
+  ];
+  periods.forEach(p => {
+    if(!d[p.key]||!d[p.key].length) return;
+    html += `<div class="se-period"><h4>${p.label}</h4><div class="se-tags">`;
+    d[p.key].forEach(s => { html += `<span class="se-tag">${s}</span>`; });
+    html += '</div></div>';
+  });
+  html += '</div>';
+  if(mode==='md' && d.note) {
+    html += `<div style="margin-top:10px;padding:10px 12px;background:var(--md-highlight);border-radius:8px;font-size:11px;color:var(--md-muted);line-height:1.7"><b>臨床メモ</b><br>${d.note}</div>`;
+  }
+  if(mode==='pt') {
+    html += `<p style="font-size:11px;color:#999;margin-top:10px">※個人差があります。気になる症状は医師・看護師にご相談ください。</p>`;
+  }
+  html += '</div>';
+  document.getElementById(mode==='md'?'md-se-output':'pt-se-output').innerHTML = html;
+}
+
+// ═════════════ FAQ ═════════════
+function toggleFaq(i) {
+  const items = document.querySelectorAll('.faq-item');
+  items[i].classList.toggle('open');
+}
+
+// ═════════════ RECORDS ═════════════
+function saveRecord() {
+  const date = document.getElementById('rec-date').value;
+  const selBtn = document.querySelector('#nrs-btns .nrs-btn.sel');
+  const nrs = selBtn ? parseInt(selBtn.dataset.val) : null;
+  const weight = document.getElementById('rec-weight').value;
+  const memo = document.getElementById('rec-memo').value.trim();
+  if(!date) return;
+  records.unshift({ date, nrs, weight, memo, ts: Date.now() });
+  localStorage.setItem('lc-records', JSON.stringify(records));
+  document.getElementById('rec-memo').value = '';
+  document.querySelectorAll('#nrs-btns .nrs-btn').forEach(b=>b.classList.remove('sel'));
+  renderRecords();
+  alert('記録を保存しました');
+}
+
+function renderRecords() {
+  const list = document.getElementById('records-list');
+  if(!records.length) {
+    list.innerHTML = '<p style="font-size:13px;color:#999;text-align:center;padding:20px">まだ記録がありません</p>';
+    return;
+  }
+  list.innerHTML = records.slice(0,20).map(r => {
+    const d = new Date(r.date + 'T00:00:00');
+    const label = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${'日月火水木金土'[d.getDay()]}）`;
+    const nrsColor = r.nrs >= 7 ? '#c03030' : r.nrs >= 4 ? '#d07010' : '#2a7a5a';
+    return `<div class="record-item">
+      <div class="record-date">${label}${r.weight ? ' · 体重 '+r.weight+'kg' : ''}</div>
+      ${r.nrs !== null ? `<div class="record-nrs" style="color:${nrsColor}">NRS ${r.nrs}/10</div>` : ''}
+      ${r.memo ? `<div class="record-memo">${r.memo}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ═════════════ DAY MODAL ═════════════
+function openDayModal(ds, label) {
+  currentModal = ds;
+  document.getElementById('modal-date-title').textContent = label + ' の記録';
+  const existing = calData[ds] || {};
+  document.getElementById('modal-memo').value = existing.memo || '';
+  document.querySelectorAll('#modal-nrs-btns .nrs-btn').forEach(b => {
+    b.classList.toggle('sel', parseInt(b.dataset.val) === existing.nrs);
+  });
+  document.getElementById('day-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('day-modal').classList.remove('open');
+  currentModal = null;
+}
+function saveModalRecord() {
+  if(!currentModal) return;
+  const selBtn = document.querySelector('#modal-nrs-btns .nrs-btn.sel');
+  const nrs = selBtn ? parseInt(selBtn.dataset.val) : null;
+  const memo = document.getElementById('modal-memo').value.trim();
+  calData[currentModal] = { nrs, memo };
+  localStorage.setItem('lc-caldata', JSON.stringify(calData));
+  closeModal();
+  buildCalendar(); // re-render to show note indicator
+}
+
+// ═════════════ BED/EQD2 ═════════════
+function calcBED() {
+  const d = parseFloat(document.getElementById('bed-d').value);
+  const n = parseFloat(document.getElementById('bed-n').value);
+  const ab = parseFloat(document.getElementById('bed-ab').value);
+  if(!d||!n||isNaN(d)||isNaN(n)) { document.getElementById('bed-result').style.display='none'; return; }
+  const bed = n * d * (1 + d / ab);
+  const eqd2 = bed / (1 + 2 / ab);
+  document.getElementById('r-total').textContent = (n*d).toFixed(1) + ' Gy';
+  document.getElementById('r-bed').textContent = bed.toFixed(2) + ' Gy';
+  document.getElementById('r-eqd2').textContent = eqd2.toFixed(2) + ' Gy';
+  document.getElementById('bed-result').style.display = 'block';
+}
+
+// ═════════════ PUBMED ═════════════
+async function searchPubMed() {
+  const query = document.getElementById('pub-query').value.trim();
+  if(!query) return;
+  const resultsDiv = document.getElementById('pub-results');
+  const btn = document.getElementById('pub-btn');
+  btn.disabled = true; btn.textContent = '検索中...';
+  resultsDiv.innerHTML = '<p style="text-align:center;color:var(--md-muted);padding:20px;font-size:13px">🔍 PubMed を検索中...</p>';
+  try {
+    const sr = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=10&retmode=json&sort=relevance`);
+    const sd = await sr.json();
+    const ids = (sd.esearchresult && sd.esearchresult.idlist) || [];
+    if(!ids.length) { resultsDiv.innerHTML = '<p style="text-align:center;color:var(--md-muted);padding:20px;font-size:13px">結果が見つかりませんでした</p>'; btn.disabled=false; btn.textContent='🔍 検索'; return; }
+    const mr = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(',')}&retmode=json`);
+    const md2 = await mr.json();
+    resultsDiv.innerHTML = ids.map(id => {
+      const r = (md2.result && md2.result[id]) || {};
+      const au = (r.authors||[]).slice(0,3).map(a=>a.name).join(', ') + ((r.authors||[]).length>3?' et al.':'');
+      const year = (r.pubdate||'').slice(0,4);
+      return `<div class="pub-item">
+        <div class="pub-title">${r.title||'—'}</div>
+        <div class="pub-meta">${au} · ${r.source||'—'} · ${year}</div>
+        <a class="pub-link" href="https://pubmed.ncbi.nlm.nih.gov/${id}/" target="_blank">PubMed →</a>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    resultsDiv.innerHTML = '<p style="text-align:center;color:#c03030;padding:20px;font-size:13px">検索に失敗しました。ネットワークを確認してください。</p>';
+  }
+  btn.disabled = false; btn.textContent = '🔍 検索';
+}
+function quickSearch(q) {
+  document.getElementById('pub-query').value = q;
+  searchPubMed();
+}
+
+init();
 </script>
 </body>
 </html>
